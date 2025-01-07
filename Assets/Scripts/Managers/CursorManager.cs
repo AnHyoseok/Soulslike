@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Managers
+namespace BS.Managers
 {
     /// <summary>
     /// Cursor ฐüทร Script
