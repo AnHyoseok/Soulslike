@@ -3,7 +3,17 @@ guid: 5ba7d514e53988743aa94d00e2854e1d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: models_phong4SG1
+    second: {fileID: 2100000, guid: a4e8a7baa5f1c0244a161d25a3c4733c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: models_phong5SG1
+    second: {fileID: 2100000, guid: 24e4ac27e824e144ab3e596991aa5f08, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
