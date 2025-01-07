@@ -1,75 +1,122 @@
+using BS.State;
+using DG.Tweening;
 using UnityEngine;
 
-namespace Player
+namespace BS.Player
 {
     /// <summary>
-    /// Player의 controll 관련 Script
+    /// Player의 이동과 회전을 제어
     /// </summary>
     public class PlayerController : MonoBehaviour
     {
         #region Variables
-        public Camera mainCamera; // 마우스를 감지할 카메라 (기본적으로 메인 카메라 사용)
-        public float moveSpeed = 5f; // 이동 속도
-        private Vector3 targetPosition; // 이동 목표 위치
-        private bool isMoving = false; // 이동 중 여부
 
-        public Color rayColor = Color.red; // 레이의 색상
-        public float rayDuration = 1f; // 레이가 표시되는 시간
+        public Camera mainCamera;
+        public float moveSpeed = 5f;
+        public float inGameMoveSpeed;
+        public float rotationDuration = 0.1f; // 회전 지속 시간
+
+        private Vector3 targetPosition;
+        private bool isMoving = false;
+
+        public Color rayColor = Color.red;
+        public float rayDuration = 1f;
+
+        private PlayerStateMachine stateMachine;
         #endregion
+
         void Start()
         {
             if (mainCamera == null)
-            {
-                mainCamera = Camera.main; // 메인 카메라를 자동으로 할당
-            }
+                mainCamera = Camera.main;
 
-            targetPosition = transform.position; // 초기 위치 설정
+            targetPosition = transform.position;
+            inGameMoveSpeed = moveSpeed;
+
+            stateMachine = GetComponent<PlayerStateMachine>();
+            stateMachine.animator = transform.GetChild(0).GetComponent<Animator>();
         }
 
         void Update()
         {
-            HandleMouseInput();
             MoveToTarget();
+            HandleMouseInput();
         }
 
         void HandleMouseInput()
         {
-            if (Input.GetMouseButtonDown(1)) // 마우스 오른쪽 버튼 클릭
+            // TODO :: 방향키를 사용한 이동도 구현해보자
+
+            // 마우스 우클릭 이동
+            if (Input.GetMouseButton(1))
             {
-                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition); // 마우스 위치에서 Ray 생성
-                RaycastHit[] hits; // 모든 충돌된 정보를 배열로 받을 변수
+                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                RaycastHit[] hits = Physics.RaycastAll(ray);
 
-                hits = Physics.RaycastAll(ray); // Ray가 충돌한 모든 오브젝트를 배열로 반환
-
-                foreach (RaycastHit hit in hits) // 모든 충돌체 순회
+                foreach (RaycastHit hit in hits)
                 {
-                    Debug.Log(hit.transform.gameObject.tag);
                     if (hit.transform.gameObject.CompareTag("Ground"))
                     {
-                        targetPosition = hit.point; // 충돌한 위치를 목표 위치로 설정
-                        targetPosition.y = 0f; // y값을 0으로 고정 (지면에 위치하도록)
-                        isMoving = true; // 이동 시작
+                        targetPosition = hit.point;
+                        targetPosition.y = 0f;
+                        isMoving = true;
 
-                        // 레이를 그리기
+                        // 목표 회전값 계산
+                        Vector3 direction = (targetPosition - transform.position).normalized;
+                        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+                        // DOTween으로 회전 처리
+                        transform.DORotateQuaternion(targetRotation, rotationDuration);
+
+
                         Debug.DrawRay(ray.origin, ray.direction * hit.distance, rayColor, rayDuration);
+                        break;
                     }
                 }
             }
         }
 
+        // TODO :: DOTween 적용해보자
         void MoveToTarget()
         {
             if (isMoving)
             {
-                // 현재 위치에서 목표 위치로 이동
-                transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+                SetMoveState();
+                transform.position = Vector3.MoveTowards(transform.position, targetPosition, inGameMoveSpeed * Time.deltaTime);
 
-                // 목표 위치에 도달하면 이동 중지
                 if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
                 {
                     isMoving = false;
+                    stateMachine.ChangeState(stateMachine.IdleState);
                 }
             }
+        }
+
+        void SetMoveState()
+        {
+            // TODO :: newinput 사용해보자
+            if (Input.GetKey(KeyCode.C))
+            {
+                SetMoveSpeed(0.5f);
+                stateMachine.ChangeState(stateMachine.WalkState);
+            }
+            else if (Input.GetKey(KeyCode.LeftShift))
+            {
+                SetMoveSpeed(2);
+                stateMachine.ChangeState(stateMachine.SprintState);
+            }
+            else
+            {
+                SetMoveSpeed(1);
+                stateMachine.ChangeState(stateMachine.RunState);
+            }
+        }
+
+        // TODO :: ScriptableObject로 movespeed를 빼놓는다면?
+        void SetMoveSpeed(float rate)
+        {
+            inGameMoveSpeed = moveSpeed;
+            inGameMoveSpeed *= rate;
         }
     }
 }

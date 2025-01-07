@@ -1,7 +1,8 @@
+using BS.State;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Managers
+namespace BS.Managers
 {
     /// <summary>
     /// Camera 관련 Script
@@ -13,21 +14,67 @@ namespace Managers
         public Camera mainCamera; // 카메라
         public List<Renderer> prevRayObj; // 이전에 비활성화된 오브젝트들
         public Renderer lastRayObj;
+        public Vector3 offset = new Vector3(0f, 10f, -10f); // 플레이어와의 거리
+        public float followSpeed = 5f; // 카메라 이동 속도
+        private PlayerStateMachine playerStateMachine;
         RaycastHit hit;
-
         #endregion
+
+        // TODO :: Shader로 가림막의 투명도를 조정해보자
+        // TODO :: cinemachine을 사용해보자
+
         private void Start()
         {
-            player = gameObject.transform.parent;
-            mainCamera = Camera.main;
+            if (player == null)
+            {
+                playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
+                if (playerStateMachine != null)
+                {
+                    player = playerStateMachine.transform;
+                }
+                else
+                {
+                    Debug.Log("PLAYER NULL");
+                }
+            }
+
+            if (mainCamera == null)
+                mainCamera = Camera.main;
         }
 
-        void Update()
+        private void LateUpdate()
         {
-            transform.LookAt(player);
+            if(player == null)
+            {
+                Debug.Log("PLAYER NULL");
+                return;
+            }
+            FollowPlayer();
+            HandleObjectVisibility();
+        }
 
-            // 카메라와 플레이어 사이에 다른 오브젝트가 있는지 검사
+        // 플레이어를 따라다니는 로직
+        private void FollowPlayer()
+        {
+            // 카메라 목표 위치 계산 (플레이어 위치 + 오프셋)
+            Vector3 targetPosition = player.position + offset;
+
+            // 카메라 위치를 목표 위치로 부드럽게 이동
+            mainCamera.transform.position = Vector3.Lerp(
+                mainCamera.transform.position,
+                targetPosition,
+                followSpeed * Time.deltaTime
+            );
+
+            // 플레이어를 바라보도록 회전
+            mainCamera.transform.LookAt(player);
+        }
+
+        // 카메라와 플레이어 사이의 오브젝트 투명 처리
+        private void HandleObjectVisibility()
+        {
             Vector3 directionToPlayer = player.position - mainCamera.transform.position;
+
             if (Physics.Raycast(mainCamera.transform.position, directionToPlayer, out hit))
             {
                 Renderer hitRenderer = hit.transform.GetComponent<Renderer>();
@@ -45,44 +92,39 @@ namespace Managers
         }
 
         // Renderer 비활성화
-        void SetRendererF(RaycastHit hit)
+        private void SetRendererF(RaycastHit hit)
         {
-            // 충돌 오브젝트의 Tag가 Wall 인 경우
             if (hit.transform.gameObject.tag == "Wall")
             {
-                // hit 오브젝트의 부모
                 Transform hitParent = hit.transform.parent;
-                // 자식 오브젝트들 비활성화
                 Renderer[] renderers = hitParent.gameObject.GetComponentsInChildren<Renderer>();
+
                 foreach (Renderer renderer in renderers)
                 {
                     if (!prevRayObj.Contains(renderer))
-                    {
-                        prevRayObj.Add(renderer); // 새로운 렌더러만 추가
-                    }
-                    // TODO :: shader 효과로 투명해지는 효과로
-                    renderer.enabled = false; // 비활성화
+                        prevRayObj.Add(renderer);
+
+                    // TODO: shader 효과로 투명해지는 효과 추가
+                    renderer.enabled = false;
                 }
             }
         }
 
         // Renderer 활성화
-        void SetRendererT()
+        private void SetRendererT()
         {
             List<Renderer> toRemove = new List<Renderer>();
 
-            // 이전에 비활성화된 오브젝트들의 렌더러를 활성화
             foreach (Renderer prevRenderer in prevRayObj)
             {
-                // TODO :: shader 효과로 투명해지는 효과로
+                // TODO: shader 효과로 투명해지는 효과 추가
                 prevRenderer.enabled = true;
-                toRemove.Add(prevRenderer); // 활성화된 렌더러는 삭제할 리스트에 추가
+                toRemove.Add(prevRenderer);
             }
 
-            // 순회 후 항목 제거
             foreach (Renderer renderer in toRemove)
             {
-                prevRayObj.Remove(renderer); // 렌더러를 리스트에서 제거
+                prevRayObj.Remove(renderer);
             }
         }
     }
