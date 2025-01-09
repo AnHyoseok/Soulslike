@@ -9,11 +9,12 @@ using UnityEngine.UIElements;
 namespace BS.vampire
 {
     /// <summary>
-    /// 돌진, 슛, 슛2, 소환
+    /// 공격상태머신
     /// </summary>
     public class VampireController : MonoBehaviour
     {
         #region Variables
+        public Animator animator;
         public GameObject player;
         private int direction;  // 방향
 
@@ -23,30 +24,42 @@ namespace BS.vampire
         // 두 개의 소환몹이 곡선으로 플레이어 방향으로 이동해서 타격
         public GameObject attackObjectPrefab; // 공격 관리 오브젝트
         public GameObject impactEffectPrefab; // 이펙트 프리팹
+        public GameObject attackRangePrefab; // 공격범위 프리팹
         public Transform[] attackObjects;
         public Transform hitPoint; // 타격 지점
 
         private int nextPattern = 0;
         #endregion
-
-        void lookPlayer()
+        void Start()
         {
-            direction = (player.GetComponent<Transform>().position.x < transform.position.x ? -1 : 1);
-            float scale = transform.localScale.z;
-            transform.localScale = new Vector3(direction * -1 * scale, scale, scale);
+            if (animator == null)
+            {
+                animator = GetComponent<Animator>();
+            }
+            StartCoroutine(Attak1());
         }
+        
 
         IEnumerator Attak1()
         {
+            transform.LookAt(player.transform);
             yield return new WaitForSeconds(5f);
             // 공격 모션 시간
             GameObject attackObject1 = Instantiate(attackObjectPrefab, attackObjects[0].position, Quaternion.identity);
             GameObject attackObject2 = Instantiate(attackObjectPrefab, attackObjects[1].position, Quaternion.identity);
+            animator.SetTrigger("Attack1");
             yield return new WaitForSeconds(1f);
+            //공격 범위 표시
+            hitPoint = player.transform;
+            GameObject attackRangeIndicator = Instantiate(attackRangePrefab, hitPoint.position, Quaternion.identity);
+            VampireAttackRange rangeComponent = attackRangeIndicator.GetComponent<VampireAttackRange>();
+            rangeComponent.StartGrowing(new Vector3(2, 0.1f, 2), 3f);
+            Destroy(attackRangeIndicator, 1f);
+ 
 
             Debug.Log("Attak1 start");
-            lookPlayer();
-            hitPoint = player.transform;
+         
+            
 
             // 이동 경로 (y 값 고정, x 및 z 값 변경)
             Vector3[] path1 = {
@@ -71,7 +84,7 @@ namespace BS.vampire
        
                 Destroy(attackObject1);
                 Destroy(impactEffect, 3f);
-                Debug.Log("첫 번째 오브젝트가 타격 지점에서 제거되었습니다.");
+                //Debug.Log("첫 번째 오브젝트가 타격 지점에서 제거되었습니다.");
             });
 
             attackObject2.transform.DOPath(path2, 1f, PathType.CatmullRom).SetOptions(false, AxisConstraint.Y).SetEase(Ease.InOutSine).OnUpdate(() =>
@@ -82,7 +95,7 @@ namespace BS.vampire
                 GameObject impactEffect = Instantiate(impactEffectPrefab, attackObject2.transform.position, Quaternion.identity);
                 Destroy(attackObject2);
                 Destroy(impactEffect, 3f);
-                Debug.Log("두 번째 오브젝트가 타격 지점에서 제거되었습니다.");
+                //Debug.Log("두 번째 오브젝트가 타격 지점에서 제거되었습니다.");
             });
 
             NextPatternPlay();
@@ -91,29 +104,30 @@ namespace BS.vampire
 
         IEnumerator Attak2()
         {
+            transform.LookAt(player.transform);
             NextPatternPlay();
             yield return null;
         }
 
         IEnumerator Attak3()
         {
+            transform.LookAt(player.transform);
             NextPatternPlay();
             yield return null;
         }
 
         IEnumerator Attak4()
         {
+            transform.LookAt(player.transform);
             NextPatternPlay();
             yield return null;
         }
 
-        void Start()
-        {
-            StartCoroutine(Attak1());
-        }
+      
 
         void NextPatternPlay()
         {
+            transform.LookAt(player.transform);
             nextPattern = (nextPattern % 4) + 1; // 패턴을 순환
             switch (nextPattern)
             {
