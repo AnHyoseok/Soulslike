@@ -8,7 +8,6 @@ namespace BS.State
     public class PlayerStateMachine : MonoBehaviour
     {
         #region Variables
-
         private BaseState currentState;
 
         // Animator 및 상태 참조
@@ -18,6 +17,7 @@ namespace BS.State
         public BaseState WalkState { get; private set; }
         public BaseState SprintState { get; private set; }
         public BaseState AttackState { get; private set; }
+        public BaseState BlockState { get; private set; }
         #endregion
 
         private void Awake()
@@ -28,6 +28,7 @@ namespace BS.State
             WalkState = new WalkState(this);
             SprintState = new SprintState(this);
             AttackState = new AttackState(this);
+            BlockState = new BlockState(this);
 
             // 기본 상태 설정
             ChangeState(IdleState);

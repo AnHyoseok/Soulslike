@@ -15,7 +15,6 @@ namespace BS.Player
     {
         // TODO :: newinput 사용해보자
         // TODO :: ScriptableObject를 사용해보자 (movespeed)
-        // TODO :: MoveScript를 따로 만들어서 적용? 상속?
         #region Variables
         // Camera
         public Camera mainCamera;                           // Camera 변수
@@ -25,54 +24,35 @@ namespace BS.Player
         public float rayDuration = 1f;                      // Ray 지속 시간
 
         // Move
-        private Vector3 targetPosition;                     // 이동 목표 지점
-        private bool isMoving = false;                      // 이동 여부 
         public float moveSpeed = 5f;                        // SD 이동 속도
-        public float inGameMoveSpeed;                       // BD 이동 속도
         public float rotationDuration = 0.1f;               // 회전 지속 시간
 
         // Dash
-        public bool isDashing = false;                      // 대쉬 중인지
         public float dashDuration = 0.2f;                   // 대쉬 시간
         public float dashCoolTime = 3f;                     // SD 대쉬 쿨타임
-        public float currentDashCoolTime = 0f;              // BD 대쉬 쿨타임
         public float dashDistance = 5f;                     // 대쉬 거리
-        public bool isInvincible = false;                   // 무적 인지
         public float invincibilityDuration = 0.5f;          // 무적 시간
 
         // State
-        private PlayerStateMachine stateMachine;
+        PlayerState ps;
+        PlayerStateMachine playerStateMachine;
 
         // UI
         public TextMeshProUGUI dashCoolTimeText;
-
-        // TODO :: 스킬리스트 만들고 Dictionary 관리하자 키코드 : 이름, 쿨타임, 기능함수
-        // 해당 스킬리스트를 시작할때 가져오고 코루틴으로 쿨타임관리
-        // 기능함수 - 끝나고 호출하는 함수 - 쿨타임 관리 함수 형태로 구현
-        // TODO :: CS 파일을 반영가능할까 ?
-        private Dictionary<KeyCode, (string, float, UnityAction)> skillList;
         #endregion
-
         void Start()
         {
+            ps = PlayerState.Instance;
+            playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
+            //playerStateMachine.animator = transform.GetChild(0).GetComponent<Animator>();
+
             if (mainCamera == null)
                 mainCamera = Camera.main;
 
-            targetPosition = transform.position;
-            inGameMoveSpeed = moveSpeed;
+            ps.targetPosition = transform.position;
+            ps.inGameMoveSpeed = moveSpeed;
 
-            stateMachine = GetComponent<PlayerStateMachine>();
-            stateMachine.animator = transform.GetChild(0).GetComponent<Animator>();
-
-            InitializeSkills();
-        }
-
-        void InitializeSkills()
-        {
-            skillList = new Dictionary<KeyCode, (string, float, UnityAction)>
-            {
-                { KeyCode.Space, ("Dash", dashCoolTime, DoDash) }
-            };
+            PlayerSkillController.skillList.Add(KeyCode.Space, ("Dash", dashCoolTime, DoDash));
         }
 
         void Update()
@@ -81,6 +61,7 @@ namespace BS.Player
             HandleInput();
         }
 
+        #region Input
         // 키 입력 처리
         void HandleInput()
         {
@@ -88,6 +69,9 @@ namespace BS.Player
             // 마우스 우클릭 이동
             if (Input.GetMouseButton(1))
             {
+                // BlockingAnim 진행중에는 Return 하도록
+                if (ps.isBlockingAnim) return;
+
                 // TODO :: CursorManager에서 반환하면 좋을듯
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -96,8 +80,8 @@ namespace BS.Player
                 {
                     if (hit.transform.gameObject.CompareTag("Ground"))
                     {
-                        targetPosition = hit.point;
-                        isMoving = true;
+                        ps.targetPosition = hit.point;
+                        ps.isMoving = true;
                         RotatePlayer();
 
                         Debug.DrawRay(ray.origin, ray.direction * hit.distance, rayColor, rayDuration);
@@ -105,38 +89,23 @@ namespace BS.Player
                     }
                 }
             }
-            foreach (var skill in skillList)
-            {
-                if (Input.GetKeyDown(skill.Key))
-                {
-                    ExecuteSkill(skill.Key);
-                }
-            }
         }
-        // 스킬 시전
-        void ExecuteSkill(KeyCode key)
-        {
-            if (skillList.TryGetValue(key, out var skill))
-            {
-                if (currentDashCoolTime <= 0f)
-                {
-                    skill.Item3.Invoke();
-                }
-            }
-        }
+        #endregion
+
+        #region Move
         // TODO :: DOTween 적용해보자
         // Player 이동
         void MoveToTarget()
         {
-            if (isMoving && !isDashing)
+            if (ps.isMoving && !ps.isDashing && !ps.isBlockingAnim)
             {
                 SetMoveState();
-                transform.position = Vector3.MoveTowards(transform.position, targetPosition, inGameMoveSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);
 
-                if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+                if (Vector3.Distance(transform.position, ps.targetPosition) < 0.1f)
                 {
-                    isMoving = false;
-                    stateMachine.ChangeState(stateMachine.IdleState);
+                    ps.isMoving = false;
+                    playerStateMachine.ChangeState(playerStateMachine.IdleState);
                 }
             }
         }
@@ -145,7 +114,7 @@ namespace BS.Player
         void RotatePlayer()
         {
             // 목표 회전값 계산
-            Vector3 direction = (targetPosition - transform.position).normalized;
+            Vector3 direction = (ps.targetPosition - transform.position).normalized;
             Quaternion targetRotation = Quaternion.LookRotation(direction);
 
             transform.DORotateQuaternion(targetRotation, rotationDuration);
@@ -157,43 +126,46 @@ namespace BS.Player
             if (Input.GetKey(KeyCode.C))
             {
                 SetMoveSpeed(0.5f);
-                stateMachine.ChangeState(stateMachine.WalkState);
+                playerStateMachine.ChangeState(playerStateMachine.WalkState);
             }
             else if (Input.GetKey(KeyCode.LeftShift))
             {
                 SetMoveSpeed(2);
-                stateMachine.ChangeState(stateMachine.SprintState);
+                playerStateMachine.ChangeState(playerStateMachine.SprintState);
             }
             else
             {
                 SetMoveSpeed(1);
-                stateMachine.ChangeState(stateMachine.RunState);
+                playerStateMachine.ChangeState(playerStateMachine.RunState);
             }
         }
-        
+
         // Player 속도 변경
         void SetMoveSpeed(float rate)
         {
-            inGameMoveSpeed = moveSpeed * rate;
+            ps.inGameMoveSpeed = moveSpeed * rate;
         }
+        #endregion
 
+        #region Dash
         // 대쉬
         void DoDash()
         {
-            if (!isDashing && currentDashCoolTime<= 0f)
+            if (!ps.isDashing && ps.currentDashCoolTime <= 0f && !ps.isBlockingAnim)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit hit))
+                RaycastHit[] hits = Physics.RaycastAll(ray);
+                foreach (RaycastHit hit in hits)
                 {
-                    if (hit.transform.CompareTag("Ground"))
+                    if (hit.transform.gameObject.CompareTag("Ground"))
                     {
-                        isDashing = true;
-                        isInvincible = true;
+                        ps.isDashing = true;
+                        ps.isInvincible = true;
 
                         Vector3 dashDirection = (hit.point - transform.position).normalized;
                         Vector3 dashTarget = transform.position + dashDirection * dashDistance;
-                        stateMachine.ChangeState(stateMachine.SprintState);
-                        targetPosition = dashTarget;
+                        playerStateMachine.ChangeState(playerStateMachine.SprintState);
+                        ps.targetPosition = dashTarget;
                         RotatePlayer();
 
                         transform.DOMove(dashTarget, dashDuration)
@@ -201,7 +173,7 @@ namespace BS.Player
                             .OnComplete(() => { EndDash(); });
 
                         Invoke(nameof(DisableInvincibility), invincibilityDuration);
-                        StartCoroutine(DashCooldownRoutine());
+                        StartCoroutine(CoDashCooldown());
                     }
                 }
             }
@@ -210,27 +182,35 @@ namespace BS.Player
         // 대쉬 끝
         void EndDash()
         {
-            isDashing = false;
-            stateMachine.ChangeState(stateMachine.IdleState);
+            ps.isDashing = false;
+            if (ps.isMoving)
+            {
+                playerStateMachine.ChangeState(playerStateMachine.RunState);
+            }
+            else
+            {
+                playerStateMachine.ChangeState(playerStateMachine.IdleState);
+            }
         }
 
         // 대쉬 끝 무적해제 => TODO :: 피격면역으로 바꿀수있으면 바꾸자
         void DisableInvincibility()
         {
-            isInvincible = false;
+            ps.isInvincible = false;
         }
 
         // 대쉬 쿨타임
-        IEnumerator DashCooldownRoutine()
+        IEnumerator CoDashCooldown()
         {
-            currentDashCoolTime = dashCoolTime;
-            while (currentDashCoolTime > 0f)
+            ps.currentDashCoolTime = dashCoolTime;
+            while (ps.currentDashCoolTime > 0f)
             {
-                currentDashCoolTime -= Time.deltaTime;
-                dashCoolTimeText.text = Mathf.Max(0, currentDashCoolTime).ToString("F1");
+                ps.currentDashCoolTime -= Time.deltaTime;
+                dashCoolTimeText.text = Mathf.Max(0, ps.currentDashCoolTime).ToString("F1");
                 yield return null;
             }
         }
+        #endregion
     }
 }
 

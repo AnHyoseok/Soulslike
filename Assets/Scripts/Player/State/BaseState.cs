@@ -14,6 +14,7 @@ namespace BS.State
         protected const string IsWalk = "IsWalk";
         protected const string IsRun = "IsRun";
         protected const string IsSprint = "IsSprint";
+        protected const string IsBlock = "IsBlock";
         #endregion
 
         public BaseState(PlayerStateMachine stateMachine)
@@ -25,5 +26,6 @@ namespace BS.State
         public virtual void Exit() { }
         public virtual void Update() { }
         public virtual void HandleAnimationEvent(string eventName) { }
+        protected virtual void ResetAndSetTrigger(string triggerToSet) { }
     }
 }
