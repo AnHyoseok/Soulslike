@@ -28,7 +28,7 @@ public class DemonAttackRange : MonoBehaviour
             // 성장 시작
             isGrowing = true;
         }
-        public void UpdateScale()
+        private void UpdateScale()
         {
             if (isGrowing)
             {

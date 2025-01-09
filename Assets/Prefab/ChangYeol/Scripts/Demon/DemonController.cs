@@ -10,6 +10,7 @@ namespace BS.Demon
         Attack01,
         Attack02,
         Attack03,
+        Teleport,
         GetDamaged,
         Die
     }
@@ -21,16 +22,14 @@ namespace BS.Demon
         public float attackRange = 3f; // 공격 범위
         public float moveSpeed = 2f; // 이동 속도
         public float[] attackCooldown; //쿨타임
-        public float teleportCooldown; // 텔레포트 쿨타임
         public Transform[] teleportPoints; // 텔레포트 가능한 지점들
         public float health = 100f;     //체력
         public GameObject[] effect;
-        [HideInInspector]public float[] lastAttackTime = new float[3];
-        private List<DEMON> demons = new List<DEMON>() { DEMON.Attack01, DEMON.Attack02, DEMON.Attack03 };
+        [HideInInspector]public float[] lastAttackTime = new float[4];
+        private List<DEMON> demons = new List<DEMON>() { DEMON.Attack01, DEMON.Attack02 , DEMON.Attack03 };
 
         private int index;
         private bool isTel = false;
-        private float teleportTimer = 0f;
         private void Start()
         {
             //참조
@@ -39,7 +38,6 @@ namespace BS.Demon
 
         private void Update()
         {
-            teleportTimer += Time.deltaTime;
             switch (currentState)
             {
                 case DEMON.Idle:
@@ -52,7 +50,9 @@ namespace BS.Demon
                     HandleAttackState();
                     break;
                 case DEMON.Attack03:
-                    HandleAttackState();
+                    TeleAttackState();
+                    break;
+                case DEMON.Teleport:
                     break;
                 case DEMON.GetDamaged:
                     HandleGetDamagedState();
@@ -94,20 +94,17 @@ namespace BS.Demon
                         break;
                 }
             }
-            else if(!isTel && teleportTimer >= teleportCooldown)
-            {
-                PerformTeleport();
-                teleportTimer = 0;
-                ChangeState(DEMON.Idle);
-            }
             else
             {
                 ChangeState(DEMON.Idle);
-                isTel = false;
             }
         }
 
         private void HandleAttackState()
+        {
+            ChangeState(DEMON.Idle);
+        }
+        private void TeleAttackState()
         {
             ChangeState(DEMON.Idle);
         }
@@ -141,24 +138,23 @@ namespace BS.Demon
             animator.ResetTrigger("Teleport");
             animator.ResetTrigger("GetDamaged");
         }
-        void PerformTeleport()
+        public void PerformTeleport()
         {
-            isTel = true;
-            // 텔레포트 가능한 지점 중 하나로 이동
             if (teleportPoints.Length > 0)
             {
+
+                // 텔레포트 위치 설정
                 int randomIndex = Random.Range(0, teleportPoints.Length);
                 transform.position = teleportPoints[randomIndex].position;
 
+                // 텔레포트 효과 생성 (선택 사항)
                 /*GameObject effgo = Instantiate(effect[5], transform.position, Quaternion.identity);
-                Destroy(effgo );*/
-                Debug.Log("Teleported!");
-            }
+                Destroy(effgo);*/
 
-            // 텔레포트 애니메이션 실행 (선택 사항)
-            animator.SetTrigger("Teleport");
+                Debug.Log("Teleported!");
+
+                ChangeState(DEMON.Attack03); // 텔레포트 후 상태 변경
+            }
         }
     }
-
-
 }
