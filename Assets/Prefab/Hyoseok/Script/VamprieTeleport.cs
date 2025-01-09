@@ -11,7 +11,7 @@ namespace BS.vampire
     public class VamprieTeleport : MonoBehaviour
     {
         #region Variables
-        public ParticleSystem pingpongShot;
+        public GameObject pingpongShot;
         public GameObject CircleShot;
         public Transform[] teleports; //순간이동 위치 0~3 랜덤 4는 중앙
         public float time = 20; //순간이동 쿨타임
@@ -60,10 +60,10 @@ namespace BS.vampire
                 }
                 else
                 {
-                    var emission = pingpongShot.emission;
-                    emission.rateOverTime = 25f;
-                    yield return new WaitForSeconds(2f);
-                    emission.rateOverTime = 0f;
+                    pingpongShot.SetActive(true );
+            
+                    yield return new WaitForSeconds(5f);
+                    pingpongShot.SetActive(false);
                    
                 }
             }
