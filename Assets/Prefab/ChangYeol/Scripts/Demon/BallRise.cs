@@ -8,10 +8,10 @@ namespace BS.Demon
         #region Variables
         public float targetHeight = 15f; // 목표 높이
         public float riseSpeed = 2f; // 상승 속도
-        public GameObject particle;
         private Vector3 startPosition; // 시작 위치
         private Vector3 targetPosition; // 목표 위치
         private bool isRising = false; // 상승 상태 플래그
+        public DemonController controller;
         #endregion
         private void Start()
         {
@@ -41,7 +41,7 @@ namespace BS.Demon
                 {
                     isRising = false; // 상승 종료
                     yield return new WaitForSeconds(1f);
-                    GameObject effgo = Instantiate(particle, transform.position, Quaternion.identity);
+                    GameObject effgo = Instantiate(controller.effect[0], transform.position, Quaternion.identity);
                     Destroy(this.gameObject);
                     Destroy(effgo,1.5f);
                 }

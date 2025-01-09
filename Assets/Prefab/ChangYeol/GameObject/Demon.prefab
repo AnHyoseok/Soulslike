@@ -297,13 +297,19 @@ MonoBehaviour:
   player: {fileID: 0}
   attackRange: 3
   moveSpeed: 2
-  attackOneCooldown: 5
-  attackTwoCooldown: 5
-  attackThreeCooldown: 5
+  attackCooldown:
+  - 5
+  - 10
+  - 15
   teleportCooldown: 3
   teleportPoints: []
   health: 100
-  effect: []
+  effect:
+  - {fileID: 7647375919561907788, guid: ef2e41ca61f04ab4bbffa35eb53b3b3f, type: 3}
+  lastAttackTime:
+  - 0
+  - 0
+  - 0
 --- !u!114 &4168263615863308289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,6 +326,7 @@ MonoBehaviour:
   Points: []
   minSpawnCount: 4
   maxSpawnCount: 6
+  ballTranfrom: {fileID: 787618328927313329}
 --- !u!1 &1396914477708325754
 GameObject:
   m_ObjectHideFlags: 0
