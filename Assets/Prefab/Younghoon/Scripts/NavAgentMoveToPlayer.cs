@@ -13,12 +13,12 @@ namespace BS.NavAgent
         void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
-            //target = FindAnyObjectByType<PlayerMovement>().gameObject;
+            target = FindAnyObjectByType<PlayerController>().gameObject;
         }
         void Update()
         {
-            //agent.SetDestination(target.transform.position);
-
+            //agent.SetDestination(new Vector3(target.transform.position.x, transform.position.y, target.transform.position.z));
+            agent.transform.LookAt(new Vector3(target.transform.position.x, transform.position.y, target.transform.position.z));
         }
 
     }
