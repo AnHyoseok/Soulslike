@@ -13,6 +13,7 @@ namespace BS.vampire
         #region Variables
         public GameObject pingpongShot;
         public GameObject CircleShot;
+        public GameObject teleportEffect;
         public Transform[] teleports; //순간이동 위치 0~3 랜덤 4는 중앙
         public float time = 20; //순간이동 쿨타임
         public Animator animator;
@@ -40,6 +41,9 @@ namespace BS.vampire
                 yield return new WaitForSeconds(time);
                 //애니메이션 연출 3초후에 이동
                 animator.SetTrigger("Teleport");
+                GameObject potalEffect = Instantiate(teleportEffect, transform.position, Quaternion.identity);
+                potalEffect.transform.parent = transform;
+                Destroy(potalEffect, 3.3f);
                 yield return new WaitForSeconds(2.5f);
                 int randomIndex;
                 do
@@ -50,8 +54,8 @@ namespace BS.vampire
                 //보스 위치를 랜덤이동
                 transform.position = teleports[randomIndex].position;
                 previousIndex = randomIndex;
-
-                if(randomIndex == 4)
+               
+                if (randomIndex == 4)
                 {
 
                     CircleShot.SetActive(true);
