@@ -6353,7 +6353,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 331d0ea1a1e03b14896bd6458fbd0334, type: 2}
   m_sharedMaterial: {fileID: 4883999945016819575, guid: 331d0ea1a1e03b14896bd6458fbd0334, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 4883999945016819575, guid: 331d0ea1a1e03b14896bd6458fbd0334, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -12088,7 +12089,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 331d0ea1a1e03b14896bd6458fbd0334, type: 2}
   m_sharedMaterial: {fileID: 4883999945016819575, guid: 331d0ea1a1e03b14896bd6458fbd0334, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 4883999945016819575, guid: 331d0ea1a1e03b14896bd6458fbd0334, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -13215,6 +13217,8 @@ MonoBehaviour:
   targetPosition: {x: 0, y: 0, z: 0}
   isMoving: 0
   inGameMoveSpeed: 0
+  isSprinting: 0
+  isWalking: 0
   isDashing: 0
   currentDashCoolTime: 0
   isInvincible: 0
