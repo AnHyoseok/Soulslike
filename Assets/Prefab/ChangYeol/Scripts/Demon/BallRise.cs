@@ -11,7 +11,7 @@ namespace BS.Demon
         private Vector3 startPosition; // 시작 위치
         private Vector3 targetPosition; // 목표 위치
         private bool isRising = false; // 상승 상태 플래그
-        public DemonController controller;
+        public DemonPattern pattern;
         #endregion
         private void Start()
         {
@@ -41,7 +41,7 @@ namespace BS.Demon
                 {
                     isRising = false; // 상승 종료
                     yield return new WaitForSeconds(1f);
-                    GameObject effgo = Instantiate(controller.effect[0], transform.position, Quaternion.identity);
+                    GameObject effgo = Instantiate(pattern.effect[0], transform.position, Quaternion.identity);
                     Destroy(this.gameObject);
                     Destroy(effgo,1.5f);
                 }

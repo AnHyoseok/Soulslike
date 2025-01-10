@@ -8,31 +8,46 @@ namespace BS.Demon
     {
         #region Variables
         private DemonController controller;
+        public GameObject[] effect;
 
         //패턴 1
         public BallRise ball;
         public Transform[] Points;
         public int minSpawnCount = 4; // 최소 생성 개수
         public int maxSpawnCount = 6; // 최대 생성 개수
-        private HashSet<int> selectedIndices = new HashSet<int>(); //중복방지
-        
+
         //패턴 2
         public Transform ballTranfrom;
+        public GameObject ballInstantiate;
+
+        //패턴 3
+        public Transform[] teleportPoints; // 텔레포트 가능한 지점들
+        public LineRenderer lineRenderer; // 레이저 시각화를 위한 LineRenderer
+        public Transform firePoint; // 레이저 발사 위치
+        public float laserDistance = 50f; // 레이저 최대 사거리
+        public float laserDuration = 0.1f; // 레이저 표시 시간
+        public LayerMask targetLayer; // 레이저가 충돌할 레이어 설정
 
         //공격범위
         [SerializeField] private GameObject attackRangePrefab;
-        [SerializeField] private Vector3[] attackRangeScale = new Vector3[2];
-        [SerializeField]private float[] rangeSize = new float[2];
+        public Vector3[] attackRangeScale = new Vector3[2];
+        public float[] rangeSize = new float[2];
+
+        //플레이어 찾기
+        public Transform player; // 플레이어 참조
+        public float rotationSpeed = 5f; // 회전 속도
         #endregion
         private void Start()
         {
             controller = GetComponent<DemonController>();
-            //SpawnObjects();
+
+            lineRenderer.positionCount = 2; // 시작과 끝 두 개의 포인트
+            lineRenderer.enabled = false; // 기본적으로 비활성화
         }
         //패턴 1
         public void SpawnObjects()
         {
-            
+            transform.LookAt(player.position);
             if (Points.Length == 0 || ball == null)
             {
                 Debug.LogWarning("Spawn points or object to spawn not set!");
@@ -40,7 +55,7 @@ namespace BS.Demon
             }
 
             int spawnCount = Random.Range(minSpawnCount, maxSpawnCount + 1); // 2 또는 3개 생성
-
+            HashSet<int> selectedIndices = new HashSet<int>(); //중복방지
             while (selectedIndices.Count < spawnCount)
             {
                 int randomIndex = Random.Range(0, Points.Length);
@@ -58,17 +73,23 @@ namespace BS.Demon
         }
         IEnumerator AttackRangeSpawn(int index)
         {
-            GameObject Range = Instantiate(attackRangePrefab, Points[index].position + new Vector3(0,0.2f,0), Quaternion.identity);
+            GameObject Range = Instantiate(attackRangePrefab, Points[index].position + new Vector3(0, 0.2f, 0), Quaternion.identity);
             Range.GetComponent<DemonAttackRange>().StartGrowing(attackRangeScale[0], rangeSize[0]);
             yield return new WaitForSeconds[3];
-            Destroy(Range,2f);
+            Destroy(Range, 2f);
         }
         //패턴 2
         public void AttackBall()
         {
+            transform.LookAt(player.position);
+            GameObject attackball = Instantiate(ballInstantiate, ballTranfrom.position, Quaternion.identity);
             StartCoroutine(AttackRangeBall());
-            GameObject effgo = Instantiate(controller.effect[0],ballTranfrom.position,Quaternion.identity);
-            Destroy(effgo,2f);
+            GameObject effgo = Instantiate(effect[1], attackball.transform.position, Quaternion.identity);
+            if (effgo != null && attackball != null)
+            {
+                Destroy(attackball, 1f);
+                Destroy(effgo, 2f);
+            }
             controller.lastAttackTime[1] = Time.time;
         }
         IEnumerator AttackRangeBall()
@@ -80,9 +101,61 @@ namespace BS.Demon
             Destroy(Range, 2f);
         }
         //패턴 3
+        public void PerformTeleport()
+        {
+            transform.LookAt(player.position);
+            if (teleportPoints.Length > 1) // 텔레포트 지점이 2개 이상일 때만 중복 방지 가능
+            {
+                int randomIndex;
+                do
+                {
+                    randomIndex = Random.Range(0, teleportPoints.Length);
+                }
+                while (transform.position == teleportPoints[randomIndex].position); // 현재 위치와 다른 위치 선택
+
+                // 텔레포트 효과 생성
+                GameObject effgo = Instantiate(effect[2], transform.position, Quaternion.identity);
+                Destroy(effgo, 1f);
+
+                // 텔레포트 위치 설정
+                transform.position = teleportPoints[randomIndex].position;
+
+                // 텔레포트 효과 생성
+                GameObject effectgo = Instantiate(effect[2], transform.position, Quaternion.identity);
+                Destroy(effectgo, 1f);
+            }
+        }
         public void ShootAttack()
         {
+            transform.LookAt(player.position);
             controller.lastAttackTime[2] = Time.time;
+        }
+        private IEnumerator ShowLaser(Vector3 start, Vector3 end)
+        {
+            lineRenderer.SetPosition(0, start); // 시작 위치
+            lineRenderer.SetPosition(1, end);   // 끝 위치
+            lineRenderer.enabled = true;
+
+            yield return new WaitForSeconds(laserDuration); // 레이저 표시 시간
+
+            lineRenderer.enabled = false; // 레이저 비활성화
+        }
+        public void FireLaser()
+        {
+            // 레이저 발사 지점 설정
+            Vector3 start = firePoint.position;
+            Vector3 direction = firePoint.forward;
+            Vector3 end = start + direction * laserDistance;
+
+            // 레이저 충돌 감지
+            RaycastHit hit;
+            if (Physics.Raycast(start, direction, out hit, laserDistance, targetLayer))
+            {
+                end = hit.point; // 충돌 지점으로 끝 위치 업데이트
+                Debug.Log($"Laser hit {hit.collider.name}");
+            }
+            // LineRenderer를 사용하여 레이저 표시
+            StartCoroutine(ShowLaser(start, end));
         }
     }
 }

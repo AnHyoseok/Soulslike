@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetHeight: 5
   riseSpeed: 10
-  controller: {fileID: 4969413487014143255, guid: 8ff18eeb3eeacb54aa2bfef06a282531, type: 3}
+  pattern: {fileID: 5196229966916800988, guid: 8ff18eeb3eeacb54aa2bfef06a282531, type: 3}
 --- !u!1 &6603378961253747614
 GameObject:
   m_ObjectHideFlags: 0
