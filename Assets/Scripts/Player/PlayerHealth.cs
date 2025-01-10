@@ -1,12 +1,11 @@
-using BS.Player;
 using BS.State;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 
-namespace BS.PlayerHealth
+namespace BS.Player
 {
-    public class PlayerHealth : MonoBehaviour
+    public class PlayerHealth: MonoBehaviour
     {
         #region Variables
         // Block
@@ -61,7 +60,6 @@ namespace BS.PlayerHealth
         public void UnBlock()
         {
             ps.isBlocking = false;
-            playerStateMachine.ChangeState(playerStateMachine.IdleState);
         }
     }
 }

@@ -164,6 +164,10 @@ namespace BS.Player
 
                         Vector3 dashDirection = (hit.point - transform.position).normalized;
                         Vector3 dashTarget = transform.position + dashDirection * dashDistance;
+                        if(playerStateMachine.GetCurrentState() is SprintState)
+                        {
+                            playerStateMachine.prevState = playerStateMachine.SprintState;
+                        }
                         playerStateMachine.ChangeState(playerStateMachine.SprintState);
                         ps.targetPosition = dashTarget;
                         RotatePlayer();
@@ -183,13 +187,21 @@ namespace BS.Player
         void EndDash()
         {
             ps.isDashing = false;
-            if (ps.isMoving)
+            if (playerStateMachine.GetPrevState() is RunState)
             {
                 playerStateMachine.ChangeState(playerStateMachine.RunState);
             }
-            else
+            else if (playerStateMachine.GetPrevState() is IdleState)
             {
                 playerStateMachine.ChangeState(playerStateMachine.IdleState);
+            }
+            else if (playerStateMachine.GetPrevState() is WalkState)
+            {
+                playerStateMachine.ChangeState(playerStateMachine.WalkState);
+            }
+            else if (playerStateMachine.GetPrevState() is SprintState)
+            {
+                playerStateMachine.ChangeState(playerStateMachine.SprintState);
             }
         }
 

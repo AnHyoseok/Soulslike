@@ -25,7 +25,6 @@ namespace BS.State
         public virtual void Enter() { }
         public virtual void Exit() { }
         public virtual void Update() { }
-        public virtual void HandleAnimationEvent(string eventName) { }
         protected virtual void ResetAndSetTrigger(string triggerToSet) { }
     }
 }

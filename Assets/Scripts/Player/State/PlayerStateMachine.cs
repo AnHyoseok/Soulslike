@@ -9,6 +9,7 @@ namespace BS.State
     {
         #region Variables
         private BaseState currentState;
+        public BaseState prevState;
 
         // Animator 및 상태 참조
         public Animator animator;
@@ -37,27 +38,39 @@ namespace BS.State
         private void Update()
         {
             currentState?.Update();
+            
         }
 
         public void ChangeState(BaseState newState)
         {
+            //Debug.Log("PREV = " + prevState);
+            //Debug.Log("CURR = " + currentState);
             // 현재 상태와 새 상태가 다를 때만 상태 변경
             if (currentState != newState)
             {
+                prevState = currentState; // 기존 상태는 이전 상태로 저장
                 currentState?.Exit();  // 기존 상태 종료
                 currentState = newState;  // 새 상태 설정
                 currentState.Enter();  // 새 상태 시작
             }
         }
+        // 현재 State 반환
         public BaseState GetCurrentState()
         {
             return currentState;
         }
-
-        // 애니메이션 이벤트 처리
-        public void OnAnimationEvent(string eventName)
+        // 이전 State 반환
+        public BaseState GetPrevState()
         {
-            currentState?.HandleAnimationEvent(eventName);
+            return prevState;
+        }
+        // 이전 상태로 복원
+        public void RestorePrevState()
+        {
+            if (prevState != null)
+            {
+                ChangeState(prevState);
+            }
         }
     }
 }

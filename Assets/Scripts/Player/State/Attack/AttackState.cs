@@ -16,13 +16,5 @@ namespace BS.State
         {
             //stateMachine.animator.SetTrigger("Attack");
         }
-
-        public override void HandleAnimationEvent(string eventName)
-        {
-            //if (eventName == "AttackEnd")
-            //{
-            //    stateMachine.ChangeState(stateMachine.IdleState);
-            //}
-        }
     }
 }

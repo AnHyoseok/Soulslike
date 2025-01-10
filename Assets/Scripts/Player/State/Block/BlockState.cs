@@ -26,7 +26,10 @@ namespace BS.State
         }
         public override void Exit()
         {
-
+            if (stateMachine.GetPrevState() != null)
+            {
+                stateMachine.RestorePrevState();
+            }
         }
     }
 }

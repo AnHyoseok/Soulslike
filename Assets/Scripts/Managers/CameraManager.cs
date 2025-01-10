@@ -44,7 +44,7 @@ namespace BS.Managers
 
         private void LateUpdate()
         {
-            if(player == null)
+            if (player == null)
             {
                 Debug.Log("PLAYER NULL");
                 return;
