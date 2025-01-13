@@ -17,6 +17,8 @@ namespace BS.vampire
         #region Variables
         public Animator animator;
         public GameObject player;
+        public float testAttackNumber;
+
         private int direction;  // 방향
 
         public float time = 20f; // 공격 대기 시간
@@ -26,6 +28,7 @@ namespace BS.vampire
         [SerializeField] float attack2;
         [SerializeField] float attack3;
         [SerializeField] float attack4;
+        [Header("Attack1")]
         // 공격1 
         // 두 개의 소환몹이 곡선으로 플레이어 방향으로 이동해서 타격
         public GameObject attackObjectPrefab; // 공격 관리 오브젝트
@@ -35,14 +38,30 @@ namespace BS.vampire
         public GameObject attackRangePrefab; // 공격범위 프리팹
         public Transform[] attackObjects;
         public Transform hitPoint; // 타격 지점
-
+        [Header("Attack2")]
         //공격2
         //보스가 중앙으로 이동후 공격모션 이펙트 발동후 왼 오 아래 위 레이저 발사 
         public Transform centerTeleport;    //센터 텔레포트
         public GameObject attack2EffectPrefab; //시전 이펙트프리팹 
         public GameObject[] bloodBeams;   //왼오아래위 빔들
-      
+        public GameObject[] attak3Ranges;
+        [Header("Attack3")]
+        //공격3
+        //보스가 플레이어를 바라보며 부채꼴 박쥐웨이브 날리기
+        public GameObject Attack3BatPrefab; //부딫히면 플레이어에게 데미지주는 박쥐
+        public float waveCount = 3f;     //공격 웨이브 카운트
+        public GameObject attack3EffectPrefab;  //부딫혔을때 파티클
+        public Transform[] batTransforms;
 
+        [Header("Attack4")]
+        //공격4
+        //보스 주변에 박쥐들(로테이션들이) 랜덤 1~2 방향으로 산개후 플레이어방향으로 레이져 발사
+        public GameObject[] summonObject;    //소환위치
+        public GameObject attak4Ranges;
+        public float moveRadius = 2f; // 이동 반경
+        public GameObject attack4EffectPrefab;  //레이저 이펙트
+        private Vector3[] originalPositions; // 원래위치
+        [SerializeField] float attack4count = 3f;  //반복횟수
         private int nextPattern = 0;
         #endregion
         void Start()
@@ -51,11 +70,14 @@ namespace BS.vampire
             {
                 animator = GetComponent<Animator>();
             }
-            StartCoroutine(Attak1());
+            StartCoroutine(Attack1());
+
+
+
         }
 
 
-        IEnumerator Attak1()
+        IEnumerator Attack1()
         {
             transform.LookAt(player.transform);
             yield return new WaitForSeconds(5f);
@@ -126,7 +148,7 @@ namespace BS.vampire
             yield return null;
         }
 
-        IEnumerator Attak2()
+        IEnumerator Attack2()
         {
             //보스 중앙이동
             transform.position = centerTeleport.position;
@@ -138,35 +160,170 @@ namespace BS.vampire
             yield return new WaitForSeconds(1f);    //동작대기시간
             //이펙트
 
-            for (int i = 0; i < bloodBeams.Length; i++)
+            for (int i = 0; i < attak3Ranges.Length; i++)
             {
                 //스킬 레이 그려야됌 일직선 빨간색 범위
-     ;
+                attak3Ranges[i].SetActive(true);
+                yield return new WaitForSeconds(1f);
+                attak3Ranges[i].SetActive(false);
+            }
+
+            for (int i = 0; i < bloodBeams.Length; i++)
+            {
+                //레이보여주는시간
                 bloodBeams[i].SetActive(true);
-                yield return new WaitForSeconds(2f); //레이보여주는시간
+                yield return new WaitForSeconds(1f);
                 bloodBeams[i].SetActive(false);
             }
 
             NextPatternPlay();
             yield return null;
 
-            yield return new WaitForSeconds(20f);
+            yield return new WaitForSeconds(10f);
         }
 
-        IEnumerator Attak3()
+        IEnumerator Attack3()
         {
+            yield return new WaitForSeconds(7f);
             transform.LookAt(player.transform);
+            //웨이브
+            for (int i = 0; i < waveCount; i++)
+            {
+                foreach (Transform batTransform in batTransforms)
+                {
+                    GameObject bat = Instantiate(Attack3BatPrefab, batTransform.position, batTransform.rotation);
+                    Rigidbody rb = bat.GetComponent<Rigidbody>();
+
+
+                    Vector3 directionToPlayer = (player.transform.position - batTransform.position).normalized;
+                    directionToPlayer.y = 0;
+                    //directionToPlayer.z = 0;
+                    Attack3Bat attack3Bat = bat.GetComponent<Attack3Bat>();
+                    attack3Bat.Initialize(directionToPlayer, 20f);
+
+                    Destroy(bat, 7f);
+
+                    //충돌시 이펙트 
+
+
+
+                }
+                yield return new WaitForSeconds(0.3f);
+            }
             NextPatternPlay();
             yield return null;
         }
 
-        IEnumerator Attak4()
+        IEnumerator Attack4()
         {
-            transform.LookAt(player.transform);
+            yield return new WaitForSeconds(7f);
+
+            for (int j = 0; j < attack4count; j++)
+            {
+                
+
+                // 공격4용 위치 저장
+                originalPositions = new Vector3[summonObject.Length];
+                for (int i = 0; i < summonObject.Length; i++)
+                {
+                    originalPositions[i] = summonObject[i].transform.position;
+                }
+
+                // 위치 이동
+                float elapsedTime = 0f;
+                float moveDuration = 0.2f; // 이동에 걸릴 시간
+
+                Vector3[] targetPositions = new Vector3[summonObject.Length];
+                for (int i = 0; i < summonObject.Length; i++)
+                {
+                    targetPositions[i] = originalPositions[i] + new Vector3(Random.Range(-moveRadius, moveRadius), 0, Random.Range(-moveRadius, moveRadius));
+                }
+
+                while (elapsedTime < moveDuration)
+                {
+                    for (int i = 0; i < summonObject.Length; i++)
+                    {
+                        if (summonObject[i] != null)
+                        {
+                            Vector3 newPosition = Vector3.Lerp(originalPositions[i], targetPositions[i], elapsedTime / moveDuration);
+                            newPosition.y = originalPositions[i].y; // y값 고정
+                            summonObject[i].transform.position = newPosition;
+
+                            // 플레이어를 바라보도록 회전한 후, 랜덤한 값을 더하기
+                            summonObject[i].transform.LookAt(player.transform);
+                            Vector3 eulerAngles = summonObject[i].transform.rotation.eulerAngles;
+                            eulerAngles.y += Random.Range(-10f, 10f);
+                            //eulerAngles.z += Random.Range(-10f, 10f);
+                            summonObject[i].transform.rotation = Quaternion.Euler(eulerAngles);
+                        }
+                    }
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+                }
+
+
+
+                for (int i = 0; i < summonObject.Length; i++)
+                {
+                    if (summonObject[i] != null)
+                    {
+                        summonObject[i].transform.position = targetPositions[i];
+                    }
+                }
+
+                //공격범위
+                for( int i = 0; i< summonObject.Length; i++)
+                {
+                    GameObject attakRange = Instantiate(attak4Ranges, summonObject[i].transform.position, summonObject[i].transform.rotation);
+                    attakRange.transform.parent = summonObject[i].transform;
+                    Destroy(attakRange, 0.5f);
+                }
+
+                yield return new WaitForSeconds(0.5f);
+                // 레이저 발사
+                for (int i = 0; i < summonObject.Length; i++)
+                {
+                    GameObject attackEffect = Instantiate(attack4EffectPrefab, summonObject[i].transform.position, summonObject[i].transform.rotation);
+                    attackEffect.transform.parent = summonObject[i].transform;
+                    attackEffect.transform.rotation *= Quaternion.Euler(90f, 0f, 0f);
+                    Destroy(attackEffect, 0.5f);
+                }
+
+
+                yield return new WaitForSeconds(1f);
+
+                // 다시 원래 위치로
+                elapsedTime = 0f;
+                while (elapsedTime < moveDuration)
+                {
+                    for (int i = 0; i < summonObject.Length; i++)
+                    {
+                        if (summonObject[i] != null)
+                        {
+                            summonObject[i].transform.position = Vector3.Lerp(targetPositions[i], originalPositions[i], elapsedTime / moveDuration);
+                        }
+                    }
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+                }
+
+                for (int i = 0; i < summonObject.Length; i++)
+                {
+                    if (summonObject[i] != null)
+                    {
+                        summonObject[i].transform.position = originalPositions[i];
+                    }
+                }
+            }
+            yield return new WaitForSeconds(3f);
             NextPatternPlay();
             yield return null;
         }
 
+        void StraightMove()
+        {
+
+        }
 
 
         void NextPatternPlay()
@@ -176,19 +333,19 @@ namespace BS.vampire
             switch (nextPattern)
             {
                 case 1:
-                    StartCoroutine(Attak1());
+                    StartCoroutine(Attack1());
                     Debug.Log("1번패턴실행");
                     break;
                 case 2:
-                    StartCoroutine(Attak2());
+                    StartCoroutine(Attack2());
                     Debug.Log("2번패턴실행");
                     break;
                 case 3:
-                    StartCoroutine(Attak3());
+                    StartCoroutine(Attack3());
                     Debug.Log("3번패턴실행");
                     break;
                 case 4:
-                    StartCoroutine(Attak4());
+                    StartCoroutine(Attack4());
                     Debug.Log("4번패턴실행");
                     break;
             }
