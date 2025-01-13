@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1106110142878886720}
   - component: {fileID: 399193002199528900}
   - component: {fileID: 7421161672664317452}
-  - component: {fileID: 3712998490570553685}
+  - component: {fileID: 1685829120561306630}
   m_Layer: 0
   m_Name: pt1AttackRange
   m_TagString: Untagged
@@ -29,8 +29,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.1, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.0478432, y: 816.7793, z: 0.22912385}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -87,7 +87,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 500154048019275227}
   m_Mesh: {fileID: 0}
---- !u!114 &3712998490570553685
+--- !u!114 &1685829120561306630
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -96,10 +96,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 500154048019275227}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfbfda9f1348ab145a49280a5b0fb7a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 4581b70a5e4e6b649a3a5f3b0c2b96f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   degree: 45
   intervalDegree: 5
   beginOffsetDegree: 67.5
-  radius: 65
+  radius: 10
+  startScale: {x: 1, y: 1, z: 1}
+  targetScale: {x: 20, y: 20, z: 20}
+  scaleSpeed: 3

@@ -124,3 +124,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   growSpeed: 100
+  startAlpha: 1
+  targetAlpha: 0
+  fadeSpeed: 0.5
