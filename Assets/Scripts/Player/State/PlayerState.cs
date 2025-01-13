@@ -31,6 +31,7 @@ namespace BS.Player
 
         // Attack
         public bool isAttack = false;                       // 공격 중인지
+        public int ComboAttackIndex = 1;                    // ComboAttack 인덱스 
         #endregion
         protected override void Awake()
         {

@@ -17,13 +17,6 @@ namespace BS.State
             ResetAndSetTrigger(IsIdle);
         }
 
-        public override void Update()
-        {
-            //if (Input.GetKey(KeyCode.W))
-            //{
-            //    stateMachine.ChangeState(stateMachine.MovingState);
-            //}
-        }
         public override void Exit()
         {
 

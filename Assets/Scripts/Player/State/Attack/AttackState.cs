@@ -16,10 +16,10 @@ namespace BS.State
         {
             ResetAndSetTrigger(IsAttack);
         }
-
-        public override void Exit()
+        public override void Update()
         {
-
+            stateMachine.animator.SetFloat("StateTime",
+                    Mathf.Repeat(stateMachine.animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1f));
         }
     }
 }

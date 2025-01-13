@@ -35,7 +35,7 @@ namespace BS.Player
 
         // State
         PlayerState ps;
-        PlayerStateMachine playerStateMachine;
+        PlayerStateMachine psm;
 
         // UI
         public TextMeshProUGUI dashCoolTimeText;
@@ -43,7 +43,8 @@ namespace BS.Player
         protected virtual void Start()
         {
             ps = PlayerState.Instance;
-            playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
+            psm = PlayerStateMachine.Instance;
+            //playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
             //playerStateMachine.animator = transform.GetChild(0).GetComponent<Animator>();
 
             if (mainCamera == null)
@@ -105,7 +106,7 @@ namespace BS.Player
                 if (Vector3.Distance(transform.position, ps.targetPosition) < 0.1f)
                 {
                     ps.isMoving = false;
-                    playerStateMachine.ChangeState(playerStateMachine.IdleState);
+                    psm.ChangeState(psm.IdleState);
                 }
             }
         }
@@ -126,17 +127,17 @@ namespace BS.Player
             if (Input.GetKey(KeyCode.C))
             {
                 SetMoveSpeed(0.5f);
-                playerStateMachine.ChangeState(playerStateMachine.WalkState);
+                psm.ChangeState(psm.WalkState);
             }
             else if (Input.GetKey(KeyCode.LeftShift))
             {
                 SetMoveSpeed(2);
-                playerStateMachine.ChangeState(playerStateMachine.SprintState);
+                psm.ChangeState(psm.SprintState);
             }
             else
             {
                 SetMoveSpeed(1);
-                playerStateMachine.ChangeState(playerStateMachine.RunState);
+                psm.ChangeState(psm.RunState);
             }
         }
 
@@ -164,11 +165,11 @@ namespace BS.Player
 
                         Vector3 dashDirection = (hit.point - transform.position).normalized;
                         Vector3 dashTarget = transform.position + dashDirection * dashDistance;
-                        if(playerStateMachine.GetCurrentState() is SprintState)
+                        if(psm.GetCurrentState() is SprintState)
                         {
-                            playerStateMachine.prevState = playerStateMachine.SprintState;
+                            psm.prevState = psm.SprintState;
                         }
-                        playerStateMachine.ChangeState(playerStateMachine.SprintState);
+                        psm.ChangeState(psm.SprintState);
                         ps.targetPosition = dashTarget;
                         RotatePlayer();
 
@@ -187,21 +188,21 @@ namespace BS.Player
         void EndDash()
         {
             ps.isDashing = false;
-            if (playerStateMachine.GetPrevState() is RunState)
+            if (psm.GetPrevState() is RunState)
             {
-                playerStateMachine.ChangeState(playerStateMachine.RunState);
+                psm.ChangeState(psm.RunState);
             }
-            else if (playerStateMachine.GetPrevState() is IdleState)
+            else if (psm.GetPrevState() is IdleState)
             {
-                playerStateMachine.ChangeState(playerStateMachine.IdleState);
+                psm.ChangeState(psm.IdleState);
             }
-            else if (playerStateMachine.GetPrevState() is WalkState)
+            else if (psm.GetPrevState() is WalkState)
             {
-                playerStateMachine.ChangeState(playerStateMachine.WalkState);
+                psm.ChangeState(psm.WalkState);
             }
-            else if (playerStateMachine.GetPrevState() is SprintState)
+            else if (psm.GetPrevState() is SprintState)
             {
-                playerStateMachine.ChangeState(playerStateMachine.SprintState);
+                psm.ChangeState(psm.SprintState);
             }
         }
 

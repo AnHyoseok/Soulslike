@@ -16,14 +16,6 @@ namespace BS.State
         {
             ResetAndSetTrigger(IsBlock);
         }
-
-        public override void Update()
-        {
-            //if (Input.GetKey(KeyCode.W))
-            //{
-            //    stateMachine.ChangeState(stateMachine.MovingState);
-            //}
-        }
         public override void Exit()
         {
             if (stateMachine.GetPrevState() != null)

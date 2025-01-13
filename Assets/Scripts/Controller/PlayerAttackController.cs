@@ -1,6 +1,7 @@
 using BS.State;
 using UnityEngine;
 using DG.Tweening;
+using TMPro;
 
 namespace BS.Player
 {
@@ -16,17 +17,26 @@ namespace BS.Player
         // rotation
         public float rotationDuration = 0.1f;               // 회전 지속 시간
 
-        public float attackTime = 1f;                       // 연계 공격 가능 시간
-
+        public float comboableTime;                        // 연계 공격 가능 시간
+        public float _comboableTime = 5f;                  // SD 연계 공격 가능 시간
+        public bool isAttackable = false;
+        
         // State
         PlayerState ps;
-        PlayerStateMachine playerStateMachine;
+        PlayerStateMachine psm;
+
+        public Animator animator;
+
+        public TextMeshProUGUI txt1;
+        public TextMeshProUGUI txt2;
         #endregion
 
         void Start()
         {
+            comboableTime = _comboableTime;
             ps = PlayerState.Instance;
-            playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
+            psm = PlayerStateMachine.Instance;
+            //playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
 
             if (mainCamera == null)
                 mainCamera = Camera.main;
@@ -34,21 +44,28 @@ namespace BS.Player
 
         void Update()
         {
-            HandleInput();
             calculateTime();
+            txt1.text = ps.ComboAttackIndex.ToString();
+            txt2.text = Mathf.RoundToInt(comboableTime).ToString();
         }
-
+        private void FixedUpdate()
+        {
+            HandleInput();
+            
+        }
         #region Input
         // 키 입력 처리
         void HandleInput()
         {
-            // 마우스 우클릭 이동
+            // 마우스 좌클릭 공격
             if (Input.GetMouseButton(0))
             {
                 // BlockingAnim 진행중에는 Return 하도록
                 if (ps.isBlockingAnim) return;
 
+                isAttackable = true;
                 ps.isAttack = true;
+                comboableTime = _comboableTime;
 
                 // TODO :: CursorManager에서 반환하면 좋을듯
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -60,7 +77,14 @@ namespace BS.Player
                     {
                         ps.targetPosition = hit.point;
                         RotatePlayer();
-                        playerStateMachine.ChangeState(playerStateMachine.AttackState);
+
+                        // 공격 가능한 경우
+                        if (animator.GetFloat("StateTime") >= 0.2f && isAttackable)
+                        {
+                            // 공격 Trigger 발동
+                            psm.animator.SetInteger("ComboAttack", ps.ComboAttackIndex);
+                            psm.ChangeState(psm.AttackState);
+                        }
                         break;
                     }
                 }
@@ -70,25 +94,18 @@ namespace BS.Player
 
         void calculateTime()
         {
-            if (ps.isAttack)
+            if (isAttackable)
             {
-                attackTime -= Time.deltaTime;
+                comboableTime -= Time.deltaTime;
             }
 
-            if (attackTime <= 0f)
+            if (comboableTime <= 0f)
             {
-                ps.isAttack = false;
-                EndAttack();
+                isAttackable = false;
+                ps.ComboAttackIndex = 1;
             }
         }
-        void EndAttack()
-        {
-            if(!ps.isAttack && !ps.isMoving)
-            {
-                attackTime = 1f;
-                playerStateMachine.ChangeState(playerStateMachine.IdleState);
-            }
-        }
+
         // DoTween 회전 처리
         void RotatePlayer()
         {

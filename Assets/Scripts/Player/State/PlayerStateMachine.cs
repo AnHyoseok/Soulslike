@@ -5,7 +5,8 @@ namespace BS.State
     /// <summary>
     /// Player의 상태를 관리
     /// </summary>
-    public class PlayerStateMachine : MonoBehaviour
+    // TODO :: 
+    public class PlayerStateMachine : Singleton<PlayerStateMachine>
     {
         #region Variables
         private BaseState currentState;
@@ -21,8 +22,9 @@ namespace BS.State
         public BaseState BlockState { get; private set; }
         #endregion
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             // 상태 초기화
             IdleState = new IdleState(this);
             RunState = new RunState(this);
@@ -38,7 +40,6 @@ namespace BS.State
         private void Update()
         {
             currentState?.Update();
-            
         }
 
         public void ChangeState(BaseState newState)
@@ -47,6 +48,14 @@ namespace BS.State
             Debug.Log("CURR = " + currentState);
             // 현재 상태와 새 상태가 다를 때만 상태 변경
             if (currentState != newState)
+            {
+                prevState = currentState; // 기존 상태는 이전 상태로 저장
+                currentState?.Exit();  // 기존 상태 종료
+                currentState = newState;  // 새 상태 설정
+                currentState.Enter();  // 새 상태 시작
+            }
+
+            if(currentState == AttackState)
             {
                 prevState = currentState; // 기존 상태는 이전 상태로 저장
                 currentState?.Exit();  // 기존 상태 종료

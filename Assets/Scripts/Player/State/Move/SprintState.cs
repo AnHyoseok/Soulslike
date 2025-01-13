@@ -16,13 +16,5 @@ namespace BS.State
         {
             ResetAndSetTrigger(IsSprint);
         }
-
-        public override void Update()
-        {
-            //if (!Input.GetKey(KeyCode.W))
-            //{
-            //    stateMachine.ChangeState(stateMachine.IdleState);
-            //}
-        }
     }
 }
