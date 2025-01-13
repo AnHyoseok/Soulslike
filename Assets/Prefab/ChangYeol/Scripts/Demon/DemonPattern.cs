@@ -67,7 +67,6 @@ namespace BS.Demon
                 StartCoroutine(AttackRangeSpawn(index));
                 GameObject game = Instantiate(ball.gameObject, Points[index].position, Quaternion.identity);
                 game.GetComponent<BallRise>().StartRise();
-                Debug.Log($"Spawned object at point {index + 1}");
                 controller.lastAttackTime[0] = Time.time;
             }
         }
@@ -97,32 +96,42 @@ namespace BS.Demon
             Vector3 ballRange = new Vector3(ballTranfrom.position.x, 0.2f, ballTranfrom.position.z);
             GameObject Range = Instantiate(attackRangePrefab, ballRange, Quaternion.identity);
             Range.GetComponent<DemonAttackRange>().StartGrowing(attackRangeScale[1], rangeSize[1]);
-            yield return new WaitForSeconds[3];
-            Destroy(Range, 2f);
+            Destroy(Range, 1f);
+            yield return new WaitForSeconds[1];
         }
         //패턴 3
         public void PerformTeleport()
         {
-            transform.LookAt(player.position);
-            if (teleportPoints.Length > 1) // 텔레포트 지점이 2개 이상일 때만 중복 방지 가능
+            if (teleportPoints.Length > 1) // 텔레포트 지점이 2개 이상일 때 중복 방지 가능
             {
-                int randomIndex;
-                do
+                Transform closestPoint = null;
+                float closestDistance = Mathf.Infinity;
+
+                // 모든 텔레포트 지점을 순회하며 가장 가까운 지점 찾기
+                foreach (Transform point in teleportPoints)
                 {
-                    randomIndex = Random.Range(0, teleportPoints.Length);
+                    float distance = Vector3.Distance(player.position, point.position);
+
+                    // 플레이어와의 거리 비교 및 현재 위치와 중복 방지
+                    if (distance < closestDistance && point.position != transform.position)
+                    {
+                        closestDistance = distance;
+                        closestPoint = point;
+                    }
                 }
-                while (transform.position == teleportPoints[randomIndex].position); // 현재 위치와 다른 위치 선택
 
-                // 텔레포트 효과 생성
-                GameObject effgo = Instantiate(effect[2], transform.position, Quaternion.identity);
-                Destroy(effgo, 1f);
-
-                // 텔레포트 위치 설정
-                transform.position = teleportPoints[randomIndex].position;
-
-                // 텔레포트 효과 생성
-                GameObject effectgo = Instantiate(effect[2], transform.position, Quaternion.identity);
-                Destroy(effectgo, 1f);
+                if (closestPoint != null)
+                {
+                    //transform.LookAt(player.position);
+                    Vector3 directionToPlayer = (player.position - transform.position).normalized;
+                    directionToPlayer.y = 0; // 수직 축은 무시하여 수평 회전만 처리
+                    Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+                    transform.rotation = targetRotation;
+                    transform.position = closestPoint.position; // 가장 가까운 위치로 텔레포트
+                    // 텔레포트 효과 생성
+                    GameObject effectgo = Instantiate(effect[2], transform.position, Quaternion.identity);
+                    Destroy(effectgo, 1f);
+                }
             }
         }
         public void ShootAttack()
@@ -130,32 +139,10 @@ namespace BS.Demon
             transform.LookAt(player.position);
             controller.lastAttackTime[2] = Time.time;
         }
-        private IEnumerator ShowLaser(Vector3 start, Vector3 end)
+        //근거리 공격
+        public void CloseAttack()
         {
-            lineRenderer.SetPosition(0, start); // 시작 위치
-            lineRenderer.SetPosition(1, end);   // 끝 위치
-            lineRenderer.enabled = true;
-
-            yield return new WaitForSeconds(laserDuration); // 레이저 표시 시간
-
-            lineRenderer.enabled = false; // 레이저 비활성화
-        }
-        public void FireLaser()
-        {
-            // 레이저 발사 지점 설정
-            Vector3 start = firePoint.position;
-            Vector3 direction = firePoint.forward;
-            Vector3 end = start + direction * laserDistance;
-
-            // 레이저 충돌 감지
-            RaycastHit hit;
-            if (Physics.Raycast(start, direction, out hit, laserDistance, targetLayer))
-            {
-                end = hit.point; // 충돌 지점으로 끝 위치 업데이트
-                Debug.Log($"Laser hit {hit.collider.name}");
-            }
-            // LineRenderer를 사용하여 레이저 표시
-            StartCoroutine(ShowLaser(start, end));
+            transform.LookAt(player.position);
         }
     }
 }
