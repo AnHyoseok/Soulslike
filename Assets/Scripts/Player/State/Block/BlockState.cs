@@ -5,7 +5,7 @@ namespace BS.State
     /// <summary>
     /// Player의 Idle 상태를 정의
     /// </summary>
-    public class BlockState : MoveState
+    public class BlockState : BaseState
     {
         #region Variables
 

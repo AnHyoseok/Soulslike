@@ -14,7 +14,12 @@ namespace BS.State
 
         public override void Enter()
         {
-            //stateMachine.animator.SetTrigger("Attack");
+            ResetAndSetTrigger(IsAttack);
+        }
+
+        public override void Exit()
+        {
+
         }
     }
 }

@@ -43,8 +43,8 @@ namespace BS.State
 
         public void ChangeState(BaseState newState)
         {
-            //Debug.Log("PREV = " + prevState);
-            //Debug.Log("CURR = " + currentState);
+            Debug.Log("PREV = " + prevState);
+            Debug.Log("CURR = " + currentState);
             // 현재 상태와 새 상태가 다를 때만 상태 변경
             if (currentState != newState)
             {

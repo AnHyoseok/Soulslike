@@ -40,7 +40,7 @@ namespace BS.Player
         // UI
         public TextMeshProUGUI dashCoolTimeText;
         #endregion
-        void Start()
+        protected virtual void Start()
         {
             ps = PlayerState.Instance;
             playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
@@ -55,7 +55,7 @@ namespace BS.Player
             PlayerSkillController.skillList.Add(KeyCode.Space, ("Dash", dashCoolTime, DoDash));
         }
 
-        void Update()
+        protected virtual void Update()
         {
             MoveToTarget();
             HandleInput();
@@ -70,7 +70,7 @@ namespace BS.Player
             if (Input.GetMouseButton(1))
             {
                 // BlockingAnim 진행중에는 Return 하도록
-                if (ps.isBlockingAnim) return;
+                if (ps.isBlockingAnim || ps.isAttack) return;
 
                 // TODO :: CursorManager에서 반환하면 좋을듯
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -97,7 +97,7 @@ namespace BS.Player
         // Player 이동
         void MoveToTarget()
         {
-            if (ps.isMoving && !ps.isDashing && !ps.isBlockingAnim)
+            if (ps.isMoving && !ps.isDashing && !ps.isBlockingAnim && !ps.isAttack)
             {
                 SetMoveState();
                 transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);

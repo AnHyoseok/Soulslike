@@ -28,6 +28,9 @@ namespace BS.Player
         public bool isBlockingAnim = false;                 // 블락 애니메이션 진행여부
         public bool isBlocking = false;                     // 블락 중인지
         public float currentBlockCoolTime = 0f;             // BD 블락 쿨타임
+
+        // Attack
+        public bool isAttack = false;                       // 공격 중인지
         #endregion
         protected override void Awake()
         {
