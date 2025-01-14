@@ -22,14 +22,10 @@ namespace BS.Demon
 
         //패턴 3
         public Transform[] teleportPoints; // 텔레포트 가능한 지점들
-        public LineRenderer lineRenderer; // 레이저 시각화를 위한 LineRenderer
         public Transform firePoint; // 레이저 발사 위치
-        public float laserDistance = 50f; // 레이저 최대 사거리
-        public float laserDuration = 0.1f; // 레이저 표시 시간
-        public LayerMask targetLayer; // 레이저가 충돌할 레이어 설정
 
         //공격범위
-        [SerializeField] private GameObject attackRangePrefab;
+        [SerializeField] private GameObject[] attackRangePrefab;
         public Vector3[] attackRangeScale = new Vector3[2];
         public float[] rangeSize = new float[2];
 
@@ -40,9 +36,6 @@ namespace BS.Demon
         private void Start()
         {
             controller = GetComponent<DemonController>();
-
-            lineRenderer.positionCount = 2; // 시작과 끝 두 개의 포인트
-            lineRenderer.enabled = false; // 기본적으로 비활성화
         }
         //패턴 1
         public void SpawnObjects()
@@ -72,7 +65,7 @@ namespace BS.Demon
         }
         IEnumerator AttackRangeSpawn(int index)
         {
-            GameObject Range = Instantiate(attackRangePrefab, Points[index].position + new Vector3(0, 0.2f, 0), Quaternion.identity);
+            GameObject Range = Instantiate(attackRangePrefab[0], Points[index].position + new Vector3(0, 0.2f, 0), Quaternion.identity);
             Range.GetComponent<DemonAttackRange>().StartGrowing(attackRangeScale[0], rangeSize[0]);
             yield return new WaitForSeconds[3];
             Destroy(Range, 2f);
@@ -94,7 +87,7 @@ namespace BS.Demon
         IEnumerator AttackRangeBall()
         {
             Vector3 ballRange = new Vector3(ballTranfrom.position.x, 0.2f, ballTranfrom.position.z);
-            GameObject Range = Instantiate(attackRangePrefab, ballRange, Quaternion.identity);
+            GameObject Range = Instantiate(attackRangePrefab[0], ballRange, Quaternion.identity);
             Range.GetComponent<DemonAttackRange>().StartGrowing(attackRangeScale[1], rangeSize[1]);
             Destroy(Range, 1f);
             yield return new WaitForSeconds[1];
@@ -122,15 +115,13 @@ namespace BS.Demon
 
                 if (closestPoint != null)
                 {
-                    //transform.LookAt(player.position);
-                    Vector3 directionToPlayer = (player.position - transform.position).normalized;
-                    directionToPlayer.y = 0; // 수직 축은 무시하여 수평 회전만 처리
-                    Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
-                    transform.rotation = targetRotation;
+                    transform.LookAt(player.position);
                     transform.position = closestPoint.position; // 가장 가까운 위치로 텔레포트
                     // 텔레포트 효과 생성
                     GameObject effectgo = Instantiate(effect[2], transform.position, Quaternion.identity);
                     Destroy(effectgo, 1f);
+                    transform.LookAt(player.position);
+                    GameObject Range = Instantiate(attackRangePrefab[1], this.transform.position, Quaternion.identity);
                 }
             }
         }

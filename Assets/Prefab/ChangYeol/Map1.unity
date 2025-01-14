@@ -979,6 +979,7 @@ MonoBehaviour:
   isBlockingAnim: 0
   isBlocking: 0
   currentBlockCoolTime: 0
+  isAttack: 0
 --- !u!114 &38385215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4072,7 +4073,8 @@ PrefabInstance:
       value: 180.48323
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 7053577920473365462, guid: 8ff18eeb3eeacb54aa2bfef06a282531, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5932391188231222789, guid: 8ff18eeb3eeacb54aa2bfef06a282531, type: 3}
       insertIndex: -1
@@ -25381,6 +25383,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockCoolTime: 3
   blockCoolTimeText: {fileID: 0}
+  maxHealth: 0
+  currentHealth: 0
 --- !u!4 &919869493
 Transform:
   m_ObjectHideFlags: 0
