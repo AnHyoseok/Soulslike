@@ -17,9 +17,14 @@ namespace BS.Managers
         public GameObject keyCanvas;
         public Stage[] stage =new Stage[3];
         public Outline[] outline = new Outline[3];
+        //시작시 카메라 이동
+        TitleCamera title;
         #endregion
         private void Start()
         {
+            title = maincamera.GetComponent<TitleCamera>();
+            maincamera.fieldOfView = 90;
+            StartCoroutine(title.ZoomIn());
             falsePlayer.SetActive(true);
             maincamera.gameObject.SetActive(true);
             m_camera.gameObject.SetActive(false);
@@ -96,6 +101,8 @@ namespace BS.Managers
             Player.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
             particle[0].transform.position = new Vector3(-5, 1.3f, -6.3f);
             particle[1].SetActive(false);
+            maincamera.fieldOfView = 90;
+            StartCoroutine(title.ZoomIn());
         }
     }
 }

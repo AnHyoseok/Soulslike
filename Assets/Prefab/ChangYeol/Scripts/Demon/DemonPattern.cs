@@ -10,45 +10,44 @@ namespace BS.Demon
         private DemonController controller;
         public GameObject[] effect;
 
-        //ÆĞÅÏ 1
+        //íŒ¨í„´ 1
         public BallRise ball;
         public Transform[] Points;
-        public int minSpawnCount = 4; // ÃÖ¼Ò »ı¼º °³¼ö
-        public int maxSpawnCount = 6; // ÃÖ´ë »ı¼º °³¼ö
+        public int minSpawnCount = 4; // ìµœì†Œ ìƒì„± ê°œìˆ˜
+        public int maxSpawnCount = 6; // ìµœëŒ€ ìƒì„± ê°œìˆ˜
 
-        //ÆĞÅÏ 2
+        //íŒ¨í„´ 2
         public Transform ballTranfrom;
         public GameObject ballInstantiate;
 
-        //ÆĞÅÏ 3
-        public Transform[] teleportPoints; // ÅÚ·¹Æ÷Æ® °¡´ÉÇÑ ÁöÁ¡µé
-        public Transform firePoint; // ·¹ÀÌÀú ¹ß»ç À§Ä¡
+        //íŒ¨í„´ 3
+        public Transform[] teleportPoints; // í…”ë ˆí¬íŠ¸ ê°€ëŠ¥í•œ ì§€ì ë“¤
+        public Transform firePoint; // ë ˆì´ì € ë°œì‚¬ ìœ„ì¹˜
 
-        //°ø°İ¹üÀ§
+        //ê³µê²©ë²”ìœ„
         [SerializeField] private GameObject[] attackRangePrefab;
         public Vector3[] attackRangeScale = new Vector3[2];
         public float[] rangeSize = new float[2];
 
-        //ÇÃ·¹ÀÌ¾î Ã£±â
-        public Transform player; // ÇÃ·¹ÀÌ¾î ÂüÁ¶
-        public float rotationSpeed = 5f; // È¸Àü ¼Óµµ
+        //í”Œë ˆì´ì–´ ì°¾ê¸°
+        public Transform player; // í”Œë ˆì´ì–´ ì°¸ì¡°
+        public float rotationSpeed = 5f; // íšŒì „ ì†ë„
         #endregion
         private void Start()
         {
             controller = GetComponent<DemonController>();
         }
-        //ÆĞÅÏ 1
+        //íŒ¨í„´ 1
         public void SpawnObjects()
         {
-            transform.LookAt(player.position);
             if (Points.Length == 0 || ball == null)
             {
                 Debug.LogWarning("Spawn points or object to spawn not set!");
                 return;
             }
 
-            int spawnCount = Random.Range(minSpawnCount, maxSpawnCount + 1); // 2 ¶Ç´Â 3°³ »ı¼º
-            HashSet<int> selectedIndices = new HashSet<int>(); //Áßº¹¹æÁö
+            int spawnCount = Random.Range(minSpawnCount, maxSpawnCount + 1); // 2 ë˜ëŠ” 3ê°œ ìƒì„±
+            HashSet<int> selectedIndices = new HashSet<int>(); //ì¤‘ë³µë°©ì§€
             while (selectedIndices.Count < spawnCount)
             {
                 int randomIndex = Random.Range(0, Points.Length);
@@ -67,13 +66,12 @@ namespace BS.Demon
         {
             GameObject Range = Instantiate(attackRangePrefab[0], Points[index].position + new Vector3(0, 0.2f, 0), Quaternion.identity);
             Range.GetComponent<DemonAttackRange>().StartGrowing(attackRangeScale[0], rangeSize[0]);
-            yield return new WaitForSeconds[3];
             Destroy(Range, 2f);
+            yield return new WaitForSeconds(2);
         }
-        //ÆĞÅÏ 2
+        //íŒ¨í„´ 2
         public void AttackBall()
         {
-            transform.LookAt(player.position);
             GameObject attackball = Instantiate(ballInstantiate, ballTranfrom.position, Quaternion.identity);
             StartCoroutine(AttackRangeBall());
             GameObject effgo = Instantiate(effect[1], attackball.transform.position, Quaternion.identity);
@@ -90,22 +88,22 @@ namespace BS.Demon
             GameObject Range = Instantiate(attackRangePrefab[0], ballRange, Quaternion.identity);
             Range.GetComponent<DemonAttackRange>().StartGrowing(attackRangeScale[1], rangeSize[1]);
             Destroy(Range, 1f);
-            yield return new WaitForSeconds[1];
+            yield return new WaitForSeconds(1);
         }
-        //ÆĞÅÏ 3
+        //íŒ¨í„´ 3
         public void PerformTeleport()
         {
-            if (teleportPoints.Length > 1) // ÅÚ·¹Æ÷Æ® ÁöÁ¡ÀÌ 2°³ ÀÌ»óÀÏ ¶§ Áßº¹ ¹æÁö °¡´É
+            if (teleportPoints.Length > 1) // í…”ë ˆí¬íŠ¸ ì§€ì ì´ 2ê°œ ì´ìƒì¼ ë•Œ ì¤‘ë³µ ë°©ì§€ ê°€ëŠ¥
             {
                 Transform closestPoint = null;
                 float closestDistance = Mathf.Infinity;
 
-                // ¸ğµç ÅÚ·¹Æ÷Æ® ÁöÁ¡À» ¼øÈ¸ÇÏ¸ç °¡Àå °¡±î¿î ÁöÁ¡ Ã£±â
+                // ëª¨ë“  í…”ë ˆí¬íŠ¸ ì§€ì ì„ ìˆœíšŒí•˜ë©° ê°€ì¥ ê°€ê¹Œìš´ ì§€ì  ì°¾ê¸°
                 foreach (Transform point in teleportPoints)
                 {
                     float distance = Vector3.Distance(player.position, point.position);
 
-                    // ÇÃ·¹ÀÌ¾î¿ÍÀÇ °Å¸® ºñ±³ ¹× ÇöÀç À§Ä¡¿Í Áßº¹ ¹æÁö
+                    // í”Œë ˆì´ì–´ì™€ì˜ ê±°ë¦¬ ë¹„êµ ë° í˜„ì¬ ìœ„ì¹˜ì™€ ì¤‘ë³µ ë°©ì§€
                     if (distance < closestDistance && point.position != transform.position)
                     {
                         closestDistance = distance;
@@ -115,22 +113,19 @@ namespace BS.Demon
 
                 if (closestPoint != null)
                 {
+                    transform.position = closestPoint.position; // ê°€ì¥ ê°€ê¹Œìš´ ìœ„ì¹˜ë¡œ í…”ë ˆí¬íŠ¸
                     transform.LookAt(player.position);
-                    transform.position = closestPoint.position; // °¡Àå °¡±î¿î À§Ä¡·Î ÅÚ·¹Æ÷Æ®
-                    // ÅÚ·¹Æ÷Æ® È¿°ú »ı¼º
+                    // í…”ë ˆí¬íŠ¸ íš¨ê³¼ ìƒì„±
                     GameObject effectgo = Instantiate(effect[2], transform.position, Quaternion.identity);
                     Destroy(effectgo, 1f);
-                    transform.LookAt(player.position);
-                    GameObject Range = Instantiate(attackRangePrefab[1], this.transform.position, Quaternion.identity);
                 }
             }
         }
         public void ShootAttack()
         {
-            transform.LookAt(player.position);
             controller.lastAttackTime[2] = Time.time;
         }
-        //±Ù°Å¸® °ø°İ
+        //ê·¼ê±°ë¦¬ ê³µê²©
         public void CloseAttack()
         {
             transform.LookAt(player.position);

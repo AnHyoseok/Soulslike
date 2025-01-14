@@ -3,19 +3,15 @@ using System.Collections;
 
 namespace BS.Title
 {
-    public class CameraZoomIn : MonoBehaviour
+    public class TitleCamera : MonoBehaviour
     {
+        #region Variables
         public Camera mainCamera;
         public float startFOV = 60f;
         public float endFOV = 20f;
         public float zoomDuration = 2f;
-
-        void Start()
-        {
-            StartCoroutine(ZoomIn());
-        }
-
-        IEnumerator ZoomIn()
+        #endregion
+        public IEnumerator ZoomIn()
         {
             float elapsedTime = 0f;
             float startFOV = mainCamera.fieldOfView;
