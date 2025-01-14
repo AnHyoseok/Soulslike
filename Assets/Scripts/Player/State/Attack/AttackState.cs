@@ -18,6 +18,7 @@ namespace BS.State
         }
         public override void Update()
         {
+            //TODO :: 하드코딩
             stateMachine.animator.SetFloat("StateTime",
                     Mathf.Repeat(stateMachine.animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1f));
         }

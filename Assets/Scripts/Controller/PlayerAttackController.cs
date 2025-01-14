@@ -18,7 +18,7 @@ namespace BS.Player
         public float rotationDuration = 0.1f;               // 회전 지속 시간
 
         public float comboableTime;                        // 연계 공격 가능 시간
-        public float _comboableTime = 5f;                  // SD 연계 공격 가능 시간
+        public float _comboableTime = 1f;                  // SD 연계 공격 가능 시간
         public bool isAttackable = false;
         
         // State
@@ -51,7 +51,6 @@ namespace BS.Player
         private void FixedUpdate()
         {
             HandleInput();
-            
         }
         #region Input
         // 키 입력 처리
@@ -61,10 +60,12 @@ namespace BS.Player
             if (Input.GetMouseButton(0))
             {
                 // BlockingAnim 진행중에는 Return 하도록
-                if (ps.isBlockingAnim) return;
+                if (ps.isBlockingAnim || ps.isDashing) return;
 
                 isAttackable = true;
                 ps.isAttack = true;
+                ps.isMoving = false;
+                ps.isMovable = false;
                 comboableTime = _comboableTime;
 
                 // TODO :: CursorManager에서 반환하면 좋을듯
@@ -79,7 +80,8 @@ namespace BS.Player
                         RotatePlayer();
 
                         // 공격 가능한 경우
-                        if (animator.GetFloat("StateTime") >= 0.2f && isAttackable)
+                        //TODO :: 하드코딩
+                        if (animator.GetFloat("StateTime") >= 0.15f && isAttackable)
                         {
                             // 공격 Trigger 발동
                             psm.animator.SetInteger("ComboAttack", ps.ComboAttackIndex);

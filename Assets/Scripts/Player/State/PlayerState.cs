@@ -9,8 +9,12 @@ namespace BS.Player
     public class PlayerState : Singleton<PlayerState>
     {
         #region Variables
+        // Idle
+        public bool isIdle = false;                         // Idle 인지
+
         // Move
         public Vector3 targetPosition;                      // 이동 목표 지점
+        public bool isMovable = true;                       // 이동 가능 여부
         public bool isMoving = false;                       // 이동 중인지
         public float inGameMoveSpeed;                       // BD 이동 속도
 

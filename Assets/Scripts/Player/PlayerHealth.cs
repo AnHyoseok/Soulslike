@@ -55,7 +55,7 @@ namespace BS.Player
         PlayerStateMachine psm;
 
         // Action
-        public UnityAction OnDamaged;                // 데미지를 받을 때 호출하는 이벤트
+        public UnityAction<float> OnDamaged;        // 데미지를 받을 때 호출하는 이벤트
         public UnityAction OnBlocked;                // 블록 성공할 때 호출하는 이벤트
         #endregion
         void Start()
@@ -65,7 +65,7 @@ namespace BS.Player
             //playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
             //playerStateMachine.animator = transform.GetChild(0).GetComponent<Animator>();
             PlayerSkillController.skillList.Add(KeyCode.R, ("Block", blockCoolTime, DoBlock));
-
+            OnDamaged += CalculateDamage;
             maxHealth = 1000f;
             currentHealth = MaxHealth;
         }
@@ -114,10 +114,9 @@ namespace BS.Player
             CurrentHealth = maxHealth;
         }
 
-        // 데미지 받는 함수 (데미지 값, 블락가능여부)
+        // 데미지 받는 함수 (데미지 값, 블락가능여부:기본값은 블락이 가능하도록 설정)
         // 반환 값은 Block 성공 여부
-        // TODO :: OnDamaged에 변수 담아서 CalculateDamage 추가하기
-        public bool TakeDamage(float damage, bool isBlockable)
+        public bool TakeDamage(float damage, bool isBlockable = true)
         {
             // 블락 가능한 경우
             if (isBlockable)
@@ -131,16 +130,14 @@ namespace BS.Player
                 // 블락 실패
                 else
                 {
-                    CalculateDamage(damage);
-                    OnDamaged?.Invoke();
+                    OnDamaged?.Invoke(damage);
                     return false;
                 }
             }
             // 블락 불가능한 경우
             else
             {
-                CalculateDamage(damage);
-                OnDamaged?.Invoke();
+                OnDamaged?.Invoke(damage);
                 return false;
             }
         }
@@ -160,6 +157,8 @@ namespace BS.Player
                 CurrentHealth = 0;
                 //Die();
             }
+            Debug.Log("Player OnDamaged = " + damage);
+            Debug.Log("Player Hp = " + CurrentHealth);
         }
     }
 }

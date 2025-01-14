@@ -1,5 +1,6 @@
 using BS.Player;
 using BS.State;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerAttackSBM : StateMachineBehaviour
@@ -30,25 +31,42 @@ public class PlayerAttackSBM : StateMachineBehaviour
         }
     }
 
-    // OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
-    //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
-
-    // OnStateExit is called before OnStateExit is called on any state inside this state machine
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+     //OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
+    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (psm != null)
+        if (ps != null)
         {
-            animator.SetFloat("StateTime", 0.2f);
-            psm.ChangeState(psm.IdleState);
-        }
-        if (ps != null) // 초기화되지 않았다면 캐싱
-        {
-            ps.isAttack = false;
+            if (ps.isMoving)
+            {
+                float moveSpeed = 5f;
+                if (Input.GetKey(KeyCode.C))
+                {
+                    ps.inGameMoveSpeed = moveSpeed * 0.5f;
+                    psm.ChangeState(psm.WalkState);
+                }
+                else if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    ps.inGameMoveSpeed = moveSpeed * 2f;
+                    psm.ChangeState(psm.SprintState);
+                }
+                else
+                {
+                    ps.inGameMoveSpeed = moveSpeed * 0.5f;
+                    psm.ChangeState(psm.RunState);
+                }
+            }
+            else if (ps.isBlocking)
+            {
+                Debug.Log("BLOCK");
+                psm.ChangeState(psm.BlockState);
+            }
         }
     }
+
+    // OnStateExit is called before OnStateExit is called on any state inside this state machine
+    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    //{
+    //}
 
     // OnStateMove is called before OnStateMove is called on any state inside this state machine
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -69,8 +87,16 @@ public class PlayerAttackSBM : StateMachineBehaviour
     //}
 
     // OnStateMachineExit is called when exiting a state machine via its Exit Node
-    //override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
-    //{
-    //    
-    //}
+    override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
+    {
+        if (psm != null)
+        {
+            //TODO :: 하드코딩
+            animator.SetFloat("StateTime", 0.15f);
+        }
+        if (ps != null) // 초기화되지 않았다면 캐싱
+        {
+            ps.isAttack = false;
+        }
+    }
 }

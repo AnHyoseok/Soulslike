@@ -70,6 +70,8 @@ namespace BS.Player
             // 마우스 우클릭 이동
             if (Input.GetMouseButton(1))
             {
+                ps.isMoving = true;
+                //SetMoveState();
                 // BlockingAnim 진행중에는 Return 하도록
                 if (ps.isBlockingAnim || ps.isAttack) return;
 
@@ -82,7 +84,6 @@ namespace BS.Player
                     if (hit.transform.gameObject.CompareTag("Ground"))
                     {
                         ps.targetPosition = hit.point;
-                        ps.isMoving = true;
                         RotatePlayer();
 
                         Debug.DrawRay(ray.origin, ray.direction * hit.distance, rayColor, rayDuration);
@@ -165,7 +166,7 @@ namespace BS.Player
 
                         Vector3 dashDirection = (hit.point - transform.position).normalized;
                         Vector3 dashTarget = transform.position + dashDirection * dashDistance;
-                        if(psm.GetCurrentState() is SprintState)
+                        if (psm.GetCurrentState() is SprintState)
                         {
                             psm.prevState = psm.SprintState;
                         }
