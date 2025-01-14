@@ -530,7 +530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dca9fba40ce5d14284bdc089ac074df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 15
+  effectPrefab: {fileID: 0}
 --- !u!65 &2617722192164838926
 BoxCollider:
   m_ObjectHideFlags: 0

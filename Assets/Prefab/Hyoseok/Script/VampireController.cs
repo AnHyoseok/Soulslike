@@ -16,7 +16,8 @@ namespace BS.vampire
     {
         #region Variables
         public Animator animator;
-        public GameObject player;
+        public GameObject player;   //바닥
+        public GameObject playerBody;   //플레이어몸체 
         public float testAttackNumber;
 
         private int direction;  // 방향
@@ -70,7 +71,7 @@ namespace BS.vampire
             {
                 animator = GetComponent<Animator>();
             }
-            StartCoroutine(Attack1());
+            StartCoroutine(Attack3());
 
 
 
@@ -186,6 +187,7 @@ namespace BS.vampire
         {
             yield return new WaitForSeconds(7f);
             transform.LookAt(player.transform);
+            animator.SetTrigger("Attack1");
             //웨이브
             for (int i = 0; i < waveCount; i++)
             {
@@ -220,8 +222,6 @@ namespace BS.vampire
 
             for (int j = 0; j < attack4count; j++)
             {
-                
-
                 // 공격4용 위치 저장
                 originalPositions = new Vector3[summonObject.Length];
                 for (int i = 0; i < summonObject.Length; i++)
@@ -232,7 +232,7 @@ namespace BS.vampire
                 // 위치 이동
                 float elapsedTime = 0f;
                 float moveDuration = 0.2f; // 이동에 걸릴 시간
-
+                animator.SetTrigger("Attack1");
                 Vector3[] targetPositions = new Vector3[summonObject.Length];
                 for (int i = 0; i < summonObject.Length; i++)
                 {
@@ -250,7 +250,8 @@ namespace BS.vampire
                             summonObject[i].transform.position = newPosition;
 
                             // 플레이어를 바라보도록 회전한 후, 랜덤한 값을 더하기
-                            summonObject[i].transform.LookAt(player.transform);
+                            summonObject[i].transform.LookAt(playerBody.transform);
+
                             Vector3 eulerAngles = summonObject[i].transform.rotation.eulerAngles;
                             eulerAngles.y += Random.Range(-10f, 10f);
                             //eulerAngles.z += Random.Range(-10f, 10f);

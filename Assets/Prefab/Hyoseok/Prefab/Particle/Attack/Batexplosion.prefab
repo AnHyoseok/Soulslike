@@ -40145,7 +40145,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 20
+        scalar: 1
         minScalar: 30
         maxCurve:
           serializedVersion: 2
@@ -44077,3 +44077,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c9b27c6b0a55554183939f45ffe10f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageAmount: 10

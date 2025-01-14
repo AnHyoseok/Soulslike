@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
-
 using System.Collections;
 using BS.Player;
+
 namespace BS.Particle
 {
     public class ParticleCollisionHandler : MonoBehaviour
     {
-        PlayerHealth playerHealth;
         private new ParticleSystem particleSystem;
-        private bool hasCollided = false;
-        //패턴별데미지
-        //public int damageAmount = 10;
-      
+        private HashSet<GameObject> collidedObjects = new HashSet<GameObject>();
+        // 패턴별 데미지
+        public int damageAmount = 10;
+
         void Start()
         {
             particleSystem = GetComponent<ParticleSystem>();
@@ -20,43 +19,24 @@ namespace BS.Particle
 
         void OnParticleCollision(GameObject other)
         {
-            if (!hasCollided && other.CompareTag("Player"))
+           Debug.Log(other.name);   
+            PlayerController playerController = other.GetComponent<PlayerController>();
+            if (playerController != null)
             {
-                hasCollided = true; Debug.Log($"other = {other}");
-            }
+                Debug.Log("플레이어찾음");
 
-            // 플레이어에게 데미지를 줍니다.
-            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                //playerHealth.TakeDamage(damageAmount);
+                // 자식 객체에서 PlayerHealth 컴포넌트 찾기
+                PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
+                if (playerHealth != null)
+                {
+                    Debug.Log($"{damageAmount}만큼 데미지 입음");
+                    playerHealth.TakeDamage(damageAmount);
+                  
+                }
             }
-            StartCoroutine(ResetCollision());
-            // if (other.CompareTag("Wall"))
-            //{
-            //    // 벽에 닿은 파티클 비활성화
-            //    List<ParticleSystem.Particle> enter = new List<ParticleSystem.Particle>();
-            //    particleSystem.GetParticles(enter);
-            //    for (int i = 0; i < enter.Count; i++)
-            //    {
-            //        ParticleSystem.Particle p = enter[i];
-            //        if (p.position == other.transform.position)
-            //        {
-            //            p.remainingLifetime = 0;
-            //            enter[i] = p;
-            //        }
-            //    }
-            //    particleSystem.SetParticles(enter.ToArray(), enter.Count);
-            //}
         }
 
-        //공격받는 딛레이
-        IEnumerator ResetCollision()
-        {
-            yield return new WaitForSeconds(0.5f);
-            hasCollided = false ;
-        }
+
+      
     }
-
-
 }

@@ -5,32 +5,12 @@ using UnityEngine;
 
 namespace BS.vampire
 {
-    public class Attack3Bat : MonoBehaviour
+    public class BeemCollerRange: MonoBehaviour
     {
         #region Variables
-
-        public GameObject effectPrefab;
-        private Rigidbody rb;
-        private Vector3 velocity;
         private HashSet<GameObject> damagedObjects = new HashSet<GameObject>();
         public int damageAmount = 10;
         #endregion
-
-        private void Start()
-        {
-            rb = GetComponent<Rigidbody>();
-        }
-
-        public void Initialize(Vector3 direction, float speed)
-        {
-            velocity = direction * speed;
-        }
-
-        private void FixedUpdate()
-        {
-            rb.linearVelocity = velocity;
-        }
-
         void OnTriggerEnter(Collider other)
         {
             PlayerController playerController = other.GetComponent<PlayerController>();
@@ -57,4 +37,5 @@ namespace BS.vampire
             damagedObjects.Remove(other);
         }
     }
+   
 }
