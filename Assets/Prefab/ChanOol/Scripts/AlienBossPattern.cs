@@ -5,22 +5,21 @@ public class AlienBossPattern : MonoBehaviour
 {
     public Animator animator;              // 보스 애니메이터
 
-    public GameObject pt1Projectile;       // 발사체 프리팹
+    public GameObject pt1Particle;       // 발사체 프리팹
     public Transform pt1SpawnPoint;        // 발사체 생성 위치
     public GameObject pt1AttackRange;      // 공격범위 프리팹
 
-    public GameObject pt2Projectile;       // 발사체 프리팹
+    public GameObject pt2Particle;       // 발사체 프리팹
     public Transform pt2SpawnPoint;        // 발사체 생성 위치
     public GameObject pt2AttackRange;      // 공격범위 프리팹
 
-    public GameObject pt3Projectile;       // 발사체 프리팹
+    public GameObject pt3Particle;       // 발사체 프리팹
     public Transform pt3SpawnPoint;        // 발사체 생성 위치
     public GameObject pt3AttackRange;      // 공격범위 프리팹
 
-    /*public GameObject cloneAlien;
-    public Transform pt4SpawnPoint1;
-    public Transform pt4SpawnPoint2;*/
-
+    public GameObject pt4Particle;       // 발사체 프리팹
+    public Transform pt4SpawnPoint;        // 발사체 생성 위치
+    public GameObject pt4AttackRange;      // 공격범위 프리팹
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,10 +42,10 @@ public class AlienBossPattern : MonoBehaviour
         {
             StartCoroutine(Pattern3());
         }
-        /*else if (Input.GetKeyDown(KeyCode.R))
+        else if (Input.GetKeyDown(KeyCode.R))   // 공격패턴4
         {
-            Pattern4();
-        }*/
+            StartCoroutine(Pattern4());
+        }
     }
     
     // 공격패턴1 : 부채꼴 공격
@@ -65,7 +64,6 @@ public class AlienBossPattern : MonoBehaviour
         StartCoroutine(PatternReset(0.5f)); // 일정 시간 후 "Pattern" 값 0으로 초기화
     }
 
-
     // 공격패턴2 : 맵 전체공격(원형)
     public IEnumerator Pattern2()
     {
@@ -82,10 +80,9 @@ public class AlienBossPattern : MonoBehaviour
 
         animator.SetInteger("Pattern", 0); // "Pattern" 값 0으로 초기화
 
-        Instantiate(pt2Projectile, pt2SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
+        Instantiate(pt2Particle, pt2SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
 
         //yield return StartCoroutine(PatternReset(0.5f)); // 일정 시간 후 "Pattern" 값 0으로 초기화
-        
     }
 
     // 공격패턴3 : 맵 전체공격(파도형)
@@ -126,7 +123,7 @@ public class AlienBossPattern : MonoBehaviour
             Vector3 spawnPosition = pt3SpawnPoint.position + new Vector3(20f * i, 0f, 0f);
 
             // pt3Projectile 생성
-            GameObject spawnedObject = Instantiate(pt3Projectile, spawnPosition, Quaternion.Euler(0f, 0f, 0f));
+            GameObject spawnedObject = Instantiate(pt3Particle, spawnPosition, Quaternion.Euler(0f, 0f, 0f));
 
             // 딜레이
             yield return new WaitForSeconds(0.3f);
@@ -135,12 +132,23 @@ public class AlienBossPattern : MonoBehaviour
         }
     }
 
-    // 공격패턴4 : 클론 소환
-    /*public void Pattern4()
+    // 공격패턴4 : 근접 공격
+    public IEnumerator Pattern4()
     {
-        Instantiate(cloneAlien, pt4SpawnPoint1.position, Quaternion.Euler(0f, 0f, 0f));
-        Instantiate(cloneAlien, pt4SpawnPoint2.position, Quaternion.Euler(0f, 90f, 0f));
-    }*/
+        // 공격범위 생성
+        Instantiate(pt4AttackRange, new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z + 2.0f), Quaternion.Euler(0f, 0f, 0f));
+
+        // 딜레이
+        yield return new WaitForSeconds(1.5f);
+
+        animator.SetInteger("Pattern", 4); // "Pattern" 값을 4로 설정
+
+        yield return new WaitForSeconds(0.5f);
+
+        animator.SetInteger("Pattern", 0); // "Pattern" 값 0으로 초기화
+
+        Instantiate(pt4Particle, pt4SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
+    }
 
     private IEnumerator PatternReset(float delay)
     { 
@@ -151,12 +159,12 @@ public class AlienBossPattern : MonoBehaviour
     private IEnumerator pt1ProjectileTiming(float delay)
     {
         yield return new WaitForSeconds(delay);
-        Instantiate(pt1Projectile, pt1SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
+        Instantiate(pt1Particle, pt1SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
     }
 
     private IEnumerator pt2ProjectileTiming(float delay)
     {
         yield return new WaitForSeconds(delay);
-        Instantiate(pt2Projectile, pt2SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
+        Instantiate(pt2Particle, pt2SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
     }
 }

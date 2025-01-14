@@ -1,188 +1,135 @@
 using UnityEngine;
-using System.Collections;
-using System.Runtime.InteropServices;
 
-[ExecuteInEditMode]
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshFilter))]
-
 public class Pt1AttackRange : MonoBehaviour
 {
-    public float degree = 180;
-    public float intervalDegree = 5;
-    public float beginOffsetDegree = 0;
-    public float radius = 10;
-
-    // 추가: 스케일 설정
+    public float angle = 45f; // 부채꼴의 각도
+    public float radius = 5f; // 부채꼴의 반지름
+    public int segments = 20; // 부채꼴의 세그먼트 (선분 수)
     public Vector3 startScale = new Vector3(1f, 1f, 1f); // 초기 스케일
     public Vector3 targetScale = new Vector3(2f, 2f, 2f); // 목표 스케일
-    public float scaleSpeed = 1f;  // 스케일 변경 속도
+    public float scaleSpeed = 1f; // 스케일 변경 속도
 
-    Mesh mesh;
-    MeshFilter meshFilter;
+    // 인스펙터에서 마테리얼을 할당할 수 있도록 public으로 설정
+    public Material material;
 
-    Vector3[] vertices;
-    int[] triangles;
-    Vector2[] uvs;
+    // 페이드 효과
+    [SerializeField] private float startAlpha = 1f; // 시작 알파 값
+    [SerializeField] private float targetAlpha = 0f; // 목표 알파 값
+    [SerializeField] private float fadeSpeed = 0.5f; // 초당 변경 속도
+    private bool isFading = true; // 알파 값 전환 활성화 여부
 
-    int i;
-    float beginDegree;
-    float endDegree;
-    float beginRadian;
-    float endRadian;
-    float uvRadius = 0.5f;
-    Vector2 uvCenter = new Vector2(0.5f, 0.5f);
-    float currentIntervalDegree = 0;
-    float limitDegree;
-    int count;
-    int lastCount;
+    // 스케일이 목표값에 도달했는지 확인하는 변수
+    public bool isGrowing { get; private set; }
 
-    float beginCos;
-    float beginSin;
-    float endCos;
-    float endSin;
-
-    int beginNumber;
-    int endNumber;
-    int triangleNumber;
-
-    // Use this for initialization 
-    void Start()
+    private void Start()
     {
-        mesh = new Mesh();
-        meshFilter = (MeshFilter)GetComponent("MeshFilter");
+        // 초기 스케일 설정
+        transform.localScale = startScale;
+
+        CreateFanShape();
+
+        // 페이드 효과
+        material = GetComponent<MeshRenderer>().material;
+        Color color = material.color;
+        color.a = startAlpha;
+        material.color = color;
+
+        // isGrowing 초기화
+        isGrowing = true;
     }
 
-    // Update is called once per frame 
-    // 목표 스케일에 도달한 후, 다시 초기화할 수 있도록 리셋 기능 추가
-    void Update()
+    private void Update()
     {
-        currentIntervalDegree = Mathf.Abs(intervalDegree);
-
-        count = (int)(Mathf.Abs(degree) / currentIntervalDegree);
-        if (degree % intervalDegree != 0)
+        // 스케일 점진적으로 변경
+        if (transform.localScale != targetScale)
         {
-            ++count;
+            transform.localScale = Vector3.MoveTowards(transform.localScale, targetScale, scaleSpeed * Time.deltaTime);
         }
-        if (degree < 0)
+        else
         {
-            currentIntervalDegree = -currentIntervalDegree;
-        }
-
-        if (lastCount != count)
-        {
-            mesh.Clear();
-            vertices = new Vector3[count * 2 + 1];
-            triangles = new int[count * 3];
-            uvs = new Vector2[count * 2 + 1];
-            vertices[0] = Vector3.zero;
-            uvs[0] = uvCenter;
-            lastCount = count;
-        }
-
-        i = 0;
-        beginDegree = beginOffsetDegree;
-        limitDegree = degree + beginOffsetDegree;
-
-        while (i < count)
-        {
-            endDegree = beginDegree + currentIntervalDegree;
-
-            if (degree > 0)
+            // 목표 스케일에 도달하면 isGrowing을 false로 설정
+            if (isGrowing)
             {
-                if (endDegree > limitDegree)
+                isGrowing = false; // 스케일이 목표값에 도달했을 때 false로 설정
+            }
+        }
+
+        if (isGrowing == false)
+        {
+            // 페이드 효과
+            if (isFading)
+            {
+                // 알파 값 전환 로직
+                Color color = material.color;
+                color.a = Mathf.MoveTowards(color.a, targetAlpha, fadeSpeed * Time.deltaTime);
+                material.color = color;
+
+                // 목표 알파 값에 도달하면 전환 멈춤
+                if (Mathf.Approximately(color.a, targetAlpha))
                 {
-                    endDegree = limitDegree;
+                    isFading = false;
                 }
             }
-            else
-            {
-                if (endDegree < limitDegree)
-                {
-                    endDegree = limitDegree;
-                }
-            }
+            Destroy(gameObject, 1.2f);
+        }
+    }
 
-            beginRadian = Mathf.Deg2Rad * beginDegree;
-            endRadian = Mathf.Deg2Rad * endDegree;
+    private void CreateFanShape()
+    {
+        // Mesh 초기화
+        Mesh mesh = new Mesh();
+        Vector3[] vertices = new Vector3[segments + 2]; // 원점 + 세그먼트 개수
+        int[] triangles = new int[segments * 3]; // 각 세그먼트마다 2 삼각형 (각 세그먼트마다 3 인덱스)
+        Vector2[] uv = new Vector2[vertices.Length];
 
-            beginCos = Mathf.Cos(beginRadian);
-            beginSin = Mathf.Sin(beginRadian);
-            endCos = Mathf.Cos(endRadian);
-            endSin = Mathf.Sin(endRadian);
+        // 중앙점 (0,0,0) 추가
+        vertices[0] = Vector3.zero;
+        uv[0] = new Vector2(0.5f, 0.5f);
 
-            beginNumber = i * 2 + 1;
-            endNumber = i * 2 + 2;
-            triangleNumber = i * 3;
+        // 각도를 기준으로 세그먼트 배치
+        float angleStep = angle / segments; // 각 세그먼트 간의 각도
+        for (int i = 0; i < segments; i++)
+        {
+            float angleInRadians = Mathf.Deg2Rad * (i * angleStep);
+            float x = Mathf.Cos(angleInRadians) * radius;
+            float y = Mathf.Sin(angleInRadians) * radius;
 
-            vertices[beginNumber].x = beginCos * radius;
-            vertices[beginNumber].y = 0;
-            vertices[beginNumber].z = beginSin * radius;
-            vertices[endNumber].x = endCos * radius;
-            vertices[endNumber].y = 0;
-            vertices[endNumber].z = endSin * radius;
-
-            triangles[triangleNumber] = 0;
-            if (degree > 0)
-            {
-                triangles[triangleNumber + 1] = endNumber;
-                triangles[triangleNumber + 2] = beginNumber;
-            }
-            else
-            {
-                triangles[triangleNumber + 1] = beginNumber;
-                triangles[triangleNumber + 2] = endNumber;
-            }
-
-            if (radius > 0)
-            {
-                uvs[beginNumber].x = beginCos * uvRadius + uvCenter.x;
-                uvs[beginNumber].y = beginSin * uvRadius + uvCenter.y;
-                uvs[endNumber].x = endCos * uvRadius + uvCenter.x;
-                uvs[endNumber].y = endSin * uvRadius + uvCenter.y;
-            }
-            else
-            {
-                uvs[beginNumber].x = -beginCos * uvRadius + uvCenter.x;
-                uvs[beginNumber].y = -beginSin * uvRadius + uvCenter.y;
-                uvs[endNumber].x = -endCos * uvRadius + uvCenter.x;
-                uvs[endNumber].y = -endSin * uvRadius + uvCenter.y;
-            }
-
-            beginDegree += currentIntervalDegree;
-            ++i;
+            // 각 세그먼트의 끝 점을 계산
+            vertices[i + 1] = new Vector3(x, 0f, y);
+            uv[i + 1] = new Vector2((x / radius + 1f) / 2f, (y / radius + 1f) / 2f);
         }
 
+        // 원래의 끝 점 추가 (마지막 세그먼트의 끝 점)
+        vertices[segments + 1] = new Vector3(Mathf.Cos(Mathf.Deg2Rad * angle) * radius, 0f, Mathf.Sin(Mathf.Deg2Rad * angle) * radius);
+
+        // 삼각형 인덱스 설정
+        for (int i = 0; i < segments; i++)
+        {
+            int triIndex = i * 3;
+            triangles[triIndex] = 0;
+            triangles[triIndex + 1] = i + 1;
+            triangles[triIndex + 2] = (i + 2) % (segments + 1); // 원점으로부터 이어지는 삼각형
+        }
+
+        // Mesh에 설정
         mesh.vertices = vertices;
         mesh.triangles = triangles;
-        mesh.uv = uvs;
+        mesh.uv = uv;
 
+        // Mesh의 노멀 계산
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
 
-        meshFilter.sharedMesh = mesh;
-        meshFilter.sharedMesh.name = "CircularSectorMesh";
+        // MeshFilter와 MeshRenderer에 할당
+        MeshFilter meshFilter = GetComponent<MeshFilter>();
+        meshFilter.mesh = mesh;
 
-        // 스케일 점진적으로 증가
-        Vector3 currentScale = transform.localScale;
-        Vector3 newScale = Vector3.MoveTowards(currentScale, targetScale, scaleSpeed * Time.deltaTime);
-
-        // 목표 스케일에 도달하면 멈추고, 원하는 경우 리셋할 수 있도록 설정
-        if (newScale == targetScale)
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        if (material != null)
         {
-            newScale = targetScale; // 목표값에 도달했으면 값을 고정
-            ResetScale(); // 리셋 함수 호출
+            meshRenderer.material = material; // 인스펙터에서 할당된 material을 사용
         }
-
-        transform.localScale = newScale;
     }
-
-    // 스케일 초기화 함수
-    void ResetScale()
-    {
-        // 초기 스케일 값으로 리셋하거나 새로운 목표값 설정
-        targetScale = startScale; // 원하는 값으로 초기화
-        transform.localScale = startScale; // 즉시 초기화하려면 이렇게 할 수 있음
-    }
-
 }

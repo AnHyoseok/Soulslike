@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Pt2AttackRange : MonoBehaviour
+public class Pt5AttackRange : MonoBehaviour
 {
     public float growSpeed = 2f; // 성장 속도
     private bool isGrowing = false; // 성장 중인지 확인
@@ -20,7 +20,7 @@ public class Pt2AttackRange : MonoBehaviour
         // 현재 크기를 초기 크기로 저장
         originalScale = transform.localScale;
 
-        StartGrowing(transform.localScale, 150f);
+        StartGrowing(transform.localScale, 5f);
 
         // 페이드 효과
         material = GetComponent<MeshRenderer>().material;

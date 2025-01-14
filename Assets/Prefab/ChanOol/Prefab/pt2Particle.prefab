@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 19685457125097534}
   - component: {fileID: 395594516697808792}
   m_Layer: 0
-  m_Name: pt2Projectile
+  m_Name: pt2Particle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
