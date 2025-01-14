@@ -31,7 +31,7 @@ namespace BS.Particle
                 {
                     Debug.Log($"{damageAmount}만큼 데미지 입음");
                     playerHealth.TakeDamage(damageAmount, false);
-                  
+                    Debug.Log($"hp={playerHealth.CurrentHealth}");
                 }
             }
         }

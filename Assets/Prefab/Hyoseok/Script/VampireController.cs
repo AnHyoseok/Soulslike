@@ -71,7 +71,7 @@ namespace BS.vampire
             {
                 animator = GetComponent<Animator>();
             }
-            StartCoroutine(Attack3());
+            StartCoroutine(Attack4());
 
 
 
