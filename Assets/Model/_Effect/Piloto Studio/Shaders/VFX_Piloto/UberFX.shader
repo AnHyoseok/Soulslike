@@ -193,7 +193,7 @@ Shader "Piloto Studio/UberFX"
 			Tags { "LightMode"="UniversalForwardOnly" }
 
 			Blend SrcAlpha [_SourceBlendRGB], One OneMinusSrcAlpha
-			ZWrite Off
+			ZWrite Off	
 			ZTest LEqual
 			Offset 0 , 0
 			ColorMask RGBA
