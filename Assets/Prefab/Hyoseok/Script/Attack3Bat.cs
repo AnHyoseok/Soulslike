@@ -43,7 +43,7 @@ namespace BS.vampire
                 if (playerHealth != null && !damagedObjects.Contains(other.gameObject))
                 {
                     Debug.Log($"{damageAmount}만큼 데미지 입음");
-                    playerHealth.TakeDamage(damageAmount);
+                    playerHealth.TakeDamage(damageAmount, false);
                     damagedObjects.Add(other.gameObject);
                     StartCoroutine(ResetCollision(other.gameObject));
                 }
