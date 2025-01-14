@@ -4,52 +4,30 @@ namespace BS.Enemy.Set
 {
     public class GravityPull : MonoBehaviour
     {
+        #region Variables
         public float pullForce = 10f; // 끌어당기는 힘의 크기
-        public float maxDistance = 5f; // 최대 끌어당김 거리
+        public float maxDistance; // 최대 끌어당김 거리
+
+        private SphereCollider sphereCollider;
+        private LayerMask playerLayer;  //플레이어 레이어 마스크를 할당할 변수
+        #endregion
+
+        private void Start()
+        {
+            sphereCollider = GetComponent<SphereCollider>();
+            // 레이어마스크를 이름으로 가져와서 비트 연산: "왼쪽 쉬프트" 을 계산한다
+            // 6 -> 0000 0100 0000(Total : 256) 이런식으로 레이어마스크가 할당된곳을 찾아 반환시킴
+            playerLayer = 1 << LayerMask.NameToLayer(SetProperty.PLAYER_LAYER);
+            maxDistance = sphereCollider.radius * Mathf.Max(transform.root.localScale.x, transform.root.localScale.y, transform.root.localScale.z);
+        }
 
         private void FixedUpdate()
         {
-            // Physics.OverlapSphere를 사용해 maxDistance 내의 모든 콜라이더 검색
-            Collider[] colliders = Physics.OverlapSphere(transform.position, maxDistance);
+            // Physics.OverlapSphere를 사용해 sphereCollider.radius 내의 "Player" 레이어만 검색
+            Collider[] colliders = Physics.OverlapSphere(transform.position, maxDistance, playerLayer);
 
-            #region 플레이어 레이어 추가시 코드 교체
-            // Physics.OverlapSphere를 사용해 maxDistance 내의 "Player" 레이어만 검색
-            //Collider[] colliders = Physics.OverlapSphere(transform.position, maxDistance, playerLayerMask);
-
-            //foreach (Collider collider in colliders)
-            //{
-            //    Transform target = collider.transform;
-
-            //    if (target != null)
-            //    {
-            //        // 방향 벡터 계산 (중심점 - 오브젝트 위치)
-            //        Vector3 direction = transform.position - target.position;
-
-            //        // y 값을 제외하고 x와 z 값만 사용
-            //        direction.y = 0;
-
-            //        // 거리 계산 (수평 거리만)
-            //        float distance = direction.magnitude;
-
-            //        // 거리에 따라 힘 감소 (선형 감쇠)
-            //        float speed = Mathf.Lerp(pullForce, 0, distance / maxDistance);
-
-            //        // 힘 적용 (x, z 축만)
-            //        target.position += direction.normalized * speed * Time.deltaTime;
-            //    }
-            //}
-            #endregion
-
-            #region 레이어 추가전 디버그용 GravityPull 효과 (추후 삭제 필요)
             foreach (Collider collider in colliders)
             {
-                Debug.Log("1");
-                if (collider.gameObject.tag != "Player")
-                {
-                    Debug.Log("2");
-                    continue;
-                }
-                Debug.Log("3");
                 Transform target = collider.transform;
                 if (target != null)
                 {
@@ -59,26 +37,32 @@ namespace BS.Enemy.Set
                     // y 값을 제외하고 x와 z 값만 사용
                     direction.y = 0;
 
-                    // 거리 계산
+                    // 거리 계산 (수평 거리만)
                     float distance = direction.magnitude;
-                    Debug.Log($"거리: {distance}, 대상: {collider.gameObject.name}");
+
                     // 거리에 따라 힘 감소 (선형 감쇠)
                     float speed = Mathf.Lerp(pullForce, 0, distance / maxDistance);
 
-                    // 힘 적용
+                    // 힘 적용 (x, z 축만)
                     target.position += direction.normalized * speed * Time.deltaTime;
+
+                    //TODO : 데미지를 입히는 코드를 구현하기
+
+#if UNITY_EDITOR
+                    Debug.Log($"거리: {distance}, 대상: {collider.gameObject.name}");
                     Debug.Log($"속도: {speed}, 방향: {direction.normalized}");
+#endif
+
                 }
             }
-            #endregion
         }
 
         #region 테스트 범위확인용 기즈모
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, maxDistance);
-        }
+        //private void OnDrawGizmos()
+        //{
+        //    Gizmos.color = Color.blue;
+        //    Gizmos.DrawWireSphere(transform.position, maxDistance);
+        //}
         #endregion
     }
 }

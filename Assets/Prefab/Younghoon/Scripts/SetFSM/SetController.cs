@@ -9,10 +9,8 @@ namespace BS.Enemy.Set
         private SetProperty property;
 
         [SerializeField] private Transform player;
+        [SerializeField] private float rotationSpeed = 2f;
         private Animator animator; // 애니메이터 추가
-        public float ChaseRange { get; private set; } = 15f;
-        public float AttackRange { get; private set; } = 3f;
-
         private void Start()
         {
             // NavMeshAgent와 Player Transform 참조
@@ -26,6 +24,11 @@ namespace BS.Enemy.Set
 
         private void Update()
         {
+            if (!animator.GetBool(SetProperty.SET_ANIM_BOOL_ATTACK))
+            {
+                RotateToPlayer();
+            }
+
             currentState?.Update();
         }
 
@@ -34,6 +37,23 @@ namespace BS.Enemy.Set
             currentState?.Exit();
             currentState = newState;
             currentState.Enter();
+        }
+
+        private void RotateToPlayer()
+        {
+            // 현재 방향
+            Quaternion currentRotation = property.Controller.transform.rotation;
+
+            // 목표 방향 (LookAt 방향)
+            Vector3 directionToPlayer = (property.Player.position - property.Controller.transform.position).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+
+            // 천천히 회전
+            property.Controller.transform.rotation = Quaternion.Slerp(
+                currentRotation,
+                targetRotation,
+                Time.deltaTime * rotationSpeed
+            );
         }
     }
 }

@@ -24,14 +24,14 @@ namespace BS.Enemy.Set
             property.Agent.SetDestination(property.Player.position);
 
             float distance = Vector3.Distance(property.Player.position, property.Controller.transform.position);
-            if (distance > property.Controller.ChaseRange)
-            {
-                property.Controller.SetState(new SetIdleState(property));
-            }
-            if (distance < property.Controller.AttackRange)
-            {
-                property.Controller.SetState(new SetAttackState(property));
-            }
+            //if (distance > property.Controller.ChaseRange)
+            //{
+            //    property.Controller.SetState(new SetIdleState(property));
+            //}
+            //if (distance < property.Controller.AttackRange)
+            //{
+            //    property.Controller.SetState(new SetAttackState(property));
+            //}
         }
 
         public void Exit()
