@@ -4,15 +4,20 @@ using UnityEngine;
 
 namespace BS.Demon
 {
+    [System.Serializable]
+    public class PatternPoins
+    {
+        public Transform[] patternTwoPoints;
+    }
     public class DemonPattern : MonoBehaviour
     {
         #region Variables
-        private DemonController controller;
+        private DemonNextPesos demon;
         public GameObject[] effect;
 
         //패턴 1
-        public BallRise ball;
-        public Transform[] Points;
+        public BallRise[] ball;
+        public Transform[] patternOnePoints;
         public int minSpawnCount = 4; // 최소 생성 개수
         public int maxSpawnCount = 6; // 최대 생성 개수
 
@@ -22,7 +27,10 @@ namespace BS.Demon
 
         //패턴 3
         public Transform[] teleportPoints; // 텔레포트 가능한 지점들
-        public Transform firePoint; // 레이저 발사 위치
+
+        //패턴 4
+        public List<PatternPoins> patternTwoPoints;
+        public float spawnTime = 1f;
 
         //공격범위
         [SerializeField] private GameObject[] attackRangePrefab;
@@ -35,41 +43,61 @@ namespace BS.Demon
         #endregion
         private void Start()
         {
-            controller = GetComponent<DemonController>();
+            demon = GetComponent<DemonNextPesos>();
         }
         //패턴 1
+        #region Pattern 1
         public void SpawnObjects()
         {
-            if (Points.Length == 0 || ball == null)
+            if (patternOnePoints.Length == 0 || ball[0] == null) return;
+            int spawnCount = Random.Range(minSpawnCount, maxSpawnCount + 1); // 2 또는 3개 생성
+            HashSet<int> selectedIndices = new HashSet<int>(); // 중복 방지
+
+            // 플레이어와의 거리 계산
+            List<int> closePoints = new List<int>();
+            float maxDistance = 15f; // 가까운 거리의 최대 범위 설정 (예: 10 유닛)
+
+            for (int i = 0; i < patternOnePoints.Length; i++)
             {
-                Debug.LogWarning("Spawn points or object to spawn not set!");
+                float distanceToPlayer = Vector3.Distance(patternOnePoints[i].position, player.position);
+                if (distanceToPlayer <= maxDistance)
+                {
+                    closePoints.Add(i);
+                }
+            }
+            // 가까운 지점 중에서 랜덤 선택
+            if (closePoints.Count > 0)
+            {
+                while (selectedIndices.Count < spawnCount && selectedIndices.Count < closePoints.Count)
+                {
+                    int randomIndex = closePoints[Random.Range(0,closePoints.Count)];
+                    selectedIndices.Add(randomIndex);
+                }
+            }
+            else
+            {
                 return;
             }
 
-            int spawnCount = Random.Range(minSpawnCount, maxSpawnCount + 1); // 2 또는 3개 생성
-            HashSet<int> selectedIndices = new HashSet<int>(); //중복방지
-            while (selectedIndices.Count < spawnCount)
-            {
-                int randomIndex = Random.Range(0, Points.Length);
-                selectedIndices.Add(randomIndex);
-            }
-
+            // 선택된 지점에 오브젝트 스폰
             foreach (int index in selectedIndices)
             {
                 StartCoroutine(AttackRangeSpawn(index));
-                GameObject game = Instantiate(ball.gameObject, Points[index].position, Quaternion.identity);
+                GameObject game = Instantiate(ball[0].gameObject, patternOnePoints[index].position, Quaternion.identity);
                 game.GetComponent<BallRise>().StartRise();
-                controller.lastAttackTime[0] = Time.time;
+                demon.lastAttackTime[0] = Time.time;
             }
         }
         IEnumerator AttackRangeSpawn(int index)
         {
-            GameObject Range = Instantiate(attackRangePrefab[0], Points[index].position + new Vector3(0, 0.2f, 0), Quaternion.identity);
+            GameObject Range = Instantiate(attackRangePrefab[0], patternOnePoints[index].position + new Vector3(0, 0.2f, 0), Quaternion.identity);
             Range.GetComponent<DemonAttackRange>().StartGrowing(attackRangeScale[0], rangeSize[0]);
             Destroy(Range, 2f);
             yield return new WaitForSeconds(2);
         }
+        #endregion
         //패턴 2
+        #region Pattern 2
         public void AttackBall()
         {
             GameObject attackball = Instantiate(ballInstantiate, ballTranfrom.position, Quaternion.identity);
@@ -80,7 +108,7 @@ namespace BS.Demon
                 Destroy(attackball, 1f);
                 Destroy(effgo, 2f);
             }
-            controller.lastAttackTime[1] = Time.time;
+            demon.lastAttackTime[1] = Time.time;
         }
         IEnumerator AttackRangeBall()
         {
@@ -90,7 +118,9 @@ namespace BS.Demon
             Destroy(Range, 1f);
             yield return new WaitForSeconds(1);
         }
+        #endregion
         //패턴 3
+        #region Pattern 3
         public void PerformTeleport()
         {
             if (teleportPoints.Length > 1) // 텔레포트 지점이 2개 이상일 때 중복 방지 가능
@@ -123,12 +153,62 @@ namespace BS.Demon
         }
         public void ShootAttack()
         {
-            controller.lastAttackTime[2] = Time.time;
+            demon.lastAttackTime[2] = Time.time;
         }
+        #endregion
         //근거리 공격
         public void CloseAttack()
         {
             transform.LookAt(player.position);
         }
+        //2페이지 패턴 1
+        #region 2Pesos Pattern 1
+        public void SpawnAndExplodeInOrder()
+        {
+            if (patternTwoPoints.Count == 0 || !ball[1])
+            {
+                Debug.LogWarning("Spawn points or object to spawn not set!");
+                return;
+            }
+            StartCoroutine(SpawnAndExplodeRoutine());
+            demon.lastPesosTime[0] =Time.time;
+        }
+
+        private IEnumerator SpawnAndExplodeRoutine()
+        {
+            foreach (PatternPoins points in patternTwoPoints)
+            {
+                foreach(Transform transform in points.patternTwoPoints)
+                {
+                    // 지정된 위치에 오브젝트 생성
+                    GameObject spawnedBall = Instantiate(ball[1].gameObject, transform.position, Quaternion.identity);
+                    BallRise ballRise = spawnedBall.GetComponent<BallRise>();
+
+                    // 상승 동작 시작
+                    if (ballRise != null)
+                    {
+                        ballRise.StartRise();
+                    }
+                    Explode(spawnedBall);
+                }
+                yield return new WaitForSeconds(spawnTime);
+            }
+        }
+
+        private void Explode(GameObject target)
+        {
+            if (target != null)
+            {
+                // 폭발 효과 (선택 사항)
+                GameObject effectInstance = Instantiate(effect[0], target.transform.position, Quaternion.identity);
+                Destroy(effectInstance, 1f);
+
+                // 대상 제거
+                Destroy(target);
+
+                Debug.Log("Explosion occurred at: " + target.transform.position);
+            }
+        }
+        #endregion
     }
 }

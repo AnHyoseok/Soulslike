@@ -16,8 +16,9 @@ namespace BS.Managers
         public GameObject[] particle;
         public GameObject keyCanvas;
         public Stage[] stage =new Stage[3];
+        public Stage enemyStage;
         public Outline[] outline = new Outline[3];
-        //½ÃÀÛ½Ã Ä«¸Ş¶ó ÀÌµ¿
+        //ì‹œì‘ì‹œ ì¹´ë©”ë¼ ì´ë™
         TitleCamera title;
         #endregion
         private void Start()
@@ -40,14 +41,14 @@ namespace BS.Managers
         }
         private void Update()
         {
-            //player À§¿¡ ÀÖ´Â Äµ¹ö½º º¸ÀÌ´Â ¹æÇâ
+            //player ìœ„ì— ìˆëŠ” ìº”ë²„ìŠ¤ ë³´ì´ëŠ” ë°©í–¥
             keyCanvas.transform.LookAt(keyCanvas.transform.position + m_camera.transform.rotation * Vector3.forward,m_camera.transform.rotation * Vector3.up);
             if(Input.GetKey(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Escape))
             {
                 ResetPlayer();
             }
         }
-        //Start¹öÆ°
+        //Startë²„íŠ¼
         public void StartScene()
         {
             maincamera.gameObject.SetActive(false);
@@ -64,13 +65,13 @@ namespace BS.Managers
                 outlines.enabled = true;
             }
         }
-        //Quit¹öÆ°
+        //Quitë²„íŠ¼
         public void Quit()
         {
             Debug.Log("Quit");
             Application.Quit();
         }
-        //ÃÊ±â È­¸éÀ¸·Î µ¹¾Æ°¡°í ½ÍÀ» ¶§ EscÅ°¸¦ ´©¸£¸é ½ÇÇàµÇ´Â ÇÔ¼ö
+        //ì´ˆê¸° í™”ë©´ìœ¼ë¡œ ëŒì•„ê°€ê³  ì‹¶ì„ ë•Œ Escí‚¤ë¥¼ ëˆ„ë¥´ë©´ ì‹¤í–‰ë˜ëŠ” í•¨ìˆ˜
         void ResetPlayer()
         {
             Player.GetComponent<PlayerController>().enabled = false;
@@ -102,6 +103,11 @@ namespace BS.Managers
             particle[0].transform.position = new Vector3(-5, 1.3f, -6.3f);
             particle[1].SetActive(false);
             maincamera.fieldOfView = 90;
+            if(enemyStage.isEnemy)
+            {
+                Destroy(enemyStage.Enemy);
+                enemyStage.isEnemy = false;
+            }
             StartCoroutine(title.ZoomIn());
         }
     }

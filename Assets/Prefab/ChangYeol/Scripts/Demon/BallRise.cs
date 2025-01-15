@@ -1,50 +1,24 @@
-using System.Collections;
 using UnityEngine;
 
 namespace BS.Demon
 {
-    public class BallRise : MonoBehaviour
+    public class BallRise : DemonBall
     {
         #region Variables
-        public float targetHeight = 15f; // 목표 높이
-        public float riseSpeed = 2f; // 상승 속도
-        private Vector3 startPosition; // 시작 위치
-        private Vector3 targetPosition; // 목표 위치
-        private bool isRising = false; // 상승 상태 플래그
-        public DemonPattern pattern;
+        [SerializeField]private GameObject effgo;
         #endregion
-        private void Start()
+        public override void TargetRise()
         {
-            // 현재 위치를 기준으로 목표 위치 계산
-            startPosition = transform.position;
-            targetPosition = startPosition + Vector3.up * targetHeight;
-        }
-        private void Update()
-        {
-            StartCoroutine(UpRise());
-        }
-
-        public void StartRise()
-        {
-            // 상승 시작
-            isRising = true;
-        }
-        IEnumerator UpRise()
-        {
-            if (isRising)
+            if(effgo == null)
             {
-                // 부드럽게 상승
-                transform.position = Vector3.MoveTowards(transform.position, targetPosition, riseSpeed * Time.deltaTime);
 
-                // 목표 위치에 도달했는지 확인
-                if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
-                {
-                    isRising = false; // 상승 종료
-                    yield return new WaitForSeconds(1f);
-                    GameObject effgo = Instantiate(pattern.effect[0], transform.position, Quaternion.identity);
-                    Destroy(this.gameObject);
-                    Destroy(effgo,1.5f);
-                }
+                return;
+            }
+            else if (effgo)
+            {
+                GameObject effcetgo = Instantiate(effgo, transform.position, Quaternion.identity);
+                Destroy(this.gameObject);
+                Destroy(effgo, 1.5f);
             }
         }
     }

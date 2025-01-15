@@ -11,6 +11,10 @@ namespace BS.Demon
         private HashSet<GameObject> damagedObjects = new HashSet<GameObject>();
         public int damageAmount = 10;
         #endregion
+        private void Start()
+        {
+            StartCoroutine(TriggerOn());
+        }
         void OnTriggerEnter(Collider other)
         {
             PlayerController playerController = other.GetComponent<PlayerController>();
@@ -28,6 +32,7 @@ namespace BS.Demon
                     StartCoroutine(ResetCollision(other.gameObject));
                 }
             }
+            StopCoroutine(TriggerOn());
         }
 
         // 일정 시간 후 충돌 정보 리셋
@@ -36,6 +41,24 @@ namespace BS.Demon
             yield return new WaitForSeconds(0.5f);
             damagedObjects.Remove(other);
         }
-
+        IEnumerator TriggerOn()
+        {
+            if(this.GetComponent<BoxCollider>())
+            {
+                this.GetComponent<BoxCollider>().enabled = false;
+                yield return new WaitForSeconds(0.5f);
+                this.GetComponent<BoxCollider>().enabled = true;
+                yield return new WaitForSeconds(0.5f);
+                this.GetComponent<BoxCollider>().enabled = false;
+            }
+            else if (this.GetComponent<SphereCollider>())
+            {
+                this.GetComponent<SphereCollider>().enabled = false;
+                yield return new WaitForSeconds(0.5f);
+                this.GetComponent<SphereCollider>().enabled = true;
+                yield return new WaitForSeconds(0.5f);
+                this.GetComponent<SphereCollider>().enabled = false;
+            }
+        }
     }
 }

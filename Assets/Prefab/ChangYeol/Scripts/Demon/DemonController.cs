@@ -14,31 +14,34 @@ namespace BS.Demon
         GetDamaged,
         Die
     }
-    public class DemonController : MonoBehaviour
+    public abstract class DemonController : MonoBehaviour,IDamageable
     {
+        public abstract void NextPesos();
         #region Variables
-        public DEMON currentState = DEMON.Idle; // ÇöÀç »óÅÂ
-        [HideInInspector]public Animator animator; // ¾Ö´Ï¸ŞÀÌÅÍ
+        [HideInInspector]public DEMON currentState = DEMON.Idle; // í˜„ì¬ ìƒíƒœ
+        [HideInInspector]public Animator animator; // ì• ë‹ˆë©”ì´í„°
 
-        public float attackRange = 3f; // °ø°İ ¹üÀ§
-        public float[] attackCooldown = new float[3]; //ÄğÅ¸ÀÓ
+        public float attackRange = 3f; // ê³µê²© ë²”ìœ„
+        public float[] attackCooldown = new float[3]; //ì¿¨íƒ€ì„
         [HideInInspector]public float[] lastAttackTime = new float[4];
         private List<DEMON> demons = new List<DEMON>() { DEMON.Attack01, DEMON.Attack02 , DEMON.Teleport };
+        protected List<DEMON> pesosDemon = new List<DEMON>() { DEMON.Attack01, DEMON.Attack02, DEMON.Teleport };
 
-        private int index;  //demonsÀÇ ·£´ı °ª
+        protected int index;  //demonsì˜ ëœë¤ ê°’
 
-        public float maxHealth = 100f; // ÃÖ´ë Ã¼·Â
-        [SerializeField] private float currentHealth; // ÇöÀç Ã¼·Â
-        private bool hasRecovered = false; // È¸º¹ ½ÇÇà ¿©ºÎ ÇÃ·¡±×
+        public float maxHealth = 100f; // ìµœëŒ€ ì²´ë ¥
+        [SerializeField] private float currentHealth; // í˜„ì¬ ì²´ë ¥
+        private bool hasRecovered = false; // íšŒë³µ ì‹¤í–‰ ì—¬ë¶€ í”Œë˜ê·¸
+        [SerializeField]private GameObject angryEffect;
 
-        private DemonPattern pattern;
+        protected DemonPattern pattern;
         #endregion
         private void Start()
         {
-            //ÂüÁ¶
+            //ì°¸ì¡°
             animator = GetComponent<Animator>();
             pattern = GetComponent<DemonPattern>();
-            currentHealth = maxHealth; // ÃÊ±â Ã¼·Â ¼³Á¤
+            currentHealth = maxHealth; // ì´ˆê¸° ì²´ë ¥ ì„¤ì •
         }
 
         private void Update()
@@ -56,11 +59,11 @@ namespace BS.Demon
                 case DEMON.Idle:
                     HandleIdleState();
                     break;
-                    //·£´ı À§Ä¡¿¡¼­ º¼ »ı¼º ÈÄ ÅÍÁø´Ù
+                    //ëœë¤ ìœ„ì¹˜ì—ì„œ ë³¼ ìƒì„± í›„ í„°ì§„ë‹¤
                 case DEMON.Attack01:
                     ChangeState(DEMON.Idle);
                     break;
-                    // º¼ ´øÁø À§Ä¡¿¡¼­ ÅÍÁø´Ù
+                    // ë³¼ ë˜ì§„ ìœ„ì¹˜ì—ì„œ í„°ì§„ë‹¤
                 case DEMON.Attack02:
                     ChangeState(DEMON.Idle);
                     break;
@@ -78,14 +81,15 @@ namespace BS.Demon
                     break;
             }
         }
-        // »óÅÂ ÀüÈ¯ ¸Ş¼­µå
+        // ìƒíƒœ ì „í™˜
+        #region StateMode
         public void ChangeState(DEMON newState)
         {
             if (currentState == newState) return;
 
             currentState = newState;
 
-            // »óÅÂ¿¡ µû¸¥ ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+            // ìƒíƒœì— ë”°ë¥¸ ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
             animator.SetTrigger(newState.ToString());
         }
         public void ChangeFloatState(DEMON newState, float newfloat)
@@ -94,13 +98,19 @@ namespace BS.Demon
 
             currentState = newState;
 
-            // »óÅÂ¿¡ µû¸¥ ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+            // ìƒíƒœì— ë”°ë¥¸ ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
             animator.SetFloat(newState.ToString(), newfloat);
         }
-        // »óÅÂ Ã³¸® ¸Ş¼­µåµé
+        #endregion
+        // ìƒíƒœ ì²˜ë¦¬
         private void HandleIdleState()
         {
             ResetTriggers();
+            if(hasRecovered)
+            {
+                NextPesos();
+                return;
+            }
             if(Vector3.Distance(transform.position,pattern.player.position) < attackRange)
             {
                 ChangeState(DEMON.Attack03);
@@ -129,19 +139,12 @@ namespace BS.Demon
                 ChangeState(DEMON.Idle);
             }
         }
-        
+        #region GetDamaged
         private void HandleGetDamagedState()
         {
-            // ÀÏÁ¤ ½Ã°£ ÈÄ ´Ù½Ã Idle »óÅÂ·Î ÀüÈ¯
+            // ì¼ì • ì‹œê°„ í›„ ë‹¤ì‹œ Idle ìƒíƒœë¡œ ì „í™˜
             Invoke(nameof(ResetToIdle), 1f);
         }
-
-        private void HandleDieState()
-        {
-            // »ç¸Á Ã³¸® (¾Ö´Ï¸ŞÀÌ¼Ç ¿Ï·á ÈÄ ÆÄ±«)
-            Destroy(gameObject, 2f);
-        }
-
         private void ResetToIdle()
         {
             if (currentState == DEMON.GetDamaged)
@@ -149,8 +152,13 @@ namespace BS.Demon
                 ChangeState(DEMON.Idle);
             }
         }
-
-        // ¾Ö´Ï¸ŞÀÌ¼Ç ÃÊ±âÈ­
+        #endregion
+        private void HandleDieState()
+        {
+            // ì‚¬ë§ ì²˜ë¦¬ (ì• ë‹ˆë©”ì´ì…˜ ì™„ë£Œ í›„ íŒŒê´´)
+            Destroy(gameObject, 2f);
+        }
+        // ì• ë‹ˆë©”ì´ì…˜ ì´ˆê¸°í™”
         public void ResetTriggers()
         {
             animator.ResetTrigger("Attack01");
@@ -162,7 +170,8 @@ namespace BS.Demon
         public void TakeDamage(float damage)
         {
             currentHealth -= damage;
-            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Ã¼·Â ¹üÀ§ Á¦ÇÑ
+            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // ì²´ë ¥ ë²”ìœ„ ì œí•œ
+            Debug.Log($"currentHealth : {currentHealth}");
             ChangeFloatState(DEMON.GetDamaged,damage);
             if (currentHealth <= 0)
             {
@@ -171,15 +180,19 @@ namespace BS.Demon
         }
         private void RecoverHealth()
         {
-            hasRecovered = true; // È¸º¹ ÇÃ·¡±× È°¼ºÈ­
+            hasRecovered = true; // íšŒë³µ í”Œë˜ê·¸ í™œì„±í™”
             animator.SetBool("IsRecovered", hasRecovered);
-            //È¸º¹ ÀÌÆåÆ®
-            GameObject heal = Instantiate(pattern.effect[3], transform.position,Quaternion.identity);
-            // °¨¼ÒÇÑ Ã¼·ÂÀÇ Àı¹İ¸¸Å­ È¸º¹
-            float healthToRecover = (maxHealth * 0.5f - currentHealth) * 0.5f;
-            currentHealth += healthToRecover;
-            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Ã¼·Â ¹üÀ§ Á¦ÇÑ
-            Destroy(heal,2f);
+            if(hasRecovered)
+            {
+                //íšŒë³µ ì´í™íŠ¸
+                GameObject heal = Instantiate(pattern.effect[3], transform.position, Quaternion.identity);
+                angryEffect.SetActive(true);
+                // ê°ì†Œí•œ ì²´ë ¥ì˜ ì ˆë°˜ë§Œí¼ íšŒë³µ
+                float healthToRecover = (maxHealth * 0.5f - currentHealth) * 0.5f;
+                currentHealth += healthToRecover;
+                currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // ì²´ë ¥ ë²”ìœ„ ì œí•œ
+                Destroy(heal, 2f);
+            }
         }
     }
 }
