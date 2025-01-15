@@ -4,38 +4,38 @@ using UnityEngine;
 namespace BS.Player
 {
     /// <summary>
-    /// PlayerÀÇ »óÅÂ
+    /// Playerì˜ ìƒíƒœ
     /// </summary>
     public class PlayerState : Singleton<PlayerState>
     {
         #region Variables
         // Idle
-        public bool isIdle = false;                         // Idle ÀÎÁö
+        public bool isIdle = false;                         // Idle ì¸ì§€
 
         // Move
-        public Vector3 targetPosition;                      // ÀÌµ¿ ¸ñÇ¥ ÁöÁ¡
-        public bool isMovable = true;                       // ÀÌµ¿ °¡´É ¿©ºÎ
-        public bool isMoving = false;                       // ÀÌµ¿ ÁßÀÎÁö
-        public float inGameMoveSpeed;                       // BD ÀÌµ¿ ¼Óµµ
+        public Vector3 targetPosition;                      // ì´ë™ ëª©í‘œ ì§€ì 
+        public bool isMovable = true;                       // ì´ë™ ê°€ëŠ¥ ì—¬ë¶€
+        public bool isMoving = false;                       // ì´ë™ ì¤‘ì¸ì§€
+        public float inGameMoveSpeed;                       // BD ì´ë™ ì†ë„
 
         // Sprint
-        public bool isSprinting = false;                    // ½ºÇÁ¸°Æ® ÁßÀÎÁö
+        public bool isSprinting = false;                    // ìŠ¤í”„ë¦°íŠ¸ ì¤‘ì¸ì§€
         // Walk
-        public bool isWalking = false;                      // °È´Â ÁßÀÎÁö
+        public bool isWalking = false;                      // ê±·ëŠ” ì¤‘ì¸ì§€
 
         // Dash
-        public bool isDashing = false;                      // ´ë½¬ ÁßÀÎÁö
-        public float currentDashCoolTime = 0f;              // BD ´ë½¬ ÄğÅ¸ÀÓ
-        public bool isInvincible = false;                   // ¹«Àû ÀÎÁö
+        public bool isDashing = false;                      // ëŒ€ì‰¬ ì¤‘ì¸ì§€
+        public float currentDashCoolTime = 0f;              // BD ëŒ€ì‰¬ ì¿¨íƒ€ì„
+        public bool isInvincible = false;                   // ë¬´ì  ì¸ì§€
 
         // Block
-        public bool isBlockingAnim = false;                 // ºí¶ô ¾Ö´Ï¸ŞÀÌ¼Ç ÁøÇà¿©ºÎ
-        public bool isBlocking = false;                     // ºí¶ô ÁßÀÎÁö
-        public float currentBlockCoolTime = 0f;             // BD ºí¶ô ÄğÅ¸ÀÓ
+        public bool isBlockingAnim = false;                 // ë¸”ë½ ì• ë‹ˆë©”ì´ì…˜ ì§„í–‰ì—¬ë¶€
+        public bool isBlocking = false;                     // ë¸”ë½ ì¤‘ì¸ì§€
+        public float currentBlockCoolTime = 0f;             // BD ë¸”ë½ ì¿¨íƒ€ì„
 
         // Attack
-        public bool isAttack = false;                       // °ø°İ ÁßÀÎÁö
-        public int ComboAttackIndex = 1;                    // ComboAttack ÀÎµ¦½º 
+        public bool isAttack = false;                       // ê³µê²© ì¤‘ì¸ì§€
+        public int ComboAttackIndex = 1;                    // ComboAttack ì¸ë±ìŠ¤ 
         #endregion
         protected override void Awake()
         {
@@ -48,7 +48,7 @@ namespace BS.Player
 
         void Update()
         {
-            
+
         }
     }
 }

@@ -1,4 +1,5 @@
 using BS.State;
+using DG.Tweening;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -14,14 +15,14 @@ namespace BS.Player
 
         public TextMeshProUGUI blockCoolTimeText;
 
-        // ÃÖ´ë Ã¼·Â
+        // ìµœëŒ€ ì²´ë ¥
         [SerializeField] private float maxHealth;
         public float MaxHealth
         {
             get { return maxHealth; }
             private set { maxHealth = value; }
         }
-        // ÇöÀç Ã¼·Â
+        // í˜„ì¬ ì²´ë ¥
         [SerializeField] private float currentHealth;
         public float CurrentHealth
         {
@@ -30,14 +31,14 @@ namespace BS.Player
             {
                 currentHealth = value;
 
-                //Á×À½ Ã³¸®
+                //ì£½ìŒ ì²˜ë¦¬
                 if (currentHealth <= 0)
                 {
                     IsDeath = true;
                 }
             }
         }
-        // Á×À½¿©ºÎ
+        // ì£½ìŒì—¬ë¶€
         private bool isDeath = false;
         public bool IsDeath
         {
@@ -45,7 +46,7 @@ namespace BS.Player
             private set
             {
                 isDeath = value;
-                //¾Ö´Ï¸ŞÀÌ¼Ç
+                //ì• ë‹ˆë©”ì´ì…˜
                 //animator.SetBool(AnimationString.IsDeath, value);
             }
         }
@@ -55,8 +56,8 @@ namespace BS.Player
         PlayerStateMachine psm;
 
         // Action
-        public UnityAction<float> OnDamaged;        // µ¥¹ÌÁö¸¦ ¹ŞÀ» ¶§ È£ÃâÇÏ´Â ÀÌº¥Æ®
-        public UnityAction OnBlocked;                // ºí·Ï ¼º°øÇÒ ¶§ È£ÃâÇÏ´Â ÀÌº¥Æ®
+        public UnityAction<float> OnDamaged;        // ë°ë¯¸ì§€ë¥¼ ë°›ì„ ë•Œ í˜¸ì¶œí•˜ëŠ” ì´ë²¤íŠ¸
+        public UnityAction OnBlocked;                // ë¸”ë¡ ì„±ê³µí•  ë•Œ í˜¸ì¶œí•˜ëŠ” ì´ë²¤íŠ¸
         #endregion
         void Start()
         {
@@ -75,7 +76,7 @@ namespace BS.Player
         {
 
         }
-        // ºí¶ô ÄğÅ¸ÀÓ
+        // ë¸”ë½ ì¿¨íƒ€ì„
         IEnumerator CoBlockCooldown()
         {
             ps.currentBlockCoolTime = blockCoolTime;
@@ -107,34 +108,34 @@ namespace BS.Player
             ps.isBlocking = false;
         }
 
-        // ÃÖ´ëÃ¼·Â ¼¼ÆÃ
+        // ìµœëŒ€ì²´ë ¥ ì„¸íŒ…
         public void SetMaxHealth(float amount)
         {
             maxHealth = amount;
             CurrentHealth = maxHealth;
         }
 
-        // µ¥¹ÌÁö ¹Ş´Â ÇÔ¼ö (µ¥¹ÌÁö °ª, ºí¶ô°¡´É¿©ºÎ:±âº»°ªÀº ºí¶ôÀÌ °¡´ÉÇÏµµ·Ï ¼³Á¤)
-        // ¹İÈ¯ °ªÀº Block ¼º°ø ¿©ºÎ
+        // ë°ë¯¸ì§€ ë°›ëŠ” í•¨ìˆ˜ (ë°ë¯¸ì§€ ê°’, ë¸”ë½ê°€ëŠ¥ì—¬ë¶€:ê¸°ë³¸ê°’ì€ ë¸”ë½ì´ ê°€ëŠ¥í•˜ë„ë¡ ì„¤ì •)
+        // ë°˜í™˜ ê°’ì€ Block ì„±ê³µ ì—¬ë¶€
         public bool TakeDamage(float damage, bool isBlockable = true)
         {
-            // ºí¶ô °¡´ÉÇÑ °æ¿ì
+            // ë¸”ë½ ê°€ëŠ¥í•œ ê²½ìš°
             if (isBlockable)
             {
-                // ºí¶ô ¼º°ø
+                // ë¸”ë½ ì„±ê³µ
                 if (ps.isBlocking)
                 {
                     OnBlocked?.Invoke();
                     return true;
                 }
-                // ºí¶ô ½ÇÆĞ
+                // ë¸”ë½ ì‹¤íŒ¨
                 else
                 {
                     OnDamaged?.Invoke(damage);
                     return false;
                 }
             }
-            // ºí¶ô ºÒ°¡´ÉÇÑ °æ¿ì
+            // ë¸”ë½ ë¶ˆê°€ëŠ¥í•œ ê²½ìš°
             else
             {
                 OnDamaged?.Invoke(damage);
@@ -142,16 +143,16 @@ namespace BS.Player
             }
         }
 
-        // µ¥¹ÌÁö °è»ê
+        // ë°ë¯¸ì§€ ê³„ì‚°
         public void CalculateDamage(float damage)
         {
-            // ½ÇÁúÀûÀ¸·Î µé¾î¿Â µ¥¹ÌÁö °è»ê ¹× À¯È¿¼º °Ë»ç
+            // ì‹¤ì§ˆì ìœ¼ë¡œ ë“¤ì–´ì˜¨ ë°ë¯¸ì§€ ê³„ì‚° ë° ìœ íš¨ì„± ê²€ì‚¬
             float realDamage = Mathf.Min(CurrentHealth, damage);
 
-            // Ã¼·Â °¨¼Ò
+            // ì²´ë ¥ ê°ì†Œ
             CurrentHealth -= realDamage;
 
-            // Ã¼·ÂÀÌ 0 ÀÌÇÏ¶ó¸é »ç¸Á Ã³¸®
+            // ì²´ë ¥ì´ 0 ì´í•˜ë¼ë©´ ì‚¬ë§ ì²˜ë¦¬
             if (CurrentHealth <= 0f)
             {
                 CurrentHealth = 0;

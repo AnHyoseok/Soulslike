@@ -9,29 +9,31 @@ using UnityEngine.Events;
 namespace BS.Player
 {
     /// <summary>
-    /// Player¸¦ ÄÁÆ®·Ñ
+    /// Playerë¥¼ ì»¨íŠ¸ë¡¤
     /// </summary>
     public class PlayerController : MonoBehaviour
     {
-        // TODO :: newinput »ç¿ëÇØº¸ÀÚ
-        // TODO :: ScriptableObject¸¦ »ç¿ëÇØº¸ÀÚ (movespeed)
+        // TODO :: newinput ì‚¬ìš©í•´ë³´ì
+        // TODO :: ScriptableObjectë¥¼ ì‚¬ìš©í•´ë³´ì (movespeed)
         #region Variables
         // Camera
-        public Camera mainCamera;                           // Camera º¯¼ö
+        public Camera mainCamera;                           // Camera ë³€ìˆ˜
 
         // Debug
-        public Color rayColor = Color.red;                  // Ray »ö
-        public float rayDuration = 1f;                      // Ray Áö¼Ó ½Ã°£
+        public Color rayColor = Color.red;                  // Ray ìƒ‰
+        public float rayDuration = 1f;                      // Ray ì§€ì† ì‹œê°„
+        private Vector3? gizmoPosition;                     // Nullableë¡œ ì„ ì–¸
+
 
         // Move
-        public float moveSpeed = 5f;                        // SD ÀÌµ¿ ¼Óµµ
-        public float rotationDuration = 0.1f;               // È¸Àü Áö¼Ó ½Ã°£
+        public float moveSpeed = 5f;                        // SD ì´ë™ ì†ë„
+        public float rotationDuration = 0.1f;               // íšŒì „ ì§€ì† ì‹œê°„
 
         // Dash
-        public float dashDuration = 0.2f;                   // ´ë½¬ ½Ã°£
-        public float dashCoolTime = 3f;                     // SD ´ë½¬ ÄğÅ¸ÀÓ
-        public float dashDistance = 5f;                     // ´ë½¬ °Å¸®
-        public float invincibilityDuration = 0.5f;          // ¹«Àû ½Ã°£
+        public float dashDuration = 0.2f;                   // ëŒ€ì‰¬ ì‹œê°„
+        public float dashCoolTime = 3f;                     // SD ëŒ€ì‰¬ ì¿¨íƒ€ì„
+        public float dashDistance = 5f;                     // ëŒ€ì‰¬ ê±°ë¦¬
+        public float invincibilityDuration = 0.5f;          // ë¬´ì  ì‹œê°„
 
         // State
         PlayerState ps;
@@ -63,19 +65,19 @@ namespace BS.Player
         }
 
         #region Input
-        // Å° ÀÔ·Â Ã³¸®
+        // í‚¤ ì…ë ¥ ì²˜ë¦¬
         void HandleInput()
         {
-            // TODO :: ¹æÇâÅ°¸¦ »ç¿ëÇÑ ÀÌµ¿µµ ±¸ÇöÇØº¸ÀÚ
-            // ¸¶¿ì½º ¿ìÅ¬¸¯ ÀÌµ¿
+            // TODO :: ë°©í–¥í‚¤ë¥¼ ì‚¬ìš©í•œ ì´ë™ë„ êµ¬í˜„í•´ë³´ì
+            // ë§ˆìš°ìŠ¤ ìš°í´ë¦­ ì´ë™
             if (Input.GetMouseButton(1))
             {
                 ps.isMoving = true;
                 //SetMoveState();
-                // BlockingAnim ÁøÇàÁß¿¡´Â Return ÇÏµµ·Ï
-                if (ps.isBlockingAnim || ps.isAttack) return;
+                // BlockingAnim ì§„í–‰ì¤‘ì—ëŠ” Return í•˜ë„ë¡
+                if (ps.isBlockingAnim) return;
 
-                // TODO :: CursorManager¿¡¼­ ¹İÈ¯ÇÏ¸é ÁÁÀ»µí
+                // TODO :: CursorManagerì—ì„œ ë°˜í™˜í•˜ë©´ ì¢‹ì„ë“¯
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit[] hits = Physics.RaycastAll(ray);
 
@@ -85,6 +87,7 @@ namespace BS.Player
                     {
                         ps.targetPosition = hit.point;
                         RotatePlayer();
+                        gizmoPosition = hit.point; // Gizmo ìœ„ì¹˜ ì €ì¥
 
                         Debug.DrawRay(ray.origin, ray.direction * hit.distance, rayColor, rayDuration);
                         break;
@@ -95,11 +98,12 @@ namespace BS.Player
         #endregion
 
         #region Move
-        // TODO :: DOTween Àû¿ëÇØº¸ÀÚ
-        // Player ÀÌµ¿
+        // TODO :: DOTween ì ìš©í•´ë³´ì
+        // Player ì´ë™
         void MoveToTarget()
         {
-            if (ps.isMoving && !ps.isDashing && !ps.isBlockingAnim && !ps.isAttack)
+            if (ps.isAttack) return;
+            if (ps.isMoving && !ps.isDashing && !ps.isBlockingAnim)
             {
                 SetMoveState();
                 transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);
@@ -112,17 +116,17 @@ namespace BS.Player
             }
         }
 
-        // DoTween È¸Àü Ã³¸®
+        // DoTween íšŒì „ ì²˜ë¦¬
         void RotatePlayer()
         {
-            // ¸ñÇ¥ È¸Àü°ª °è»ê
+            // ëª©í‘œ íšŒì „ê°’ ê³„ì‚°
             Vector3 direction = (ps.targetPosition - transform.position).normalized;
             Quaternion targetRotation = Quaternion.LookRotation(direction);
 
             transform.DORotateQuaternion(targetRotation, rotationDuration);
         }
 
-        // Player »óÅÂ º¯°æ
+        // Player ìƒíƒœ ë³€ê²½
         void SetMoveState()
         {
             if (Input.GetKey(KeyCode.C))
@@ -142,7 +146,7 @@ namespace BS.Player
             }
         }
 
-        // Player ¼Óµµ º¯°æ
+        // Player ì†ë„ ë³€ê²½
         void SetMoveSpeed(float rate)
         {
             ps.inGameMoveSpeed = moveSpeed * rate;
@@ -150,7 +154,7 @@ namespace BS.Player
         #endregion
 
         #region Dash
-        // ´ë½¬
+        // ëŒ€ì‰¬
         void DoDash()
         {
             if (!ps.isDashing && ps.currentDashCoolTime <= 0f && !ps.isBlockingAnim)
@@ -185,7 +189,7 @@ namespace BS.Player
             }
         }
 
-        // ´ë½¬ ³¡
+        // ëŒ€ì‰¬ ë
         void EndDash()
         {
             ps.isDashing = false;
@@ -207,13 +211,13 @@ namespace BS.Player
             }
         }
 
-        // ´ë½¬ ³¡ ¹«ÀûÇØÁ¦ => TODO :: ÇÇ°İ¸é¿ªÀ¸·Î ¹Ù²Ü¼öÀÖÀ¸¸é ¹Ù²ÙÀÚ
+        // ëŒ€ì‰¬ ë ë¬´ì í•´ì œ => TODO :: í”¼ê²©ë©´ì—­ìœ¼ë¡œ ë°”ê¿€ìˆ˜ìˆìœ¼ë©´ ë°”ê¾¸ì
         void DisableInvincibility()
         {
             ps.isInvincible = false;
         }
 
-        // ´ë½¬ ÄğÅ¸ÀÓ
+        // ëŒ€ì‰¬ ì¿¨íƒ€ì„
         IEnumerator CoDashCooldown()
         {
             ps.currentDashCoolTime = dashCoolTime;
@@ -225,7 +229,16 @@ namespace BS.Player
             }
         }
         #endregion
+
+        private void OnDrawGizmos()
+        {
+            if (gizmoPosition.HasValue)
+            {
+                Gizmos.color = Color.red; // Gizmo ìƒ‰ìƒ ì„¤ì •
+                Gizmos.DrawSphere(gizmoPosition.Value, 0.2f); // ë°˜ì§€ë¦„ 0.2ì˜ êµ¬ì²´ ê·¸ë¦¬ê¸°
+            }
+        }
     }
 }
 
-// TODO :: ÇÃ·¹ÀÌ¾î ¹Ù´ÚÀ» ÂïÀ¸¸é IDLE·Î ÀÌµ¿ÇÏ´Â ¹ö±× FIX
+// TODO :: í”Œë ˆì´ì–´ ë°”ë‹¥ì„ ì°ìœ¼ë©´ IDLEë¡œ ì´ë™í•˜ëŠ” ë²„ê·¸ FIX

@@ -3,28 +3,29 @@ using BS.State;
 using System.Collections;
 using UnityEngine;
 
-public class PlayerAttackSBM : StateMachineBehaviour
+public class PlayerAttackSMB : StateMachineBehaviour
 {
     PlayerStateMachine psm;
     PlayerState ps;
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (psm == null) // ÃÊ±âÈ­µÇÁö ¾Ê¾Ò´Ù¸é Ä³½Ì
+        if (psm == null) // ì´ˆê¸°í™”ë˜ì§€ ì•Šì•˜ë‹¤ë©´ ìºì‹±
         {
-            psm = PlayerStateMachine.Instance; // Singleton »ç¿ë
+            psm = PlayerStateMachine.Instance; // Singleton ì‚¬ìš©
         }
-        if (ps == null) // ÃÊ±âÈ­µÇÁö ¾Ê¾Ò´Ù¸é Ä³½Ì
+        if (ps == null) // ì´ˆê¸°í™”ë˜ì§€ ì•Šì•˜ë‹¤ë©´ ìºì‹±
         {
-            ps = PlayerState.Instance; // Singleton »ç¿ë
+            ps = PlayerState.Instance; // Singleton ì‚¬ìš©
+            //ps.isAttack = true;
         }
-
-        // Combo °ø°İÀÌ 4¹øÂ° ¸ğ¼ÇÀÎ °æ¿ì
+        //Debug.Log("TEST ENTER");
+        // Combo ê³µê²©ì´ 4ë²ˆì§¸ ëª¨ì…˜ì¸ ê²½ìš°
         if (ps.ComboAttackIndex == 4)
         {
             ps.ComboAttackIndex = 1;
         }
-        // Combo °ø°İÀÌ 1,2,3¹øÂ° ¸ğ¼ÇÀÎ °æ¿ì
+        // Combo ê³µê²©ì´ 1,2,3ë²ˆì§¸ ëª¨ì…˜ì¸ ê²½ìš°
         else
         {
             ps.ComboAttackIndex++;
@@ -57,7 +58,6 @@ public class PlayerAttackSBM : StateMachineBehaviour
             }
             else if (ps.isBlocking)
             {
-                Debug.Log("BLOCK");
                 psm.ChangeState(psm.BlockState);
             }
         }
@@ -91,12 +91,13 @@ public class PlayerAttackSBM : StateMachineBehaviour
     {
         if (psm != null)
         {
-            //TODO :: ÇÏµåÄÚµù
+            //TODO :: í•˜ë“œì½”ë”©
             animator.SetFloat("StateTime", 0.15f);
         }
-        if (ps != null) // ÃÊ±âÈ­µÇÁö ¾Ê¾Ò´Ù¸é Ä³½Ì
+        if (ps != null) // ì´ˆê¸°í™”ë˜ì§€ ì•Šì•˜ë‹¤ë©´ ìºì‹±
         {
             ps.isAttack = false;
+            //Debug.Log("TEST Exit");
         }
     }
 }
