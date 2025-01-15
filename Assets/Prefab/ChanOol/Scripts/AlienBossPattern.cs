@@ -3,23 +3,29 @@ using UnityEngine;
 
 public class AlienBossPattern : MonoBehaviour
 {
-    public Animator animator;              // º¸½º ¾Ö´Ï¸ŞÀÌÅÍ
+    public Animator animator;              // ë³´ìŠ¤ ì• ë‹ˆë©”ì´í„°
 
-    public GameObject pt1Particle;       // ¹ß»çÃ¼ ÇÁ¸®ÆÕ
-    public Transform pt1SpawnPoint;        // ¹ß»çÃ¼ »ı¼º À§Ä¡
-    public GameObject pt1AttackRange;      // °ø°İ¹üÀ§ ÇÁ¸®ÆÕ
+    public GameObject pt1Particle;         // ë°œì‚¬ì²´ í”„ë¦¬íŒ¹
+    public Transform pt1SpawnPoint;        // ë°œì‚¬ì²´ ìƒì„± ìœ„ì¹˜
+    public GameObject pt1AttackRange;      // ê³µê²©ë²”ìœ„ í”„ë¦¬íŒ¹
 
-    public GameObject pt2Particle;       // ¹ß»çÃ¼ ÇÁ¸®ÆÕ
-    public Transform pt2SpawnPoint;        // ¹ß»çÃ¼ »ı¼º À§Ä¡
-    public GameObject pt2AttackRange;      // °ø°İ¹üÀ§ ÇÁ¸®ÆÕ
+    public GameObject pt2Particle;         // ë°œì‚¬ì²´ í”„ë¦¬íŒ¹
+    public Transform pt2SpawnPoint;        // ë°œì‚¬ì²´ ìƒì„± ìœ„ì¹˜
+    public GameObject pt2AttackRange;      // ê³µê²©ë²”ìœ„ í”„ë¦¬íŒ¹
 
-    public GameObject pt3Particle;       // ¹ß»çÃ¼ ÇÁ¸®ÆÕ
-    public Transform pt3SpawnPoint;        // ¹ß»çÃ¼ »ı¼º À§Ä¡
-    public GameObject pt3AttackRange;      // °ø°İ¹üÀ§ ÇÁ¸®ÆÕ
+    public GameObject pt3Particle;         // ë°œì‚¬ì²´ í”„ë¦¬íŒ¹
+    public Transform pt3SpawnPoint;        // ë°œì‚¬ì²´ ìƒì„± ìœ„ì¹˜
+    public GameObject pt3AttackRange;      // ê³µê²©ë²”ìœ„ í”„ë¦¬íŒ¹
 
-    public GameObject pt4Particle;       // ¹ß»çÃ¼ ÇÁ¸®ÆÕ
-    public Transform pt4SpawnPoint;        // ¹ß»çÃ¼ »ı¼º À§Ä¡
-    public GameObject pt4AttackRange;      // °ø°İ¹üÀ§ ÇÁ¸®ÆÕ
+    public GameObject pt4Particle;         // ë°œì‚¬ì²´ í”„ë¦¬íŒ¹
+    public Transform pt4SpawnPoint;        // ë°œì‚¬ì²´ ìƒì„± ìœ„ì¹˜
+    public GameObject pt4AttackRange;      // ê³µê²©ë²”ìœ„ í”„ë¦¬íŒ¹
+
+    public GameObject pt5Particle;         // ì´í™íŠ¸ í”„ë¦¬íŒ¹
+    public Transform pt5SpawnPoint;        // ë°œì‚¬ì²´ ìƒì„± ìœ„ì¹˜
+    public GameObject pt5AttackRange;      // ê³µê²©ë²”ìœ„ í”„ë¦¬íŒ¹
+    public float pt5radius = 5f;           // ê³µê²©ë²”ìœ„ ë°˜ì§€ë¦„
+    public int pt5spawnCount = 5;          // ì´í™íŠ¸ ê°¯ìˆ˜
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,124 +36,157 @@ public class AlienBossPattern : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))        // °ø°İÆĞÅÏ1
+        if (Input.GetKeyDown(KeyCode.Q))        // ê³µê²©íŒ¨í„´1
         {
             StartCoroutine(Pattern1());
         }
-        else if (Input.GetKeyDown(KeyCode.W))   // °ø°İÆĞÅÏ2
+        else if (Input.GetKeyDown(KeyCode.W))   // ê³µê²©íŒ¨í„´2
         {
             StartCoroutine(Pattern2());
         }
-        else if (Input.GetKeyDown(KeyCode.E))   // °ø°İÆĞÅÏ3
+        else if (Input.GetKeyDown(KeyCode.E))   // ê³µê²©íŒ¨í„´3
         {
             StartCoroutine(Pattern3());
         }
-        else if (Input.GetKeyDown(KeyCode.R))   // °ø°İÆĞÅÏ4
+        else if (Input.GetKeyDown(KeyCode.R))   // ê³µê²©íŒ¨í„´4
         {
             StartCoroutine(Pattern4());
         }
+        else if (Input.GetKeyDown(KeyCode.T))   // ê³µê²©íŒ¨í„´5
+        {
+            StartCoroutine(Pattern5());
+        }
     }
     
-    // °ø°İÆĞÅÏ1 : ºÎÃ¤²Ã °ø°İ
+    // ê³µê²©íŒ¨í„´1 : ë¶€ì±„ê¼´ ê³µê²©
     public IEnumerator Pattern1()
     {
-        // °ø°İ¹üÀ§ »ı¼º
+        // ê³µê²©ë²”ìœ„ í‘œì‹œ
         Instantiate(pt1AttackRange, new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z + 5.0f), Quaternion.Euler(0f, 67.5f, 180f));
 
-        // µô·¹ÀÌ
         yield return new WaitForSeconds(1.0f);
 
-        animator.SetInteger("Pattern", 1); // "Pattern" °ªÀ» 1·Î ¼³Á¤
+        animator.SetInteger("Pattern", 1); // ì• ë‹ˆë©”ì´í„° "Pattern" ê°’ì„ 1ë¡œ ì„¤ì •
 
         StartCoroutine(pt1ProjectileTiming(0.4f));
 
-        StartCoroutine(PatternReset(0.5f)); // ÀÏÁ¤ ½Ã°£ ÈÄ "Pattern" °ª 0À¸·Î ÃÊ±âÈ­
+        StartCoroutine(PatternReset(0.5f)); // ì¼ì •ì‹œê°„ í›„ "Pattern" ê°’ì„ 0ìœ¼ë¡œ ì´ˆê¸°í™”
     }
 
-    // °ø°İÆĞÅÏ2 : ¸Ê ÀüÃ¼°ø°İ(¿øÇü)
+    // ê³µê²©íŒ¨í„´2 : ë§µ ì „ì²´ê³µê²©(ì›í˜•)
     public IEnumerator Pattern2()
     {
-        // °ø°İ¹üÀ§ »ı¼º
+        // ê³µê²©ë²”ìœ„ í‘œì‹œ
         Instantiate(pt2AttackRange, transform.position, Quaternion.Euler(0f, 0f, 0f));
 
-        // µô·¹ÀÌ
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(2.0f);
 
-        animator.SetInteger("Pattern", 2); // "Pattern" °ªÀ» 2·Î ¼³Á¤
+        animator.SetInteger("Pattern", 2); // ì• ë‹ˆë©”ì´í„° "Pattern" ê°’ì„ 2ë¡œ ì„¤ì •
 
-        //yield return StartCoroutine(pt2ProjectileTiming(1.1f));
         yield return new WaitForSeconds(1.1f);
 
-        animator.SetInteger("Pattern", 0); // "Pattern" °ª 0À¸·Î ÃÊ±âÈ­
+        animator.SetInteger("Pattern", 0); // ì• ë‹ˆë©”ì´í„° "Pattern" ê°’ì„ 0ìœ¼ë¡œ ì´ˆê¸°í™”
 
         Instantiate(pt2Particle, pt2SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
-
-        //yield return StartCoroutine(PatternReset(0.5f)); // ÀÏÁ¤ ½Ã°£ ÈÄ "Pattern" °ª 0À¸·Î ÃÊ±âÈ­
     }
 
-    // °ø°İÆĞÅÏ3 : ¸Ê ÀüÃ¼°ø°İ(ÆÄµµÇü)
+    // ê³µê²©íŒ¨í„´3 : ë§µ ì „ì²´ê³µê²©(íŒŒë„í˜•)
     public IEnumerator Pattern3()
     {
+        // ê³µê²©ë²”ìœ„ í‘œì‹œ
         StartCoroutine(pt3AttackRanges());
 
-        // µô·¹ÀÌ
         yield return new WaitForSeconds(1.5f);
 
-        animator.SetInteger("Pattern", 3); // "Pattern" °ªÀ» 3·Î ¼³Á¤
+        animator.SetInteger("Pattern", 3); // "Pattern" ê°’ì„ 3ë¡œ ì„¤ì •
 
         StartCoroutine(pt3Projectiles());
 
-        StartCoroutine(PatternReset(0.5f)); // ÀÏÁ¤ ½Ã°£ ÈÄ "Pattern" °ª 0À¸·Î ÃÊ±âÈ­
+        StartCoroutine(PatternReset(0.5f)); // ì¼ì • ì‹œê°„ í›„ "Pattern" ê°’ 0ìœ¼ë¡œ ì´ˆê¸°í™”
     }
 
+    // ê³µê²©íŒ¨í„´3 ê³µê²©ë²”ìœ„ í‘œì‹œ
     private IEnumerator pt3AttackRanges()
     {
         for (int i = 0; i < 5; i++)
         {
-            // ÇöÀç À§Ä¡¿¡¼­ xÃàÀ¸·Î -20 * i ¸¸Å­ ÀÌµ¿
-            Vector3 spawnPosition = pt3SpawnPoint.position + new Vector3(20f * i, 0f, 0f);
+            // í˜„ì¬ ìœ„ì¹˜ì—ì„œ xì¶•ìœ¼ë¡œ -20 * i ë§Œí¼ ì´ë™
+            Vector3 spawnPosition = pt3SpawnPoint.position + new Vector3(10f * i, 0f, 0f);
 
-            // pt3AttackRange »ı¼º
+            // pt3AttackRange ìƒì„±
             Instantiate(pt3AttackRange, spawnPosition, Quaternion.Euler(0f, 0f, 0f));
 
-            // µô·¹ÀÌ
+            // ë”œë ˆì´
             yield return new WaitForSeconds(0.3f);
         }
     }
 
+    // ê³µê²©íŒ¨í„´3 ê³µê²© ì´í™íŠ¸
     private IEnumerator pt3Projectiles()
     {
         for (int i = 0; i < 5; i++)
         {
-            // ÇöÀç À§Ä¡¿¡¼­ xÃàÀ¸·Î -20 * i ¸¸Å­ ÀÌµ¿
-            Vector3 spawnPosition = pt3SpawnPoint.position + new Vector3(20f * i, 0f, 0f);
+            // í˜„ì¬ ìœ„ì¹˜ì—ì„œ xì¶•ìœ¼ë¡œ -20 * i ë§Œí¼ ì´ë™
+            Vector3 spawnPosition = pt3SpawnPoint.position + new Vector3(10f * i, 0f, 0f);
 
-            // pt3Projectile »ı¼º
+            // pt3Projectile ìƒì„±
             GameObject spawnedObject = Instantiate(pt3Particle, spawnPosition, Quaternion.Euler(0f, 0f, 0f));
 
-            // µô·¹ÀÌ
+            // ë”œë ˆì´
             yield return new WaitForSeconds(0.3f);
 
             Destroy(spawnedObject, 1.0f);
         }
     }
 
-    // °ø°İÆĞÅÏ4 : ±ÙÁ¢ °ø°İ
+    // ê³µê²©íŒ¨í„´4 : ê·¼ì ‘ ê³µê²©
     public IEnumerator Pattern4()
     {
-        // °ø°İ¹üÀ§ »ı¼º
+        // ê³µê²©ë²”ìœ„ í‘œì‹œ
         Instantiate(pt4AttackRange, new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z + 2.0f), Quaternion.Euler(0f, 0f, 0f));
 
-        // µô·¹ÀÌ
         yield return new WaitForSeconds(1.5f);
 
-        animator.SetInteger("Pattern", 4); // "Pattern" °ªÀ» 4·Î ¼³Á¤
+        animator.SetInteger("Pattern", 4); // "Pattern" ê°’ì„ 4ë¡œ ì„¤ì •
 
-        yield return new WaitForSeconds(0.5f);
-
-        animator.SetInteger("Pattern", 0); // "Pattern" °ª 0À¸·Î ÃÊ±âÈ­
+        yield return new WaitForSeconds(0.2f);
 
         Instantiate(pt4Particle, pt4SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
+
+        yield return new WaitForSeconds(0.3f);
+
+        animator.SetInteger("Pattern", 0); // "Pattern" ê°’ 0ìœ¼ë¡œ ì´ˆê¸°í™”
+
+        
+    }
+
+    // ê³µê²©íŒ¨í„´5 : ë‚™ì„ ê³µê²©
+    public IEnumerator Pattern5()
+    {
+        animator.SetInteger("Pattern", 5); // "Pattern" ê°’ì„ 5ë¡œ ì„¤ì •
+
+        yield return new WaitForSeconds(1.0f);
+
+        animator.SetInteger("Pattern", 0); // "Pattern" ê°’ 0ìœ¼ë¡œ ì´ˆê¸°í™”
+
+        // ê³µê²©ë²”ìœ„ í‘œì‹œ
+        StartCoroutine(InstantiatePt5AttackRange());
+
+        //Instantiate(pt4Particle, pt4SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
+    }
+
+    private IEnumerator InstantiatePt5AttackRange()
+    {
+        for (int i = 0; i < pt5spawnCount; i++)
+        {
+            // ì›í˜• ë²”ìœ„ ë‚´ ëœë¤í•œ ìœ„ì¹˜ ê³„ì‚°
+            Vector2 randomPos = Random.insideUnitCircle * pt5radius;
+
+            // í”„ë¦¬íŒ¹ ìƒì„± (2D ìœ„ì¹˜ë¥¼ 3Dë¡œ ë³€í™˜)
+            Instantiate(pt5AttackRange, new Vector3(randomPos.x, 0, randomPos.y), Quaternion.identity);
+
+            yield return new WaitForSeconds(0.2f);
+        }
     }
 
     private IEnumerator PatternReset(float delay)

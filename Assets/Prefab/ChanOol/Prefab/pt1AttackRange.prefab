@@ -103,7 +103,7 @@ MonoBehaviour:
   radius: 5
   segments: 20
   startScale: {x: 1, y: 1, z: 1}
-  targetScale: {x: 11, y: 11, z: 11}
+  targetScale: {x: 8, y: 8, z: 8}
   scaleSpeed: 20
   material: {fileID: 2100000, guid: 348972ca4826f564c9d9cc7bf1416310, type: 2}
   startAlpha: 1

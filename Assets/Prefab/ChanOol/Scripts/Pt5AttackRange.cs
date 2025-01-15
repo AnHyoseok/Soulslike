@@ -1,28 +1,32 @@
+using System.Collections;
 using UnityEngine;
 
 public class Pt5AttackRange : MonoBehaviour
 {
-    public float growSpeed = 2f; // ¼ºÀå ¼Óµµ
-    private bool isGrowing = false; // ¼ºÀå ÁßÀÎÁö È®ÀÎ
+    public float growSpeed = 2f; // ì„±ì¥ ì†ë„
+    private bool isGrowing = false; // ì„±ì¥ ì¤‘ì¸ì§€ í™•ì¸
+    private bool isShrinking = false; // ì¶•ì†Œ ì¤‘ì¸ì§€ í™•ì¸
+    public GameObject pt5Particle;
 
-    [SerializeField] private Vector3 originalScale; // ÃÊ±â Å©±â
-    [SerializeField] private Vector3 targetScale; // ÃÊ±â Å©±â
+    [SerializeField] private Vector3 originalScale; // ì´ˆê¸° í¬ê¸°
+    [SerializeField] private Vector3 targetScale; // ëª©í‘œ í¬ê¸°
 
-    // ÆäÀÌµå È¿°ú
+    // í˜ì´ë“œ íš¨ê³¼
     private Material material;
-    [SerializeField] private float startAlpha = 1f; // ½ÃÀÛ ¾ËÆÄ °ª
-    [SerializeField] private float targetAlpha = 0f; // ¸ñÇ¥ ¾ËÆÄ °ª
-    [SerializeField] private float fadeSpeed = 0.5f; // ÃÊ´ç º¯°æ ¼Óµµ
-    private bool isFading = true; // ¾ËÆÄ °ª ÀüÈ¯ È°¼ºÈ­ ¿©ºÎ
+    [SerializeField] private float startAlpha = 1f; // ì‹œì‘ ì•ŒíŒŒ ê°’
+    [SerializeField] private float targetAlpha = 0f; // ëª©í‘œ ì•ŒíŒŒ ê°’
+    [SerializeField] private float fadeSpeed = 0.5f; // ì´ˆë‹¹ ë³€ê²½ ì†ë„
+    private bool isFading = true; // ì•ŒíŒŒ ê°’ ì „í™˜ í™œì„±í™” ì—¬ë¶€
 
     private void Start()
     {
-        // ÇöÀç Å©±â¸¦ ÃÊ±â Å©±â·Î ÀúÀå
+        // í˜„ì¬ í¬ê¸°ë¥¼ ì´ˆê¸° í¬ê¸°ë¡œ ì €ì¥
         originalScale = transform.localScale;
 
-        StartGrowing(transform.localScale, 5f);
+        // ì˜ˆ: ì¶•ì†Œ ì‹œì‘
+        StartShrinking(transform.localScale, 0.01f);
 
-        // ÆäÀÌµå È¿°ú
+        // í˜ì´ë“œ íš¨ê³¼
         material = GetComponent<MeshRenderer>().material;
         Color color = material.color;
         color.a = startAlpha;
@@ -31,20 +35,20 @@ public class Pt5AttackRange : MonoBehaviour
 
     private void Update()
     {
-        UpdateScale();
+        StartCoroutine(UpdateScale());
 
-        // ´Ù Ä¿Áö°í ÀÏÁ¤½Ã°£ ÈÄ ¿ÀºêÁ§Æ® »èÁ¦
-        if (isGrowing == false)
+        // ë‹¤ ì‘ì•„ì§€ê³  ì¼ì • ì‹œê°„ í›„ ì˜¤ë¸Œì íŠ¸ ì‚­ì œ
+        if (!isGrowing && !isShrinking)
         {
-            // ÆäÀÌµå È¿°ú
+            // í˜ì´ë“œ íš¨ê³¼
             if (isFading)
             {
-                // ¾ËÆÄ °ª ÀüÈ¯ ·ÎÁ÷
+                // ì•ŒíŒŒ ê°’ ì „í™˜ ë¡œì§
                 Color color = material.color;
                 color.a = Mathf.MoveTowards(color.a, targetAlpha, fadeSpeed * Time.deltaTime);
                 material.color = color;
 
-                // ¸ñÇ¥ ¾ËÆÄ °ª¿¡ µµ´ŞÇÏ¸é ÀüÈ¯ ¸ØÃã
+                // ëª©í‘œ ì•ŒíŒŒ ê°’ì— ë„ë‹¬í•˜ë©´ ì „í™˜ ë©ˆì¶¤
                 if (Mathf.Approximately(color.a, targetAlpha))
                 {
                     isFading = false;
@@ -55,27 +59,41 @@ public class Pt5AttackRange : MonoBehaviour
         }
     }
 
-    public void StartGrowing(Vector3 StartScale, float Range)
+    public void StartGrowing(Vector3 startScale, float range)
     {
-        // ¸ñÇ¥ Å©±â ¼³Á¤
-        //targetScale = StartScale * Range;
-        targetScale = new Vector3(StartScale.x * Range, StartScale.y, StartScale.z * Range);
-        // ¼ºÀå ½ÃÀÛ
+        // ëª©í‘œ í¬ê¸° ì„¤ì •
+        targetScale = new Vector3(startScale.x * range, startScale.y, startScale.z * range);
         isGrowing = true;
+        isShrinking = false;
     }
-    public void UpdateScale()
+
+    public void StartShrinking(Vector3 startScale, float shrinkFactor)
     {
-        if (isGrowing)
+        // ëª©í‘œ í¬ê¸° ì„¤ì •
+        targetScale = new Vector3(startScale.x * shrinkFactor, startScale.y, startScale.z * shrinkFactor);
+        isShrinking = true;
+        isGrowing = false;
+    }
+
+    public IEnumerator UpdateScale()
+    {
+        if (isGrowing || isShrinking)
         {
-            // ºÎµå·´°Ô Å©±â Áõ°¡
+            // ë¶€ë“œëŸ½ê²Œ í¬ê¸° ë³€ê²½
             transform.localScale = Vector3.MoveTowards(transform.localScale, targetScale, growSpeed * Time.deltaTime);
 
-            // ¸ñÇ¥ Å©±â¿¡ µµ´ŞÇß´ÂÁö È®ÀÎ
+            // ëª©í‘œ í¬ê¸°ì— ë„ë‹¬í–ˆëŠ”ì§€ í™•ì¸
             if (Vector3.Distance(transform.localScale, targetScale) < 0.01f)
             {
-                isGrowing = false; // ¼ºÀå Á¾·á
-                Debug.Log("Reached target size!");
+                isGrowing = false;
+                isShrinking = false; // ì¶•ì†Œ ì¢…ë£Œ
+                //Debug.Log("Reached target size!");
+
+                GameObject gameobject = Instantiate(pt5Particle, transform.position, Quaternion.identity);
+
+                yield return new WaitForSeconds(2f);
             }
         }
     }
 }
+

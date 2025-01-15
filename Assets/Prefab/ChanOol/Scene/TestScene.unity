@@ -423,29 +423,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 179799331}
-  - component: {fileID: 179799330}
   m_Layer: 0
-  m_Name: pt5Test
+  m_Name: pt5SpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &179799330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 179799329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64795400b9f30bb468033dc35340580a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 2397058133957700630, guid: 053bdeaa5285a7a4fa8e9313ddd9cb67, type: 3}
-  radius: 12
-  spawnCount: 10
 --- !u!4 &179799331
 Transform:
   m_ObjectHideFlags: 0
@@ -454,12 +438,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 179799329}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 72}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 7881019165355029541}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &202958772
 GameObject:
@@ -5529,7 +5513,7 @@ GameObject:
   - component: {fileID: 1660146192}
   m_Layer: 0
   m_Name: Walls
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6770,7 +6754,7 @@ Transform:
   m_GameObject: {fileID: 2075190871}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -90, y: 0, z: 100}
+  m_LocalPosition: {x: -80, y: 0, z: 100}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7074,7 +7058,7 @@ GameObject:
   - component: {fileID: 2125904648}
   m_Layer: 6
   m_Name: PlayerController
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7103,7 +7087,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6ad802c6e919da4f8e9a70e4df29368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isIdle: 0
   targetPosition: {x: 0, y: 0, z: 0}
+  isMovable: 1
   isMoving: 0
   inGameMoveSpeed: 0
   isSprinting: 0
@@ -9501,6 +9487,11 @@ MonoBehaviour:
   pt4Particle: {fileID: 361087622561740704, guid: 3bacfc785c87dd44591d90b7203ac7ac, type: 3}
   pt4SpawnPoint: {fileID: 1811364596}
   pt4AttackRange: {fileID: 6750464613301379390, guid: a59444e775f172e4582ceb7a927b0f62, type: 3}
+  pt5Particle: {fileID: 6317669067203160972, guid: c7eee66d58d79c447bf1babb0eb90385, type: 3}
+  pt5SpawnPoint: {fileID: 179799331}
+  pt5AttackRange: {fileID: 2397058133957700630, guid: 053bdeaa5285a7a4fa8e9313ddd9cb67, type: 3}
+  pt5radius: 25
+  pt5spawnCount: 40
 --- !u!1 &4523729049151652951
 GameObject:
   m_ObjectHideFlags: 0
@@ -11623,6 +11614,7 @@ Transform:
   - {fileID: 1357734827}
   - {fileID: 2075190872}
   - {fileID: 1811364596}
+  - {fileID: 179799331}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7881019165355029542
@@ -12497,4 +12489,3 @@ SceneRoots:
   - {fileID: 7881019165355029541}
   - {fileID: 1332223530}
   - {fileID: 2125904654}
-  - {fileID: 179799331}
