@@ -8,8 +8,6 @@ namespace BS.Enemy.Set
         private SetProperty property;
         private bool isAttacking;
 
-        private float damage = 5f;
-
         public SetAttackState(SetProperty property)
         {
             this.property = property;
@@ -25,23 +23,23 @@ namespace BS.Enemy.Set
         public void Update()
         {
 
-            // ÇÃ·¹ÀÌ¾î¿ÍÀÇ °Å¸® °è»ê
+            // í”Œë ˆì´ì–´ì™€ì˜ ê±°ë¦¬ ê³„ì‚°
             float distance = Vector3.Distance(property.Player.position, property.Controller.transform.position);
 
             if (!isAttacking)
             {
-                // °Å¸®¿¡ µû¶ó °ø°İ ÆĞÅÏ ¼±ÅÃ
+                // ê±°ë¦¬ì— ë”°ë¼ ê³µê²© íŒ¨í„´ ì„ íƒ
                 SelectAndPerformAttack(distance);
             }
 
             if (AttackStateChecker())
             {
                 float animTime = property.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                //Debug.Log($"{animTime} ¾Ö´Ï¸ŞÀÌ¼Ç Å¸ÀÓ");
-                // °ø°İÀÌ ³¡³ª¸é Idle »óÅÂ·Î ÀüÈ¯
+                //Debug.Log($"{animTime} ì• ë‹ˆë©”ì´ì…˜ íƒ€ì„");
+                // ê³µê²©ì´ ëë‚˜ë©´ Idle ìƒíƒœë¡œ ì „í™˜
                 if (animTime >= 1)
                 {
-                    property.Controller.SetState(new SetIdleState(property));
+                    property.Controller.SetState(new SetChaseState(property));
                 }
             }
         }
@@ -53,7 +51,7 @@ namespace BS.Enemy.Set
         }
 
         /// <summary>
-        /// ÇÃ·¹ÀÌ¾î¿ÍÀÇ °Å¸®¿¡ µû¶ó °ø°İ ÆĞÅÏ ¼±ÅÃ ¹× ¼öÇà
+        /// í”Œë ˆì´ì–´ì™€ì˜ ê±°ë¦¬ì— ë”°ë¼ ê³µê²© íŒ¨í„´ ì„ íƒ ë° ìˆ˜í–‰
         /// </summary>
         private void SelectAndPerformAttack(float distance)
         {

@@ -1,3 +1,4 @@
+using BS.Player;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,9 +8,9 @@ namespace BS.Enemy.Set
     [System.Serializable]
     public struct CastInfo
     {
-        public bool Hit;               // ¸Â¾Ò´ÂÁö ¿©ºÎ
-        public Vector3 Point;          // ¸ÂÀº ÁöÁ¡
-        public float Distance;         // µµ´Ş °Å¸®
+        public bool Hit;               // ë§ì•˜ëŠ”ì§€ ì—¬ë¶€
+        public Vector3 Point;          // ë§ì€ ì§€ì 
+        public float Distance;         // ë„ë‹¬ ê±°ë¦¬
     }
 
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
@@ -17,61 +18,97 @@ namespace BS.Enemy.Set
     {
         [Header("Circle")]
         [Range(0, 30)]
-        [SerializeField] private float viewRange = 10f;    // ¹üÀ§
+        [SerializeField] private float maxViewRange = 10f;  // ìµœì¢… ë²”ìœ„
         [Range(0, 360)]
-        [SerializeField] private float viewAngle = 90f;    // °¢µµ
+        [SerializeField] private float viewAngle = 90f;    // ê°ë„
 
         [Header("Target")]
-        [SerializeField] private LayerMask obstacleMask;   // Àå¾Ö¹° ´ë»ó
-        [SerializeField] private LayerMask targetMask;     // Å¸°Ù ´ë»ó
+        private LayerMask obstacleMask;   // ì¥ì• ë¬¼ ëŒ€ìƒ
+        private LayerMask targetMask;     // íƒ€ê²Ÿ ëŒ€ìƒ
 
         [Header("Mesh")]
-        [SerializeField] private Vector3 offset;           // À§Ä¡ º¸Á¤¿ë º¤ÅÍ
+        [SerializeField] private Vector3 offset = new Vector3(0f, 0.05f, 0f);           // ìœ„ì¹˜ ë³´ì •ìš© ë²¡í„°
         [Range(0.1f, 1f)]
-        [SerializeField] private float angleStep = 1f;     // ¼±ÀÌ Ç¥½ÃµÉ °¢µµ. ÀÛÀ» ¼ö·Ï ÃÎÃÎÇØÁü
+        [SerializeField] private float angleStep = 1f;     // ì„ ì´ í‘œì‹œë  ê°ë„. ì‘ì„ ìˆ˜ë¡ ì´˜ì´˜í•´ì§
 
+        [Header("Animation")]
+        [SerializeField] private float growthSpeed = 8.5f;   // ì˜ì—­ ì»¤ì§€ëŠ” ì†ë„
+
+        private float currentViewRange = 0f;               // í˜„ì¬ ë²”ìœ„
         private Mesh viewMesh;
         private MeshFilter meshFilter;
         [SerializeField] private Material material;
         private MeshRenderer meshRenderer;
 
-        private void Start()
+        private bool isAttacked = false;
+
+        private void Awake()
         {
+            //ì°¸ì¡°
             meshFilter = GetComponent<MeshFilter>();
             meshRenderer = GetComponent<MeshRenderer>();
+
+            //ì´ˆê¸°í™”
             viewMesh = new Mesh();
             meshFilter.mesh = viewMesh;
             meshRenderer.material = material;
+
+            //ë ˆì´ì–´ ë§ˆìŠ¤í¬ ì„¤ì •
+            obstacleMask = 1 << LayerMask.NameToLayer(SetProperty.OBSTACLE_LAYER);
+            targetMask = 1 << LayerMask.NameToLayer(SetProperty.PLAYER_LAYER);
         }
+
+        private void OnEnable()
+        {
+            Debug.Log($"OnEnable{currentViewRange}");
+            // ì˜ì—­ ì´ˆê¸°í™”
+            isAttacked = false;
+        }
+
         private void Update()
         {
+            //ê³µê²©í–ˆìœ¼ë©´(elseë¬¸ ì§„ì…ì‹œ) ì½”ë“œ ì‹¤í–‰ ë°©ì§€
+            if (isAttacked) return;
+
+            // ì˜ì—­ì´ ìµœëŒ€ ë²”ìœ„ì— ë„ë‹¬í•˜ì§€ ì•Šì•˜ìœ¼ë©´ ì²œì²œíˆ ì¦ê°€
+            if (currentViewRange < maxViewRange)
+            {
+                currentViewRange += Time.deltaTime * growthSpeed;
+                currentViewRange = Mathf.Min(currentViewRange, maxViewRange); // ìµœëŒ€ì¹˜ë¥¼ ë„˜ì§€ ì•Šë„ë¡ ì œí•œ
+            }
+            else
+            {
+                CheckForTargets();
+                currentViewRange = 0f;
+            }
+            // ì˜ì—­ ê·¸ë¦¬ê¸°
             DrawFieldOfView();
+
         }
 
         private void DrawFieldOfView()
         {
             List<Vector3> viewPoints = new List<Vector3>();
 
-            // Ã¹ ¹øÂ° ²ÀÁşÁ¡ (Áß½ÉÁ¡)
+            // ì²« ë²ˆì§¸ ê¼­ì§“ì  (ì¤‘ì‹¬ì )
             viewPoints.Add(Vector3.zero + offset);
 
-            // ºÎÃ¤²Ã °¢µµ °è»ê
+            // ë¶€ì±„ê¼´ ê°ë„ ê³„ì‚°
             int stepCount = Mathf.RoundToInt(viewAngle / angleStep);
-            float startAngle = -viewAngle * 0.5f + transform.eulerAngles.y; // È¸Àü °ª Àû¿ë
+            float startAngle = -viewAngle * 0.5f + transform.eulerAngles.y; // íšŒì „ ê°’ ì ìš©
 
             for (int i = 0; i <= stepCount; i++)
             {
                 float currentAngle = startAngle + (i * angleStep);
                 CastInfo castInfo = GetCastInfo(currentAngle);
 
-                // Transform ÁÂÇ¥°è¿¡ ¸Â°Ô º¯È¯
+                // Transform ì¢Œí‘œê³„ì— ë§ê²Œ ë³€í™˜
                 viewPoints.Add(transform.InverseTransformPoint(castInfo.Point));
             }
 
-            // Mesh °»½Å
+            // Mesh ê°±ì‹ 
             UpdateMesh(viewPoints);
         }
-
 
         private void UpdateMesh(List<Vector3> viewPoints)
         {
@@ -83,9 +120,9 @@ namespace BS.Enemy.Set
 
             for (int i = 0; i < vertexCount - 2; i++)
             {
-                triangles[i * 3] = 0;         // ½ÃÀÛÁ¡
-                triangles[i * 3 + 1] = i + 1; // Ã¹ ¹øÂ° ²ÀÁşÁ¡
-                triangles[i * 3 + 2] = i + 2; // µÎ ¹øÂ° ²ÀÁşÁ¡
+                triangles[i * 3] = 0;         // ì‹œì‘ì 
+                triangles[i * 3 + 1] = i + 1; // ì²« ë²ˆì§¸ ê¼­ì§“ì 
+                triangles[i * 3 + 2] = i + 2; // ë‘ ë²ˆì§¸ ê¼­ì§“ì 
             }
 
             viewMesh.vertices = vertices;
@@ -99,7 +136,7 @@ namespace BS.Enemy.Set
             CastInfo info;
             RaycastHit hit;
 
-            if (Physics.Raycast(transform.position + offset, dir, out hit, viewRange, obstacleMask))
+            if (Physics.Raycast(transform.position + offset, dir, out hit, currentViewRange, obstacleMask))
             {
                 info.Hit = true;
                 info.Point = hit.point;
@@ -108,11 +145,47 @@ namespace BS.Enemy.Set
             else
             {
                 info.Hit = false;
-                info.Point = transform.position + offset + dir * viewRange;
-                info.Distance = viewRange;
+                info.Point = transform.position + offset + dir * currentViewRange;
+                info.Distance = currentViewRange;
             }
 
             return info;
+        }
+
+        private void CheckForTargets()
+        {
+            // ë²”ìœ„ ë‚´ì˜ ëª¨ë“  íƒ€ê²Ÿ ì°¾ê¸°
+            Collider[] targetsInView = Physics.OverlapSphere(transform.position + offset, maxViewRange, targetMask);
+
+            foreach (var target in targetsInView)
+            {
+                Vector3 directionToTarget = (target.transform.position - (transform.position + offset)).normalized;
+
+                // ê°ë„ ì œí•œ í™•ì¸
+                if (Vector3.Angle(transform.forward, directionToTarget) <= viewAngle / 2)
+                {
+                    float distanceToTarget = Vector3.Distance(transform.position + offset, target.transform.position);
+
+                    // ì¥ì• ë¬¼ì´ ìˆëŠ”ì§€ í™•ì¸
+                    if (!Physics.Raycast(transform.position + offset, directionToTarget, distanceToTarget, obstacleMask))
+                    {
+                        // ì¥ì• ë¬¼ì´ ì—†ìœ¼ë©´ íƒ€ê²Ÿì— ë°ë¯¸ì§€
+                        Debug.Log($"Target {target.name} hit!");
+                        //DealDamage(target.gameObject);
+                    }
+                }
+            }
+            isAttacked = true;
+        }
+
+        private void DealDamage(GameObject target)
+        {
+            // íƒ€ê²Ÿì— ë°ë¯¸ì§€ë¥¼ ì£¼ëŠ” ë¡œì§
+            var health = target.GetComponent<PlayerHealth>(); // ì˜ˆ: Health ì»´í¬ë„ŒíŠ¸
+            if (health != null)
+            {
+                health.TakeDamage(10); // ì˜ˆ: 10 ë°ë¯¸ì§€
+            }
         }
     }
 }

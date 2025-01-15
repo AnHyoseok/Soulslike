@@ -5,6 +5,7 @@ namespace BS.Enemy.Set
     public class SetChaseState : ISetState
     {
         private SetProperty property;
+        private float chaseStartTime;
 
         public SetChaseState(SetProperty property)
         {
@@ -13,10 +14,10 @@ namespace BS.Enemy.Set
 
         public void Enter()
         {
-            property.Animator.SetTrigger("Chase");
+            property.Animator.SetBool(SetProperty.SET_ANIM_BOOL_CHASE, true);
             
             property.Agent.isStopped = false;
-            Debug.Log("Boss: Entering Chase State");
+            chaseStartTime = Time.time;
         }
 
         public void Update()
@@ -24,19 +25,17 @@ namespace BS.Enemy.Set
             property.Agent.SetDestination(property.Player.position);
 
             float distance = Vector3.Distance(property.Player.position, property.Controller.transform.position);
-            //if (distance > property.Controller.ChaseRange)
-            //{
-            //    property.Controller.SetState(new SetIdleState(property));
-            //}
-            //if (distance < property.Controller.AttackRange)
-            //{
-            //    property.Controller.SetState(new SetAttackState(property));
-            //}
+            Debug.Log(distance);
+            if (Time.time >= chaseStartTime + property.Controller.attackCooldown)
+            {
+                property.Controller.SetState(new SetAttackState(property));
+                return;
+            }
         }
 
         public void Exit()
         {
-            property.Animator.ResetTrigger("Chase");
+            property.Animator.SetBool(SetProperty.SET_ANIM_BOOL_CHASE, false);
             Debug.Log("Boss: Exiting Chase State");
         }
 

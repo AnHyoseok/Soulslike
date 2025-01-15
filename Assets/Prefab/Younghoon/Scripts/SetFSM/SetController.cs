@@ -10,16 +10,20 @@ namespace BS.Enemy.Set
 
         [SerializeField] private Transform player;
         [SerializeField] private float rotationSpeed = 2f;
-        private Animator animator; // ¾Ö´Ï¸ŞÀÌÅÍ Ãß°¡
+
+        public float attackCooldown = 3f;
+
+        private Animator animator; // ì• ë‹ˆë©”ì´í„° ì¶”ê°€
+
         private void Start()
         {
-            // NavMeshAgent¿Í Player Transform ÂüÁ¶
+            // NavMeshAgentì™€ Player Transform ì°¸ì¡°
             NavMeshAgent agent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
             property = new SetProperty(this, animator, agent, player);
 
-            // ÃÊ±â »óÅÂ ¼³Á¤
-            SetState(new SetIdleState(property));
+            // ì´ˆê¸° ìƒíƒœ ì„¤ì •
+            SetState(new SetChaseState(property));
         }
 
         private void Update()
@@ -41,14 +45,14 @@ namespace BS.Enemy.Set
 
         private void RotateToPlayer()
         {
-            // ÇöÀç ¹æÇâ
+            // í˜„ì¬ ë°©í–¥
             Quaternion currentRotation = property.Controller.transform.rotation;
 
-            // ¸ñÇ¥ ¹æÇâ (LookAt ¹æÇâ)
+            // ëª©í‘œ ë°©í–¥ (LookAt ë°©í–¥)
             Vector3 directionToPlayer = (property.Player.position - property.Controller.transform.position).normalized;
             Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
 
-            // ÃµÃµÈ÷ È¸Àü
+            // ì²œì²œíˆ íšŒì „
             property.Controller.transform.rotation = Quaternion.Slerp(
                 currentRotation,
                 targetRotation,

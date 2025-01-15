@@ -5,7 +5,6 @@ namespace BS.Enemy.Set
     public class SetIdleState : ISetState
     {
         private SetProperty property;
-        private float idleDuration = 5f; // Idle »óÅÂ¿¡¼­ ´ë±âÇÒ ½Ã°£
         private float idleStartTime;
 
         public SetIdleState(SetProperty property)
@@ -17,16 +16,15 @@ namespace BS.Enemy.Set
         {
             property.Agent.isStopped = true;
             property.Animator.SetBool(SetProperty.SET_ANIM_BOOL_IDLE, true);
-            idleStartTime = Time.time; // Idle »óÅÂ ÁøÀÔ ½Ã°£ ÀúÀå
-            Debug.Log("Boss: Entering Idle State");
+            idleStartTime = Time.time; // Idle ìƒíƒœ ì§„ìž… ì‹œê°„ ì €ìž¥
         }
 
         public void Update()
         {
-            float distance = Vector3.Distance(property.Player.position, property.Controller.transform.position);
-            Debug.Log(distance);
-            // Idle »óÅÂ¿¡¼­ 5ÃÊ ´ë±â ÈÄ Attack »óÅÂ·Î ÀüÈ¯
-            if (Time.time >= idleStartTime + idleDuration)
+            //float distance = Vector3.Distance(property.Player.position, property.Controller.transform.position);
+            //Debug.Log(distance);
+            // Idle ìƒíƒœì—ì„œ attackCooldownë§Œí¼ ëŒ€ê¸° í›„ Attack ìƒíƒœë¡œ ì „í™˜
+            if (Time.time >= idleStartTime + property.Controller.attackCooldown)
             {
                 property.Controller.SetState(new SetAttackState(property));
                 return;
@@ -36,7 +34,6 @@ namespace BS.Enemy.Set
         public void Exit()
         {
             property.Animator.SetBool(SetProperty.SET_ANIM_BOOL_IDLE, false);
-            Debug.Log("Boss: Exiting Idle State");
         }
     }
 }

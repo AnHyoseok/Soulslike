@@ -13,11 +13,10 @@ namespace BS.Enemy.Set
         public Transform Player { get; private set; }
         public Animator Animator { get; private set; }
 
-        public float CloseRange { get; private set; } = 3.3f;   // ±ÙÁ¢ °Å¸®
-        public float MidRange { get; private set; } = 12f;    // Áß°Å¸®
-        public float LongRange { get; private set; } = 18f;  // Àå°Å¸®
+        public float CloseRange { get; private set; } = 3.3f;   // ê·¼ì ‘ ê±°ë¦¬
+        public float MidRange { get; private set; } = 12f;    // ì¤‘ê±°ë¦¬
+        public float LongRange { get; private set; } = 18f;  // ìž¥ê±°ë¦¬
 
-        public const string SET_ANIM_TRIGGER_CHASE = "Chase";
         public const string SET_ANIM_TRIGGER_SLASHATTACK = "SlashAttack";
         public const string SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES = "SlashAttackThreeTimes";
         public const string SET_ANIM_TRIGGER_PULLATTACK = "PullAttack";
@@ -25,7 +24,9 @@ namespace BS.Enemy.Set
         public const string SET_ANIM_TRIGGER_LIGHTNINGMAGIC = "LightningMagic";
         public const string SET_ANIM_BOOL_ATTACK = "IsAttack";
         public const string SET_ANIM_BOOL_IDLE = "IsIdle";
+        public const string SET_ANIM_BOOL_CHASE = "IsChase";
         public const string PLAYER_LAYER = "Player";
+        public const string OBSTACLE_LAYER = "Wall";
 
 
         public SetProperty(SetController controller, Animator animator, NavMeshAgent agent, Transform player)
