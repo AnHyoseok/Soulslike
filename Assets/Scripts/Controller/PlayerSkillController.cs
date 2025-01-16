@@ -8,10 +8,10 @@ namespace BS.Player
     {
         #region Variables
         // Skill
-        // TODO :: ½ºÅ³¸®½ºÆ® ¸¸µé°í Dictionary °ü¸®ÇÏÀÚ Å°ÄÚµå : ÀÌ¸§, ÄğÅ¸ÀÓ, ±â´ÉÇÔ¼ö
-        // ÇØ´ç ½ºÅ³¸®½ºÆ®¸¦ ½ÃÀÛÇÒ¶§ °¡Á®¿À°í ÄÚ·çÆ¾À¸·Î ÄğÅ¸ÀÓ°ü¸®
-        // ±â´ÉÇÔ¼ö - ³¡³ª°í È£ÃâÇÏ´Â ÇÔ¼ö - ÄğÅ¸ÀÓ °ü¸® ÇÔ¼ö ÇüÅÂ·Î ±¸Çö
-        // TODO :: CS ÆÄÀÏÀ» ¹İ¿µ°¡´ÉÇÒ±î ?
+        // TODO :: ìŠ¤í‚¬ë¦¬ìŠ¤íŠ¸ ë§Œë“¤ê³  Dictionary ê´€ë¦¬í•˜ì í‚¤ì½”ë“œ : ì´ë¦„, ì¿¨íƒ€ì„, ê¸°ëŠ¥í•¨ìˆ˜
+        // í•´ë‹¹ ìŠ¤í‚¬ë¦¬ìŠ¤íŠ¸ë¥¼ ì‹œì‘í• ë•Œ ê°€ì ¸ì˜¤ê³  ì½”ë£¨í‹´ìœ¼ë¡œ ì¿¨íƒ€ì„ê´€ë¦¬
+        // ê¸°ëŠ¥í•¨ìˆ˜ - ëë‚˜ê³  í˜¸ì¶œí•˜ëŠ” í•¨ìˆ˜ - ì¿¨íƒ€ì„ ê´€ë¦¬ í•¨ìˆ˜ í˜•íƒœë¡œ êµ¬í˜„
+        // TODO :: CS íŒŒì¼ì„ ë°˜ì˜ê°€ëŠ¥í• ê¹Œ ?
         public static Dictionary<KeyCode, (string, float, UnityAction)> skillList = new Dictionary<KeyCode, (string, float, UnityAction)>();
 
         //state
@@ -34,15 +34,15 @@ namespace BS.Player
             }
         }
 
-        // ½ºÅ³ ½ÃÀü
+        // ìŠ¤í‚¬ ì‹œì „
         void ExecuteSkill(KeyCode key)
         {
             if (skillList.TryGetValue(key, out var skill))
             {
-                // ÇöÀç ½ºÅ³¿¡ ¸Â´Â ÄğÅ¸ÀÓ º¯¼ö ¼±ÅÃ
+                // í˜„ì¬ ìŠ¤í‚¬ì— ë§ëŠ” ì¿¨íƒ€ì„ ë³€ìˆ˜ ì„ íƒ
                 float currentCoolTime = 0f;
 
-                // ÄğÅ¸ÀÓÀ» ½ºÅ³ ÀÌ¸§¿¡ µû¶ó ¼³Á¤
+                // ì¿¨íƒ€ì„ì„ ìŠ¤í‚¬ ì´ë¦„ì— ë”°ë¼ ì„¤ì •
                 switch (skill.Item1)
                 {
                     case "Dash":
@@ -52,15 +52,24 @@ namespace BS.Player
                     case "Block":
                         currentCoolTime = ps.currentBlockCoolTime;
                         break;
+                    case "Uppercut":
+                        currentCoolTime = ps.currentUppercutCoolTime;
+                        break;
+                    case "ChargingPunch":
+                        currentCoolTime = ps.currentChargingPunchCoolTime;
+                        break;
+                    case "BackHandSwing":
+                        currentCoolTime = ps.currentBackHandSwingCoolTime;
+                        break;
 
                     default:
-                        return; // Ã³¸®ÇÒ ¼ö ¾ø´Â ½ºÅ³ÀÏ °æ¿ì
+                        return; // ì²˜ë¦¬í•  ìˆ˜ ì—†ëŠ” ìŠ¤í‚¬ì¼ ê²½ìš°
                 }
 
-                // ÄğÅ¸ÀÓÀÌ ³¡³µ´Ù¸é ½ºÅ³ ½ÇÇà
+                // ì¿¨íƒ€ì„ì´ ëë‚¬ë‹¤ë©´ ìŠ¤í‚¬ ì‹¤í–‰
                 if (currentCoolTime <= 0f)
                 {
-                    skill.Item3?.Invoke(); // ½ºÅ³ ½ÇÇà
+                    skill.Item3?.Invoke(); // ìŠ¤í‚¬ ì‹¤í–‰
                 }
             }
         }

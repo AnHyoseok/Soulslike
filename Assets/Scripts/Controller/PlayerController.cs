@@ -23,7 +23,7 @@ namespace BS.Player
         public Color rayColor = Color.red;                  // Ray 색
         public float rayDuration = 1f;                      // Ray 지속 시간
         private Vector3? gizmoPosition;                     // Nullable로 선언
-
+        Animator animator;
 
         // Move
         public float moveSpeed = 5f;                        // SD 이동 속도
@@ -46,6 +46,7 @@ namespace BS.Player
         {
             ps = PlayerState.Instance;
             psm = PlayerStateMachine.Instance;
+            
             //playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
             //playerStateMachine.animator = transform.GetChild(0).GetComponent<Animator>();
 
@@ -63,6 +64,7 @@ namespace BS.Player
             MoveToTarget();
             HandleInput();
         }
+        
 
         #region Input
         // 키 입력 처리
@@ -102,7 +104,8 @@ namespace BS.Player
         // Player 이동
         void MoveToTarget()
         {
-            if (ps.isAttack) return;
+            //if (ps.isAttack) return;
+            if (psm.animator.GetBool("IsAttacking")) return;
             if (ps.isMoving && !ps.isDashing && !ps.isBlockingAnim)
             {
                 SetMoveState();

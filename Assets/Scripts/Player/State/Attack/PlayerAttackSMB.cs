@@ -96,7 +96,8 @@ public class PlayerAttackSMB : StateMachineBehaviour
         }
         if (ps != null) // 초기화되지 않았다면 캐싱
         {
-            ps.isAttack = false;
+            animator.SetBool("IsAttacking", false);
+            //ps.isAttack = false;
             //Debug.Log("TEST Exit");
         }
     }

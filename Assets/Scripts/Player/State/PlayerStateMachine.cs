@@ -3,7 +3,7 @@ using UnityEngine;
 namespace BS.State
 {
     /// <summary>
-    /// PlayerÀÇ »óÅÂ¸¦ °ü¸®
+    /// Playerì˜ ìƒíƒœë¥¼ ê´€ë¦¬
     /// </summary>
     // TODO :: 
     public class PlayerStateMachine : Singleton<PlayerStateMachine>
@@ -12,7 +12,7 @@ namespace BS.State
         private BaseState currentState;
         public BaseState prevState;
 
-        // Animator ¹× »óÅÂ ÂüÁ¶
+        // Animator ë° ìƒíƒœ ì°¸ì¡°
         public Animator animator;
         public BaseState IdleState { get; private set; }
         public BaseState RunState { get; private set; }
@@ -20,20 +20,22 @@ namespace BS.State
         public BaseState SprintState { get; private set; }
         public BaseState AttackState { get; private set; }
         public BaseState BlockState { get; private set; }
+        public BaseState UppercutState { get; private set; }
         #endregion
 
         protected override void Awake()
         {
             base.Awake();
-            // »óÅÂ ÃÊ±âÈ­
+            // ìƒíƒœ ì´ˆê¸°í™”
             IdleState = new IdleState(this);
             RunState = new RunState(this);
             WalkState = new WalkState(this);
             SprintState = new SprintState(this);
             AttackState = new AttackState(this);
             BlockState = new BlockState(this);
+            UppercutState = new UppercutState(this);
 
-            // ±âº» »óÅÂ ¼³Á¤
+            // ê¸°ë³¸ ìƒíƒœ ì„¤ì •
             ChangeState(IdleState);
         }
 
@@ -44,37 +46,29 @@ namespace BS.State
 
         public void ChangeState(BaseState newState)
         {
-            // ÇöÀç »óÅÂ¿Í »õ »óÅÂ°¡ ´Ù¸¦ ¶§¸¸ »óÅÂ º¯°æ
-            if (currentState != newState)
+            // í˜„ì¬ ìƒíƒœì™€ ìƒˆ ìƒíƒœê°€ ë‹¤ë¥¼ ë•Œë§Œ ìƒíƒœ ë³€ê²½
+            if (currentState != newState || currentState == AttackState)
             {
                 //Debug.Log("PREV = " + prevState);
                 //Debug.Log("CURR = " + currentState);
                 //Debug.Log("NEWW = " + newState);
-                prevState = currentState; // ±âÁ¸ »óÅÂ´Â ÀÌÀü »óÅÂ·Î ÀúÀå
-                currentState?.Exit();  // ±âÁ¸ »óÅÂ Á¾·á
-                currentState = newState;  // »õ »óÅÂ ¼³Á¤
-                currentState.Enter();  // »õ »óÅÂ ½ÃÀÛ
-            }
-
-            if(currentState == AttackState)
-            {
-                prevState = currentState; // ±âÁ¸ »óÅÂ´Â ÀÌÀü »óÅÂ·Î ÀúÀå
-                currentState?.Exit();  // ±âÁ¸ »óÅÂ Á¾·á
-                currentState = newState;  // »õ »óÅÂ ¼³Á¤
-                currentState.Enter();  // »õ »óÅÂ ½ÃÀÛ
+                prevState = currentState; // ê¸°ì¡´ ìƒíƒœëŠ” ì´ì „ ìƒíƒœë¡œ ì €ì¥
+                currentState?.Exit();  // ê¸°ì¡´ ìƒíƒœ ì¢…ë£Œ
+                currentState = newState;  // ìƒˆ ìƒíƒœ ì„¤ì •
+                currentState.Enter();  // ìƒˆ ìƒíƒœ ì‹œì‘
             }
         }
-        // ÇöÀç State ¹İÈ¯
+        // í˜„ì¬ State ë°˜í™˜
         public BaseState GetCurrentState()
         {
             return currentState;
         }
-        // ÀÌÀü State ¹İÈ¯
+        // ì´ì „ State ë°˜í™˜
         public BaseState GetPrevState()
         {
             return prevState;
         }
-        // ÀÌÀü »óÅÂ·Î º¹¿ø
+        // ì´ì „ ìƒíƒœë¡œ ë³µì›
         public void RestorePrevState()
         {
             if (prevState != null)

@@ -12,7 +12,7 @@ namespace BS.Player
         #region Variables
         // Block
         public float blockCoolTime = 3f;
-
+        public Camera mainCamera;                           // Camera 변수
         public TextMeshProUGUI blockCoolTimeText;
 
         // 최대 체력
@@ -54,13 +54,16 @@ namespace BS.Player
         // State
         PlayerState ps;
         PlayerStateMachine psm;
-
+        public float rotationDuration = 0.1f;               // 회전 지속 시간
         // Action
         public UnityAction<float> OnDamaged;        // 데미지를 받을 때 호출하는 이벤트
         public UnityAction OnBlocked;                // 블록 성공할 때 호출하는 이벤트
         #endregion
         void Start()
         {
+            if (mainCamera == null)
+                mainCamera = Camera.main;
+
             ps = PlayerState.Instance;
             psm = PlayerStateMachine.Instance;
             //playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
@@ -90,7 +93,16 @@ namespace BS.Player
         public void DoBlock()
         {
             ps.isBlockingAnim = true;
-            ps.targetPosition = transform.position;
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hits = Physics.RaycastAll(ray);
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.transform.gameObject.CompareTag("Ground"))
+                {
+                    ps.targetPosition = hit.point;
+                }
+            }
+            RotatePlayer();
             Invoke(nameof(SetIsBlockingAnim), 1f);
             psm.ChangeState(psm.BlockState);
             StartCoroutine(CoBlockCooldown());
@@ -160,6 +172,23 @@ namespace BS.Player
             }
             Debug.Log("Player OnDamaged = " + damage);
             Debug.Log("Player Hp = " + CurrentHealth);
+        }
+        // DoTween 회전 처리
+        void RotatePlayer()
+        {
+            transform.parent.transform.DOKill(complete: false); // 트랜스폼과 관련된 모든 트윈 제거 (완료 콜백은 실행되지 않음)
+
+            // 목표 회전값 계산
+            Vector3 direction = (ps.targetPosition - transform.parent.transform.position).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            transform.parent.transform.DORotateQuaternion(targetRotation, rotationDuration)
+                        .SetAutoKill(true)
+                        .SetEase(Ease.InOutSine)
+                        .OnComplete(() =>
+                        {
+                            ps.targetPosition = transform.position;
+                        });
         }
     }
 }

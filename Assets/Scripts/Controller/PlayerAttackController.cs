@@ -59,15 +59,13 @@ namespace BS.Player
             // 마우스 좌클릭 공격
             if (Input.GetMouseButton(0))
             {
+                Debug.Log("TESTATTACK");
                 // BlockingAnim 진행중에는 Return 하도록
                 if (ps.isBlockingAnim || ps.isDashing) return;
 
                 bool test = false;
-                if (!ps.isAttack)
-                {
-                    test = true;
-                    Debug.Log("TEST1 = " + ps.isAttack);
-                }
+                //if (!ps.isAttack)
+
 
                 isAttackable = true;
                 ps.isMoving = false;
@@ -101,10 +99,15 @@ namespace BS.Player
                             // 공격 Trigger 발동
                             psm.animator.SetInteger("ComboAttack", ps.ComboAttackIndex);
                             psm.ChangeState(psm.AttackState);
-                            ps.isAttack = true;
                         }
                         break;
                     }
+                }
+                if (!psm.animator.GetBool("IsAttacking"))
+                {
+                    psm.animator.SetBool("IsAttacking", true);
+                    test = true;
+                    Debug.Log("TEST1 = " + psm.animator.GetBool("IsAttacking"));
                 }
             }
         }
@@ -127,8 +130,8 @@ namespace BS.Player
         // DoTween 회전 처리
         void RotatePlayer()
         {
-            if (ps.isAttack) return;
-
+            //if (ps.isAttack) return;
+            if (psm.animator.GetBool("IsAttacking")) return;
             transform.DOKill(complete: false); // 트랜스폼과 관련된 모든 트윈 제거 (완료 콜백은 실행되지 않음)
 
             // 목표 회전값 계산

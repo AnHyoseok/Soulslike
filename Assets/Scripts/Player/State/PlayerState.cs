@@ -34,8 +34,16 @@ namespace BS.Player
         public float currentBlockCoolTime = 0f;             // BD 블락 쿨타임
 
         // Attack
-        public bool isAttack = false;                       // 공격 중인지
+        //public bool isAttack = false;                       // 공격 중인지
         public int ComboAttackIndex = 1;                    // ComboAttack 인덱스 
+
+        // 어퍼컷
+        public float currentUppercutCoolTime = 0f;              // BD 어퍼컷 쿨타임
+        // 차징펀치
+        public float currentChargingPunchCoolTime = 0f;              // BD 차징펀치 쿨타임
+        // 백스윙
+        public float currentBackHandSwingCoolTime = 0f;              // BD 백스윙 쿨타임
+
         #endregion
         protected override void Awake()
         {

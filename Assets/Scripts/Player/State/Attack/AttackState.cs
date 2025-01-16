@@ -3,7 +3,7 @@ using UnityEngine;
 namespace BS.State
 {
     /// <summary>
-    /// PlayerÀÇ °ø°İ »óÅÂ¸¦ Á¤ÀÇ
+    /// Playerì˜ ê³µê²© ìƒíƒœë¥¼ ì •ì˜
     /// </summary>
     public class AttackState : BaseState
     {
@@ -14,11 +14,13 @@ namespace BS.State
 
         public override void Enter()
         {
+            Debug.Log("ATTACK STATE ENTER");
             ResetAndSetTrigger(IsAttack);
+            stateMachine.animator.SetBool("IsAttacking", true);
         }
         public override void Update()
         {
-            //TODO :: ÇÏµåÄÚµù
+            //TODO :: í•˜ë“œì½”ë”©
             stateMachine.animator.SetFloat("StateTime",
                     Mathf.Repeat(stateMachine.animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1f));
         }

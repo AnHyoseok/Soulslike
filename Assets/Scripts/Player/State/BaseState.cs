@@ -4,7 +4,7 @@ using UnityEngine;
 namespace BS.State
 {
     /// <summary>
-    /// PlayerÀÇ »óÅÂÀÇ Base
+    /// Playerì˜ ìƒíƒœì˜ Base
     /// </summary>
     public abstract class BaseState
     {
@@ -17,6 +17,7 @@ namespace BS.State
         protected const string IsSprint = "IsSprint";
         protected const string IsBlock = "IsBlock";
         protected const string IsAttack = "IsAttack";
+        protected const string IsUppercut = "IsUppercut";
         #endregion
 
         public BaseState(PlayerStateMachine stateMachine)
@@ -24,18 +25,19 @@ namespace BS.State
             this.stateMachine = stateMachine;
         }
 
-        // »óÅÂ º¯°æ ½Ã Æ®¸®°Å ÃÊ±âÈ­ ¹× ¼³Á¤À» À§ÇÑ °øÅë ¸Ş¼­µå
+        // ìƒíƒœ ë³€ê²½ ì‹œ íŠ¸ë¦¬ê±° ì´ˆê¸°í™” ë° ì„¤ì •ì„ ìœ„í•œ ê³µí†µ ë©”ì„œë“œ
         protected virtual void ResetAndSetTrigger(string triggerToSet)
         {
-            // °øÅëµÈ Æ®¸®°Å ÃÊ±âÈ­
+            // ê³µí†µëœ íŠ¸ë¦¬ê±° ì´ˆê¸°í™”
             stateMachine.animator.ResetTrigger(IsIdle);
             stateMachine.animator.ResetTrigger(IsWalk);
             stateMachine.animator.ResetTrigger(IsRun);
             stateMachine.animator.ResetTrigger(IsSprint);
             stateMachine.animator.ResetTrigger(IsBlock);
             stateMachine.animator.ResetTrigger(IsAttack);
+            stateMachine.animator.ResetTrigger(IsUppercut);
 
-            // ÇöÀç »óÅÂ¿¡ ¸Â´Â Æ®¸®°Å ¼³Á¤
+            // í˜„ì¬ ìƒíƒœì— ë§ëŠ” íŠ¸ë¦¬ê±° ì„¤ì •
             stateMachine.animator.SetTrigger(triggerToSet);
         }
 
