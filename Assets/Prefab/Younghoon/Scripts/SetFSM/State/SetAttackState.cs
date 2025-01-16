@@ -1,4 +1,6 @@
 using BS.Player;
+using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 namespace BS.Enemy.Set
@@ -8,6 +10,10 @@ namespace BS.Enemy.Set
         private SetProperty property;
         private bool isAttacking;
 
+        private AnimatorStateInfo currentState;
+
+        private string lastAttack = string.Empty; // 마지막 공격을 저장할 변수
+
         public SetAttackState(SetProperty property)
         {
             this.property = property;
@@ -15,14 +21,13 @@ namespace BS.Enemy.Set
 
         public void Enter()
         {
-            property.Agent.isStopped = true;
             property.Animator.SetBool(SetProperty.SET_ANIM_BOOL_ATTACK, true);
+            property.Agent.isStopped = true;
             Debug.Log("Boss: Entering Attack State");
         }
 
         public void Update()
         {
-
             // 플레이어와의 거리 계산
             float distance = Vector3.Distance(property.Player.position, property.Controller.transform.position);
 
@@ -32,12 +37,13 @@ namespace BS.Enemy.Set
                 SelectAndPerformAttack(distance);
             }
 
+            // 현재 애니메이션 상태 업데이트
+            currentState = property.Animator.GetCurrentAnimatorStateInfo(0);
+
             if (AttackStateChecker())
             {
-                float animTime = property.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                //Debug.Log($"{animTime} 애니메이션 타임");
-                // 공격이 끝나면 Idle 상태로 전환
-                if (animTime >= 1)
+                // 애니메이션 타임을 체크하여 공격이 끝났다면 상태 전환
+                if (currentState.normalizedTime >= 0.9f)
                 {
                     property.Controller.SetState(new SetChaseState(property));
                 }
@@ -56,64 +62,103 @@ namespace BS.Enemy.Set
         private void SelectAndPerformAttack(float distance)
         {
             isAttacking = true;
-            if (distance <= property.CloseRange)
+            // 해당 거리 범위에 맞는 공격 범위를 리스트에 추가
+            var availableAttacks = new List<string>();
+
+            if (distance <= property.CloseRange && property.LastAttackType != SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES)
             {
-                PerformCloseRangeAttack();
+                availableAttacks.Add(SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES);
             }
-            else if (distance <= property.MidRange)
+            if (distance <= property.MidRange && property.LastAttackType != SetProperty.SET_ANIM_TRIGGER_PULLATTACK)
             {
-                PerformMidRangeAttack();
+                availableAttacks.Add(SetProperty.SET_ANIM_TRIGGER_PULLATTACK);
             }
-            else if (distance <= property.LongRange)
+            if (distance <= property.LongRange && property.LastAttackType != SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC)
             {
-                PerformLongRangeAttack();
+                availableAttacks.Add(SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC);
             }
-            else
+            if (property.LastAttackType != SetProperty.SET_ANIM_TRIGGER_ROAR) // 특수 공격은 거리와 상관없음
             {
-                PerformSpecialAttack();
+                availableAttacks.Add(SetProperty.SET_ANIM_TRIGGER_ROAR);
+            }
+
+            // 만약 선택할 공격이 있다면 랜덤으로 선택
+            if (availableAttacks.Count > 0)
+            {
+                string attackToPerform = availableAttacks[Random.Range(0, availableAttacks.Count)];
+
+                // 선택된 공격을 실행
+                switch (attackToPerform)
+                {
+                    case SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES:
+                        PerformCloseRangeAttack();
+                        break;
+                    case SetProperty.SET_ANIM_TRIGGER_PULLATTACK:
+                        PerformMidRangeAttack();
+                        break;
+                    case SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC:
+                        PerformLongRangeAttack();
+                        break;
+                    case SetProperty.SET_ANIM_TRIGGER_ROAR:
+                        PerformSpecialAttack();
+                        break;
+                    default:
+                        Debug.LogWarning("No attack selected.");
+                        break;
+                }
+                property.LastAttackType = attackToPerform;
             }
         }
 
         private void PerformCloseRangeAttack()
         {
-            property.Animator.SetTrigger(SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES);
-            Debug.Log("Boss: Performing Close Range Attack!" + $"Trigger name = {SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES}");
+            TriggerAttackAnimation(SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES);
+            Debug.Log("Boss: Performing Close Range Attack!");
         }
 
         private void PerformMidRangeAttack()
         {
-            property.Animator.SetTrigger(SetProperty.SET_ANIM_TRIGGER_PULLATTACK);
+            TriggerAttackAnimation(SetProperty.SET_ANIM_TRIGGER_PULLATTACK);
             Debug.Log("Boss: Performing Mid Range Attack!");
         }
 
         private void PerformLongRangeAttack()
         {
-            property.Animator.SetTrigger(SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC);
+            TriggerAttackAnimation(SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC);
             Debug.Log("Boss: Performing Long Range Attack!");
         }
 
         private void PerformSpecialAttack()
         {
-            property.Animator.SetTrigger(SetProperty.SET_ANIM_TRIGGER_ROAR);
+            TriggerAttackAnimation(SetProperty.SET_ANIM_TRIGGER_ROAR);
             Debug.Log("Boss: Performing Special Attack!");
+        }
+
+        private void TriggerAttackAnimation(string triggerName)
+        {
+            property.Animator.SetTrigger(triggerName);
         }
 
         private bool AttackStateChecker()
         {
-            if (property.Animator.GetCurrentAnimatorStateInfo(0).IsName(SetProperty.SET_ANIM_TRIGGER_SLASHATTACK) ||
-                property.Animator.GetCurrentAnimatorStateInfo(0).IsName(SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES) ||
-                property.Animator.GetCurrentAnimatorStateInfo(0).IsName(SetProperty.SET_ANIM_TRIGGER_PULLATTACK) ||
-                property.Animator.GetCurrentAnimatorStateInfo(0).IsName(SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC) ||
-                property.Animator.GetCurrentAnimatorStateInfo(0).IsName(SetProperty.SET_ANIM_TRIGGER_ROAR))
-            {
-                return true;
-            }
-            return false;
+            // 여러 애니메이션 트리거를 체크하여 상태를 확인
+            return currentState.IsName(SetProperty.SET_ANIM_TRIGGER_SLASHATTACK) ||
+                   currentState.IsName(SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES) ||
+                   currentState.IsName(SetProperty.SET_ANIM_TRIGGER_PULLATTACK) ||
+                   currentState.IsName(SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC) ||
+                   currentState.IsName(SetProperty.SET_ANIM_TRIGGER_ROAR);
         }
 
         private void ResetAttackState()
         {
+            property.LastAttackTime = Time.time;
+
             property.Animator.SetBool(SetProperty.SET_ANIM_BOOL_ATTACK, false);
+            ResetAllAttackTriggers();
+        }
+
+        private void ResetAllAttackTriggers()
+        {
             property.Animator.ResetTrigger(SetProperty.SET_ANIM_TRIGGER_SLASHATTACK);
             property.Animator.ResetTrigger(SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES);
             property.Animator.ResetTrigger(SetProperty.SET_ANIM_TRIGGER_PULLATTACK);

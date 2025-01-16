@@ -1,3 +1,4 @@
+using BS.Player;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,33 +8,50 @@ namespace BS.Enemy.Set
     {
         private ISetState currentState;
         private SetProperty property;
+        private Transform player;
 
-        [SerializeField] private Transform player;
         [SerializeField] private float rotationSpeed = 2f;
+        [SerializeField] private float attackCooldown = 3f;
 
-        public float attackCooldown = 3f;
+        public float AttackCooldown => attackCooldown; // Read-only Property
 
-        private Animator animator; // 애니메이터 추가
+        private Animator animator;
 
         private void Start()
         {
-            // NavMeshAgent와 Player Transform 참조
-            NavMeshAgent agent = GetComponent<NavMeshAgent>();
-            animator = GetComponent<Animator>();
-            property = new SetProperty(this, animator, agent, player);
-
-            // 초기 상태 설정
-            SetState(new SetChaseState(property));
+            Initialize();
+            SetInitialState();
         }
 
         private void Update()
         {
-            if (!animator.GetBool(SetProperty.SET_ANIM_BOOL_ATTACK))
+            RotateToPlayerIfNotAttacking();
+            currentState?.Update();
+        }
+
+        private void Initialize()
+        {
+            // PlayerController를 찾아서 player에 할당
+            PlayerController playerController = FindAnyObjectByType<PlayerController>();
+
+            if (playerController != null)
             {
-                RotateToPlayer();
+                player = playerController.transform; // PlayerController에서 Transform을 할당
+            }
+            else
+            {
+                Debug.LogError("PlayerController를 찾을 수 없습니다.");
             }
 
-            currentState?.Update();
+            var agent = GetComponent<NavMeshAgent>();
+            animator = GetComponent<Animator>();
+
+            property = new SetProperty(this, animator, agent, player);
+        }
+
+        private void SetInitialState()
+        {
+            SetState(new SetChaseState(property));
         }
 
         public void SetState(ISetState newState)
@@ -43,18 +61,23 @@ namespace BS.Enemy.Set
             currentState.Enter();
         }
 
+        private void RotateToPlayerIfNotAttacking()
+        {
+            if (animator.GetBool(SetProperty.SET_ANIM_BOOL_ATTACK))
+                return;
+
+            RotateToPlayer();
+        }
+
         private void RotateToPlayer()
         {
-            // 현재 방향
-            Quaternion currentRotation = property.Controller.transform.rotation;
+            Vector3 directionToPlayer = (property.Player.position - transform.position).normalized;
 
-            // 목표 방향 (LookAt 방향)
-            Vector3 directionToPlayer = (property.Player.position - property.Controller.transform.position).normalized;
+            if (directionToPlayer == Vector3.zero) return;
+
             Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
-
-            // 천천히 회전
-            property.Controller.transform.rotation = Quaternion.Slerp(
-                currentRotation,
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
                 targetRotation,
                 Time.deltaTime * rotationSpeed
             );

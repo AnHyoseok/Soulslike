@@ -14,8 +14,12 @@ namespace BS.Enemy.Set
         public Animator Animator { get; private set; }
 
         public float CloseRange { get; private set; } = 3.3f;   // 근접 거리
-        public float MidRange { get; private set; } = 12f;    // 중거리
-        public float LongRange { get; private set; } = 18f;  // 장거리
+        public float MidRange { get; private set; } = 10f;    // 중거리
+        public float LongRange { get; private set; } = 14f;  // 장거리
+
+        public float LastAttackTime { get; set; }           //공격한 시간을 체크
+        public string LastAttackType { get; set; }
+
 
         public const string SET_ANIM_TRIGGER_SLASHATTACK = "SlashAttack";
         public const string SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES = "SlashAttackThreeTimes";
@@ -35,6 +39,7 @@ namespace BS.Enemy.Set
             Agent = agent;
             Player = player;
             Animator = animator;
+            LastAttackTime = Time.time;
         }
     }
 }

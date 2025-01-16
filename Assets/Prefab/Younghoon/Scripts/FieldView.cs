@@ -78,8 +78,9 @@ namespace BS.Enemy.Set
             }
             else
             {
-                CheckForTargets();
                 currentViewRange = 0f;
+
+                CheckForTargets();
             }
             // 영역 그리기
             DrawFieldOfView();
@@ -154,6 +155,10 @@ namespace BS.Enemy.Set
 
         private void CheckForTargets()
         {
+            if (isAttacked) return;
+
+            isAttacked = true;
+
             // 범위 내의 모든 타겟 찾기
             Collider[] targetsInView = Physics.OverlapSphere(transform.position + offset, maxViewRange, targetMask);
 
@@ -172,10 +177,10 @@ namespace BS.Enemy.Set
                         // 장애물이 없으면 타겟에 데미지
                         Debug.Log($"Target {target.name} hit!");
                         //DealDamage(target.gameObject);
+                        return;
                     }
                 }
             }
-            isAttacked = true;
         }
 
         private void DealDamage(GameObject target)
