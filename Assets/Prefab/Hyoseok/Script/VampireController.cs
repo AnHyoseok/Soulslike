@@ -10,59 +10,89 @@ using BS.Particle;
 namespace BS.vampire
 {
     /// <summary>
-    /// °ø°İ»óÅÂ¸Ó½Å
+    /// ê³µê²©ìƒíƒœë¨¸ì‹ 
     /// </summary>
     public class VampireController : MonoBehaviour
     {
         #region Variables
         public Animator animator;
-        public GameObject player;   //¹Ù´Ú
-        public GameObject playerBody;   //ÇÃ·¹ÀÌ¾î¸öÃ¼ 
+        public GameObject player;   //ë°”ë‹¥
+        public GameObject playerBody;   //í”Œë ˆì´ì–´ëª¸ì²´ 
         public float testAttackNumber;
 
-        private int direction;  // ¹æÇâ
+        private int direction;  // ë°©í–¥
 
-        public float time = 20f; // °ø°İ ´ë±â ½Ã°£
+        public float time = 20f; // ê³µê²© ëŒ€ê¸° ì‹œê°„
 
-        //ÆĞÅÏÄğÅ¸ÀÓ
+        //íŒ¨í„´ì¿¨íƒ€ì„
         [SerializeField] float attack1;
         [SerializeField] float attack2;
         [SerializeField] float attack3;
         [SerializeField] float attack4;
+
+        [Header("Teleport")]
+        public GameObject pingpongShot;
+        public GameObject CircleShot;
+        public GameObject teleportEffect;
+        public Transform[] teleports; //ìˆœê°„ì´ë™ ìœ„ì¹˜ 0~3 ëœë¤ 4ëŠ” ì¤‘ì•™
+        public float teleportTime = 20; //ìˆœê°„ì´ë™ ì¿¨íƒ€ì„
+        private int previousIndex = -1; //ì´ì „ ìœ„ì¹˜ê°’
+
         [Header("Attack1")]
-        // °ø°İ1 
-        // µÎ °³ÀÇ ¼ÒÈ¯¸÷ÀÌ °î¼±À¸·Î ÇÃ·¹ÀÌ¾î ¹æÇâÀ¸·Î ÀÌµ¿ÇØ¼­ Å¸°İ
-        public GameObject attackObjectPrefab; // °ø°İ °ü¸® ¿ÀºêÁ§Æ®
-        public GameObject impactEffectPrefab; // ÀÌÆåÆ® ÇÁ¸®ÆÕ batEffect¿¡smoke¿¡ °ø°İ°¨Áö ³Ö¾îµÒ
-        [SerializeField] private float attackRange;      //°ø°İ¹üÀ§
-        [SerializeField] private float attackCount;     //°ø°İÈ½¼ö
-        public GameObject attackRangePrefab; // °ø°İ¹üÀ§ ÇÁ¸®ÆÕ
+        // ê³µê²©1 
+        // ë‘ ê°œì˜ ì†Œí™˜ëª¹ì´ ê³¡ì„ ìœ¼ë¡œ í”Œë ˆì´ì–´ ë°©í–¥ìœ¼ë¡œ ì´ë™í•´ì„œ íƒ€ê²©
+        public GameObject attackObjectPrefab; // ê³µê²© ê´€ë¦¬ ì˜¤ë¸Œì íŠ¸
+        public GameObject impactEffectPrefab; // ì´í™íŠ¸ í”„ë¦¬íŒ¹ batEffectì—smokeì— ê³µê²©ê°ì§€ ë„£ì–´ë‘ 
+        [SerializeField] private float attackRange;      //ê³µê²©ë²”ìœ„
+        [SerializeField] private float attackCount;     //ê³µê²©íšŸìˆ˜
+        public GameObject attackRangePrefab; // ê³µê²©ë²”ìœ„ í”„ë¦¬íŒ¹
         public Transform[] attackObjects;
-        public Transform hitPoint; // Å¸°İ ÁöÁ¡
+        public Transform hitPoint; // íƒ€ê²© ì§€ì 
         [Header("Attack2")]
-        //°ø°İ2
-        //º¸½º°¡ Áß¾ÓÀ¸·Î ÀÌµ¿ÈÄ °ø°İ¸ğ¼Ç ÀÌÆåÆ® ¹ßµ¿ÈÄ ¿Ş ¿À ¾Æ·¡ À§ ·¹ÀÌÀú ¹ß»ç 
-        public Transform centerTeleport;    //¼¾ÅÍ ÅÚ·¹Æ÷Æ®
-        public GameObject attack2EffectPrefab; //½ÃÀü ÀÌÆåÆ®ÇÁ¸®ÆÕ 
-        public GameObject[] bloodBeams;   //¿Ş¿À¾Æ·¡À§ ºöµé
+        //ê³µê²©2
+        //ë³´ìŠ¤ê°€ ì¤‘ì•™ìœ¼ë¡œ ì´ë™í›„ ê³µê²©ëª¨ì…˜ ì´í™íŠ¸ ë°œë™í›„ ì™¼ ì˜¤ ì•„ë˜ ìœ„ ë ˆì´ì € ë°œì‚¬ 
+        public Transform centerTeleport;    //ì„¼í„° í…”ë ˆí¬íŠ¸
+        //public GameObject teleportEffect;
+        public GameObject attack2EffectPrefab; //ì‹œì „ ì´í™íŠ¸í”„ë¦¬íŒ¹ 
+        public GameObject[] bloodBeams;   //ì™¼ì˜¤ì•„ë˜ìœ„ ë¹”ë“¤
         public GameObject[] attak3Ranges;
         [Header("Attack3")]
-        //°ø°İ3
-        //º¸½º°¡ ÇÃ·¹ÀÌ¾î¸¦ ¹Ù¶óº¸¸ç ºÎÃ¤²Ã ¹ÚÁã¿şÀÌºê ³¯¸®±â
-        public GameObject Attack3BatPrefab; //ºÎ‹HÈ÷¸é ÇÃ·¹ÀÌ¾î¿¡°Ô µ¥¹ÌÁöÁÖ´Â ¹ÚÁã
-        public float waveCount = 3f;     //°ø°İ ¿şÀÌºê Ä«¿îÆ®
-        public GameObject attack3EffectPrefab;  //ºÎ‹HÇûÀ»¶§ ÆÄÆ¼Å¬
+        //ê³µê²©3
+        //ë³´ìŠ¤ê°€ í”Œë ˆì´ì–´ë¥¼ ë°”ë¼ë³´ë©° ë¶€ì±„ê¼´ ë°•ì¥ì›¨ì´ë¸Œ ë‚ ë¦¬ê¸°
+        public GameObject Attack3BatPrefab; //ë¶€ë”«íˆë©´ í”Œë ˆì´ì–´ì—ê²Œ ë°ë¯¸ì§€ì£¼ëŠ” ë°•ì¥
+        public float waveCount = 3f;     //ê³µê²© ì›¨ì´ë¸Œ ì¹´ìš´íŠ¸
+        public GameObject attack3EffectPrefab;  //ë¶€ë”«í˜”ì„ë•Œ íŒŒí‹°í´
         public Transform[] batTransforms;
 
         [Header("Attack4")]
-        //°ø°İ4
-        //º¸½º ÁÖº¯¿¡ ¹ÚÁãµé(·ÎÅ×ÀÌ¼ÇµéÀÌ) ·£´ı 1~2 ¹æÇâÀ¸·Î »ê°³ÈÄ ÇÃ·¹ÀÌ¾î¹æÇâÀ¸·Î ·¹ÀÌÁ® ¹ß»ç
-        public GameObject[] summonObject;    //¼ÒÈ¯À§Ä¡
+        //ê³µê²©4
+        //ë³´ìŠ¤ ì£¼ë³€ì— ë°•ì¥ë“¤(ë¡œí…Œì´ì…˜ë“¤ì´) ëœë¤ 1~2 ë°©í–¥ìœ¼ë¡œ ì‚°ê°œí›„ í”Œë ˆì´ì–´ë°©í–¥ìœ¼ë¡œ ë ˆì´ì ¸ ë°œì‚¬
+        public GameObject[] summonObject;    //ì†Œí™˜ìœ„ì¹˜
         public GameObject attak4Ranges;
-        public float moveRadius = 2f; // ÀÌµ¿ ¹İ°æ
-        public GameObject attack4EffectPrefab;  //·¹ÀÌÀú ÀÌÆåÆ®
-        private Vector3[] originalPositions; // ¿ø·¡À§Ä¡
-        [SerializeField] float attack4count = 3f;  //¹İº¹È½¼ö
+        public float moveRadius = 2f; // ì´ë™ ë°˜ê²½
+        public GameObject attack4EffectPrefab;  //ë ˆì´ì € ì´í™íŠ¸
+        private Vector3[] originalPositions; // ì›ë˜ìœ„ì¹˜
+        [SerializeField] float attack4count = 3f;  //ë°˜ë³µíšŸìˆ˜
+
+        [Header("Attack5")]
+        //ê³µê²©5
+        //ë³´ìŠ¤ê°€ ìœ„ ì˜¤ë¥¸ìª½ì— ë ˆì´ì €ì´ë™ë°•ì¥ ì†Œí™˜ 
+        public Transform[] attack5Lotations;
+        public GameObject attack5BatPrefab;
+        public GameObject attack5SummonEffect;
+        private bool isAttack5BatSummon = false;  //ë°°íŠ¸ì†Œí™˜ ì—¬ë¶€
+
+        [Header("Attack6")]
+        //ê³µê²© 6 ì¦‰ì‚¬ê¸°
+        //ë³´ìŠ¤ê°€ ê³µì¤‘ë‚ ê¸° ì´í›„ ê¸°ëª¨ì•„ì„œ ë©”í…Œì˜¤ ì‹œì „
+        // ê³µì¤‘ë‚ ê¸°í•˜ëŠ” ì¤‘ì— ìœ„í—˜êµ¬ì—­ê³¼ ì•ˆì „ì§€ëŒ€ ìƒì„±
+        // ì•ˆì „ ì§€ëŒ€ì— ìˆì„ ì‹œ í”Œë ˆì´ì–´ ë¬´ì  , ê·¸ ë°–ì— ì¦‰ì‚¬ 
+        public GameObject attack6Range;
+        public GameObject[] safeRanges;
+        public GameObject meteorPrefab;
+       
+
+
         private int nextPattern = 0;
         #endregion
         void Start()
@@ -71,65 +101,109 @@ namespace BS.vampire
             {
                 animator = GetComponent<Animator>();
             }
-            StartCoroutine(Attack4());
-
+            //StartCoroutine(Attack2());
+            NextPatternPlay();
 
 
         }
 
+        //private void Update()
+        //{
+        //    transform.LookAt(player.transform);
+        //}
+        IEnumerator RandomTeleport()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(time);
+                //ì• ë‹ˆë©”ì´ì…˜ ì—°ì¶œ 3ì´ˆí›„ì— ì´ë™
+                animator.SetTrigger("Teleport");
+                GameObject potalEffect = Instantiate(teleportEffect, transform.position, Quaternion.identity);
+                potalEffect.transform.parent = transform;
+                Destroy(potalEffect, 3.3f);
+                yield return new WaitForSeconds(2.5f);
+                int randomIndex;
+                do
+                {
+                    randomIndex = Random.Range(0, 3);
+                }
+                while (randomIndex == previousIndex); //ê°™ì€ê°’ ì—°ì†ë°©ì§€
+                //ë³´ìŠ¤ ìœ„ì¹˜ë¥¼ ëœë¤ì´ë™
+                transform.position = teleports[randomIndex].position;
+                previousIndex = randomIndex;
 
+                //í”Œë ˆì´ì–´ ë°”ë¼ë³´ë©° ê±·ê¸°
+                transform.LookAt(player.transform.position);
+                //animator.SetTrigger("Walk");
+
+                float walkDuration = 5f;
+                float elapsedTime = 0f;
+
+                Vector3 StartPos = transform.position;
+                Vector3 endPos = transform.position + new Vector3(transform.forward.x, 0, transform.forward.z) * 5f;
+
+                //ê±·ëŠ” ë™ì•ˆ íƒ„ë§‰ë°œì‚¬
+                //ìƒì„±ìœ¼ë¡œ êµì²´
+                Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
+                GameObject tan = Instantiate(pingpongShot, spawnPosition, pingpongShot.transform.rotation);
+
+
+                Destroy(tan, 10f);
+                while (elapsedTime < walkDuration)
+                {
+                    transform.position = Vector3.Lerp(StartPos, endPos, elapsedTime / walkDuration);
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+                }
+
+
+
+
+
+                yield return new WaitForSeconds(10f);
+
+            }
+        }
         IEnumerator Attack1()
         {
             transform.LookAt(player.transform);
             yield return new WaitForSeconds(5f);
             for (int i = 0; i < attackCount; i++)
             {
-                // °ø°İ ¸ğ¼Ç ½Ã°£
+                // ê³µê²© ëª¨ì…˜ ì‹œê°„
                 GameObject attackObject1 = Instantiate(attackObjectPrefab, attackObjects[0].position, Quaternion.identity);
                 GameObject attackObject2 = Instantiate(attackObjectPrefab, attackObjects[1].position, Quaternion.identity);
                 animator.SetTrigger("Attack1");
 
                 hitPoint = player.transform;
 
-
                 yield return new WaitForSeconds(0.5f);
 
-                //°ø°İ ¹üÀ§ Ç¥½Ã
-                //GameObject attackRangeIndicator = Instantiate(attackRangePrefab, hitPoint.position, Quaternion.identity);
-                //VampireAttackRange rangeComponent = attackRangeIndicator.GetComponent<VampireAttackRange>();
-                //rangeComponent.StartGrowing(new Vector3(1, 0.1f, 1), attackRange);
-                //Destroy(attackRangeIndicator, 1f);
+                Debug.Log("Attack1 start");
 
-
-                Debug.Log("Attak1 start");
-
-
-
-                // ÀÌµ¿ °æ·Î (y °ª °íÁ¤, x ¹× z °ª º¯°æ)
+                // ì´ë™ ê²½ë¡œ (y ê°’ì„ 0ìœ¼ë¡œ ì„¤ì •)
                 Vector3[] path1 = {
-                attackObject1.transform.position,
-                new Vector3((attackObject1.transform.position.x + hitPoint.position.x) / 2, attackObject1.transform.position.y, hitPoint.position.z + 2),
-                hitPoint.position
-            };
+            new Vector3(attackObject1.transform.position.x, 0, attackObject1.transform.position.z),
+            new Vector3((attackObject1.transform.position.x + hitPoint.position.x) / 2, 0, hitPoint.position.z + 2),
+            new Vector3(hitPoint.position.x, 0, hitPoint.position.z)
+        };
 
                 Vector3[] path2 = {
-                attackObject2.transform.position,
-                new Vector3((attackObject2.transform.position.x + hitPoint.position.x) / 2, attackObject2.transform.position.y, hitPoint.position.z - 2),
-                hitPoint.position
-            };
+            new Vector3(attackObject2.transform.position.x, 0, attackObject2.transform.position.z),
+            new Vector3((attackObject2.transform.position.x + hitPoint.position.x) / 2, 0, hitPoint.position.z - 2),
+            new Vector3(hitPoint.position.x, 0, hitPoint.position.z)
+        };
 
-                // °î¼± ÀÌµ¿ ¹× ÇÃ·¹ÀÌ¾î ¹Ù¶óº¸°Ô ¼³Á¤
+                // ê³¡ì„  ì´ë™ ë° í”Œë ˆì´ì–´ ë°”ë¼ë³´ê²Œ ì„¤ì •
                 attackObject1.transform.DOPath(path1, 0.5f, PathType.CatmullRom).SetOptions(false, AxisConstraint.Y).SetEase(Ease.InOutSine).OnUpdate(() =>
                 {
                     attackObject1.transform.LookAt(player.transform);
                 }).OnComplete(() =>
                 {
-                    // Å¸°İ ÁöÁ¡¿¡ µµ´Ş ½Ã ÅÍÆ®¸®°í Á¦°Å
+                    // íƒ€ê²© ì§€ì ì— ë„ë‹¬ ì‹œ í„°íŠ¸ë¦¬ê³  ì œê±°
                     GameObject impactEffect = Instantiate(impactEffectPrefab, attackObject1.transform.position, Quaternion.identity);
-
                     Destroy(attackObject1, 1f);
                     Destroy(impactEffect, 1.5f);
-                    //Debug.Log("Ã¹ ¹øÂ° ¿ÀºêÁ§Æ®°¡ Å¸°İ ÁöÁ¡¿¡¼­ Á¦°ÅµÇ¾ú½À´Ï´Ù.");
                 });
 
                 attackObject2.transform.DOPath(path2, 0.5f, PathType.CatmullRom).SetOptions(false, AxisConstraint.Y).SetEase(Ease.InOutSine).OnUpdate(() =>
@@ -137,33 +211,40 @@ namespace BS.vampire
                     attackObject2.transform.LookAt(player.transform);
                 }).OnComplete(() =>
                 {
-                    // Å¸°İ ÁöÁ¡¿¡ µµ´Ş ½Ã ÅÍÆ®¸®°í Á¦°Å
+                    // íƒ€ê²© ì§€ì ì— ë„ë‹¬ ì‹œ í„°íŠ¸ë¦¬ê³  ì œê±°
                     GameObject impactEffect = Instantiate(impactEffectPrefab, attackObject2.transform.position, Quaternion.identity);
                     Destroy(attackObject2, 1f);
                     Destroy(impactEffect, 1.5f);
-                    //Debug.Log("µÎ ¹øÂ° ¿ÀºêÁ§Æ®°¡ Å¸°İ ÁöÁ¡¿¡¼­ Á¦°ÅµÇ¾ú½À´Ï´Ù.");
                 });
+
                 yield return new WaitForSeconds(0.1f);
             }
             NextPatternPlay();
             yield return null;
         }
 
+
         IEnumerator Attack2()
         {
-            //º¸½º Áß¾ÓÀÌµ¿
+            //ë³´ìŠ¤ ì¤‘ì•™ì´ë™
+            //animator.SetTrigger("Teleport");
+            GameObject potalEffect = Instantiate(teleportEffect, transform.position, Quaternion.identity);
+            potalEffect.transform.parent = transform;
+            Destroy(potalEffect, 3.3f);
+            yield return new WaitForSeconds(2.5f);
             transform.position = centerTeleport.position;
-            //º¸½º ½ºÅ³ ¿¬Ãâ
+            transform.LookAt(player.transform);
+            //ë³´ìŠ¤ ìŠ¤í‚¬ ì—°ì¶œ
             GameObject skillEffectGo = Instantiate(attack2EffectPrefab, transform.position, Quaternion.identity);
             Destroy(skillEffectGo, 2f);
-            //¾Ö´Ï¸ŞÀÌ¼Ç
+            //ì• ë‹ˆë©”ì´ì…˜
             animator.SetTrigger("Attack2");
-            yield return new WaitForSeconds(1f);    //µ¿ÀÛ´ë±â½Ã°£
-            //ÀÌÆåÆ®
+            yield return new WaitForSeconds(1f);    //ë™ì‘ëŒ€ê¸°ì‹œê°„
+            //ì´í™íŠ¸
 
             for (int i = 0; i < attak3Ranges.Length; i++)
             {
-                //½ºÅ³ ·¹ÀÌ ±×·Á¾ß‰Î ÀÏÁ÷¼± »¡°£»ö ¹üÀ§
+                //ìŠ¤í‚¬ ë ˆì´ ê·¸ë ¤ì•¼ëŒ ì¼ì§ì„  ë¹¨ê°„ìƒ‰ ë²”ìœ„
                 attak3Ranges[i].SetActive(true);
                 yield return new WaitForSeconds(1f);
                 attak3Ranges[i].SetActive(false);
@@ -171,7 +252,7 @@ namespace BS.vampire
 
             for (int i = 0; i < bloodBeams.Length; i++)
             {
-                //·¹ÀÌº¸¿©ÁÖ´Â½Ã°£
+                //ë ˆì´ë³´ì—¬ì£¼ëŠ”ì‹œê°„
                 bloodBeams[i].SetActive(true);
                 yield return new WaitForSeconds(1f);
                 bloodBeams[i].SetActive(false);
@@ -180,15 +261,14 @@ namespace BS.vampire
             NextPatternPlay();
             yield return null;
 
-            yield return new WaitForSeconds(10f);
         }
 
         IEnumerator Attack3()
         {
-            yield return new WaitForSeconds(7f);
+            yield return new WaitForSeconds(5f);
             transform.LookAt(player.transform);
             animator.SetTrigger("Attack1");
-            //¿şÀÌºê
+            //ì›¨ì´ë¸Œ
             for (int i = 0; i < waveCount; i++)
             {
                 foreach (Transform batTransform in batTransforms)
@@ -205,7 +285,7 @@ namespace BS.vampire
 
                     Destroy(bat, 7f);
 
-                    //Ãæµ¹½Ã ÀÌÆåÆ® 
+                    //ì¶©ëŒì‹œ ì´í™íŠ¸ 
 
 
 
@@ -219,19 +299,19 @@ namespace BS.vampire
         IEnumerator Attack4()
         {
             yield return new WaitForSeconds(7f);
-
+            transform.LookAt(player.transform);
             for (int j = 0; j < attack4count; j++)
             {
-                // °ø°İ4¿ë À§Ä¡ ÀúÀå
+                // ê³µê²©4ìš© ìœ„ì¹˜ ì €ì¥
                 originalPositions = new Vector3[summonObject.Length];
                 for (int i = 0; i < summonObject.Length; i++)
                 {
                     originalPositions[i] = summonObject[i].transform.position;
                 }
 
-                // À§Ä¡ ÀÌµ¿
+                // ìœ„ì¹˜ ì´ë™
                 float elapsedTime = 0f;
-                float moveDuration = 0.2f; // ÀÌµ¿¿¡ °É¸± ½Ã°£
+                float moveDuration = 0.2f; // ì´ë™ì— ê±¸ë¦´ ì‹œê°„
                 animator.SetTrigger("Attack1");
                 Vector3[] targetPositions = new Vector3[summonObject.Length];
                 for (int i = 0; i < summonObject.Length; i++)
@@ -246,10 +326,10 @@ namespace BS.vampire
                         if (summonObject[i] != null)
                         {
                             Vector3 newPosition = Vector3.Lerp(originalPositions[i], targetPositions[i], elapsedTime / moveDuration);
-                            newPosition.y = originalPositions[i].y; // y°ª °íÁ¤
+                            newPosition.y = originalPositions[i].y; // yê°’ ê³ ì •
                             summonObject[i].transform.position = newPosition;
 
-                            // ÇÃ·¹ÀÌ¾î¸¦ ¹Ù¶óº¸µµ·Ï È¸ÀüÇÑ ÈÄ, ·£´ıÇÑ °ªÀ» ´õÇÏ±â
+                            // í”Œë ˆì´ì–´ë¥¼ ë°”ë¼ë³´ë„ë¡ íšŒì „í•œ í›„, ëœë¤í•œ ê°’ì„ ë”í•˜ê¸°
                             summonObject[i].transform.LookAt(playerBody.transform);
 
                             Vector3 eulerAngles = summonObject[i].transform.rotation.eulerAngles;
@@ -272,8 +352,8 @@ namespace BS.vampire
                     }
                 }
 
-                //°ø°İ¹üÀ§
-                for( int i = 0; i< summonObject.Length; i++)
+                //ê³µê²©ë²”ìœ„
+                for (int i = 0; i < summonObject.Length; i++)
                 {
                     GameObject attakRange = Instantiate(attak4Ranges, summonObject[i].transform.position, summonObject[i].transform.rotation);
                     attakRange.transform.parent = summonObject[i].transform;
@@ -281,7 +361,7 @@ namespace BS.vampire
                 }
 
                 yield return new WaitForSeconds(0.5f);
-                // ·¹ÀÌÀú ¹ß»ç
+                // ë ˆì´ì € ë°œì‚¬
                 for (int i = 0; i < summonObject.Length; i++)
                 {
                     GameObject attackEffect = Instantiate(attack4EffectPrefab, summonObject[i].transform.position, summonObject[i].transform.rotation);
@@ -293,7 +373,7 @@ namespace BS.vampire
 
                 yield return new WaitForSeconds(1f);
 
-                // ´Ù½Ã ¿ø·¡ À§Ä¡·Î
+                // ë‹¤ì‹œ ì›ë˜ ìœ„ì¹˜ë¡œ
                 elapsedTime = 0f;
                 while (elapsedTime < moveDuration)
                 {
@@ -320,6 +400,64 @@ namespace BS.vampire
             NextPatternPlay();
             yield return null;
         }
+        IEnumerator Attack5()
+        {
+            if (isAttack5BatSummon)
+            {
+                NextPatternPlay();
+                yield break;
+            }
+            transform.LookAt(player.transform);
+            isAttack5BatSummon = true;
+            animator.SetTrigger("Attack1");
+            GameObject summonEffect = Instantiate(attack5SummonEffect,transform.position, Quaternion.identity);
+            summonEffect.transform.parent = transform;
+            Destroy(summonEffect,3f );
+            yield return new WaitForSeconds(3f);
+            // ê³µê²© ëª¨ì…˜ ì‹œê°„
+            GameObject attackObject1 = Instantiate(attack5BatPrefab, attack5Lotations[0].position, attack5Lotations[0].rotation);
+            GameObject attackObject2 = Instantiate(attack5BatPrefab, attack5Lotations[1].position, attack5Lotations[1].rotation);
+          
+
+            // ì²« ë²ˆì§¸ ì˜¤ë¸Œì íŠ¸ (zì¶•ìœ¼ë¡œ ì´ë™)
+            Attack5BatMove firstObject = attackObject1.GetComponent<Attack5BatMove>();
+            firstObject.moveInZAxis = true;
+
+            // ë‘ ë²ˆì§¸ ì˜¤ë¸Œì íŠ¸ (xì¶•ìœ¼ë¡œ ì´ë™)
+            Attack5BatMove secondObject = attackObject2.GetComponent<Attack5BatMove>();
+            secondObject.moveInZAxis = false;
+        
+
+            NextPatternPlay();
+            yield return null;
+        }
+
+        //ê³µê²© 6 ì¦‰ì‚¬ê¸°
+       
+        IEnumerator Attack6()
+        {
+            //ê³µì¤‘ ë‚ ê¸° ì• ë‹ˆë©”ì´ì…˜
+
+            //ì• ë‹ˆë©”ì´ì…˜ ì‹œì „ ì‹œê°„
+            yield return new WaitForSeconds(5f);
+            //ì•ˆì „ì§€ëŒ€ ìœ„í—˜êµ¬ì—­ ìƒì„±
+            attack6Range.SetActive(true);
+            for (int i = 0; i < safeRanges.Length; i++)
+            {
+
+            }
+            //ì•ˆì „ì§€ëŒ€ í”Œë ˆì´ì–´ ë¬´ì , ê·¸ë°–ì— ì¦‰ì‚¬
+
+            //ê¸°ëª¨ìœ¼ëŠ” ì´í™íŠ¸
+
+            //ê¸°ëª¨ìœ¼ê¸° 5ì´ˆ 
+
+            //ë©”í…Œì˜¤ì‹œì „
+
+
+            NextPatternPlay();
+            yield return null;
+        }
 
         void StraightMove()
         {
@@ -329,25 +467,30 @@ namespace BS.vampire
 
         void NextPatternPlay()
         {
+            StartCoroutine(RandomTeleport());
             transform.LookAt(player.transform);
-            nextPattern = (nextPattern % 4) + 1; // ÆĞÅÏÀ» ¼øÈ¯
+            nextPattern = (nextPattern % 5) + 1; // íŒ¨í„´ì„ ìˆœí™˜
             switch (nextPattern)
             {
                 case 1:
                     StartCoroutine(Attack1());
-                    Debug.Log("1¹øÆĞÅÏ½ÇÇà");
+                    Debug.Log("1ë²ˆíŒ¨í„´ì‹¤í–‰");
                     break;
                 case 2:
                     StartCoroutine(Attack2());
-                    Debug.Log("2¹øÆĞÅÏ½ÇÇà");
+                    Debug.Log("2ë²ˆíŒ¨í„´ì‹¤í–‰");
                     break;
                 case 3:
                     StartCoroutine(Attack3());
-                    Debug.Log("3¹øÆĞÅÏ½ÇÇà");
+                    Debug.Log("3ë²ˆíŒ¨í„´ì‹¤í–‰");
                     break;
                 case 4:
                     StartCoroutine(Attack4());
-                    Debug.Log("4¹øÆĞÅÏ½ÇÇà");
+                    Debug.Log("4ë²ˆíŒ¨í„´ì‹¤í–‰");
+                    break;
+                case 5:
+                    StartCoroutine(Attack5());
+                    Debug.Log("4ë²ˆíŒ¨í„´ì‹¤í–‰");
                     break;
             }
         }

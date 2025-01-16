@@ -19,7 +19,7 @@ namespace BS.Particle
 
         void OnParticleCollision(GameObject other)
         {
-           Debug.Log(other.name);   
+            Debug.Log(other.name);
             PlayerController playerController = other.GetComponent<PlayerController>();
             if (playerController != null)
             {
@@ -32,11 +32,12 @@ namespace BS.Particle
                     Debug.Log($"{damageAmount}만큼 데미지 입음");
                     playerHealth.TakeDamage(damageAmount, false);
                     Debug.Log($"hp={playerHealth.CurrentHealth}");
+                    
                 }
             }
         }
 
 
-      
+
     }
 }

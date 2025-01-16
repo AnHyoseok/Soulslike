@@ -18,6 +18,7 @@ namespace BS.vampire
         public float time = 20; //순간이동 쿨타임
         public Animator animator;
         private int previousIndex = -1; //이전 위치값
+        public Transform player;
         #endregion
 
         private void Start()
@@ -55,14 +56,36 @@ namespace BS.vampire
                 transform.position = teleports[randomIndex].position;
                 previousIndex = randomIndex;
 
+                //플레이어 바라보며 걷기
+                transform.LookAt(player.position);
+                //animator.SetTrigger("Walk");
+
+                float walkDuration = 5f;
+                float elapsedTime = 0f;
+
+                Vector3 StartPos = transform.position;
+                Vector3 endPos = transform.position + new Vector3(transform.forward.x, 0, transform.forward.z) * 5f;
+
+                //걷는 동안 탄막발사
+                //생성으로 교체
+                Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
+                GameObject tan = Instantiate(pingpongShot, spawnPosition, pingpongShot.transform.rotation);
 
 
-                pingpongShot.SetActive(true);
+                Destroy(tan, 10f);
+                while (elapsedTime < walkDuration)
+                {
+                    transform.position = Vector3.Lerp(StartPos, endPos, elapsedTime/walkDuration);
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+                }
+            
 
-                yield return new WaitForSeconds(5f);
-                pingpongShot.SetActive(false);
+               
+           
 
-
+                yield return new WaitForSeconds(10f);
+               
             }
         }
     }
