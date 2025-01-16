@@ -11,7 +11,8 @@ namespace BS.Particle
         private new ParticleSystem particleSystem;
         private HashSet<GameObject> collidedObjects = new HashSet<GameObject>();
         // 패턴별 데미지
-        public int damageAmount = 10;
+        public int maxDamage = 1;
+        public int minDamage = 2;
         #endregion
         void Start()
         {
@@ -30,8 +31,9 @@ namespace BS.Particle
                 PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
                 if (playerHealth != null)
                 {
-                    Debug.Log($"{damageAmount}만큼 데미지 입음");
-                    playerHealth.TakeDamage(damageAmount, false);
+                    int damage = Random.Range(minDamage, maxDamage);
+                    Debug.Log($"{damage}만큼 데미지 입음");
+                    playerHealth.TakeDamage(damage, false);
                     Debug.Log($"hp={playerHealth.CurrentHealth}");
                 }
             }
