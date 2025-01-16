@@ -13,12 +13,18 @@ namespace BS.Demon
         private Vector3 targetPosition; // 목표 위치
         private bool isRising = false; // 상승 상태 플래그
         public DemonPattern pattern;
+        [HideInInspector]public TwoPhasePattern twoPhase;
         #endregion
         private void Start()
         {
             // 현재 위치를 기준으로 목표 위치 계산
             startPosition = transform.position;
             targetPosition = startPosition + Vector3.up * targetHeight;
+            twoPhase = pattern.GetComponent<TwoPhasePattern>();
+        }
+        private void Update()
+        {
+            StartCoroutine(UpRise());
         }
         public void StartRise()
         {

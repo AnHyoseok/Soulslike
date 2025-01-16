@@ -45,9 +45,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30638149cf7ac7c4fb13e85e1575a9ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetHeight: 5
+  targetHeight: 2.5
   riseSpeed: 10
   pattern: {fileID: 5196229966916800988, guid: 8ff18eeb3eeacb54aa2bfef06a282531, type: 3}
+  effgo: {fileID: 0}
+  phasePattern: {fileID: 100000, guid: 2374948e4c8453145b1764feae319ce2, type: 3}
 --- !u!1 &6603378961253747614
 GameObject:
   m_ObjectHideFlags: 0

@@ -4144,6 +4144,7 @@ MonoBehaviour:
   - {fileID: 168908752}
   - {fileID: 2082574233}
   - {fileID: 2076343837}
+  enemyStage: {fileID: 1261142292}
   outline:
   - {fileID: 584139161}
   - {fileID: 1893389585}
@@ -13558,7 +13559,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6ad802c6e919da4f8e9a70e4df29368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isIdle: 0
   targetPosition: {x: 0, y: 0, z: 0}
+  isMovable: 1
   isMoving: 0
   inGameMoveSpeed: 0
   isSprinting: 0

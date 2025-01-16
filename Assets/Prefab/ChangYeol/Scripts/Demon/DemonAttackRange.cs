@@ -4,15 +4,14 @@ namespace BS.Demon
 {
 public class DemonAttackRange : MonoBehaviour
     {
-        public float growSpeed = 2f; // ¼ºÀå ¼Óµµ
-        private bool isGrowing = false; // ¼ºÀå ÁßÀÎÁö È®ÀÎ
+        public float growSpeed = 2f; // ì„±ì¥ ì†ë„
+        public bool isGrowing = false; // ì„±ì¥ ì¤‘ì¸ì§€ í™•ì¸
 
-        private Vector3 originalScale; // ÃÊ±â Å©±â
-        private Vector3 targetScale; // ÃÊ±â Å©±â
-
+        private Vector3 originalScale; // ì´ˆê¸° í¬ê¸°
+        private Vector3 targetScale; // ì´ˆê¸° í¬ê¸°
         private void Start()
         {
-            // ÇöÀç Å©±â¸¦ ÃÊ±â Å©±â·Î ÀúÀå
+            // í˜„ì¬ í¬ê¸°ë¥¼ ì´ˆê¸° í¬ê¸°ë¡œ ì €ì¥
             originalScale = transform.localScale;
         }
 
@@ -23,22 +22,22 @@ public class DemonAttackRange : MonoBehaviour
 
         public void StartGrowing(Vector3 StartScale, float Range)
         {
-            // ¸ñÇ¥ Å©±â ¼³Á¤
+            // ëª©í‘œ í¬ê¸° ì„¤ì •
             targetScale = StartScale * Range;
-            // ¼ºÀå ½ÃÀÛ
+            // ì„±ì¥ ì‹œì‘
             isGrowing = true;
         }
         private void UpdateScale()
         {
             if (isGrowing)
             {
-                // ºÎµå·´°Ô Å©±â Áõ°¡
+                // ë¶€ë“œëŸ½ê²Œ í¬ê¸° ì¦ê°€
                 transform.localScale = Vector3.MoveTowards(transform.localScale, targetScale, growSpeed * Time.deltaTime);
 
-                // ¸ñÇ¥ Å©±â¿¡ µµ´ŞÇß´ÂÁö È®ÀÎ
+                // ëª©í‘œ í¬ê¸°ì— ë„ë‹¬í–ˆëŠ”ì§€ í™•ì¸
                 if (Vector3.Distance(transform.localScale, targetScale) < 0.01f)
                 {
-                    isGrowing = false; // ¼ºÀå Á¾·á
+                    isGrowing = false; // ì„±ì¥ ì¢…ë£Œ
                 }
             }
         }

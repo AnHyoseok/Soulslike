@@ -4,15 +4,10 @@ using UnityEngine;
 
 namespace BS.Demon
 {
-    [System.Serializable]
-    public class PatternPoins
-    {
-        public Transform[] patternTwoPoints;
-    }
     public class DemonPattern : MonoBehaviour
     {
         #region Variables
-        private DemonNextPesos demon;
+        [HideInInspector]public DemonNextPhase demon;
         public GameObject[] effect;
 
         //패턴 1
@@ -28,12 +23,8 @@ namespace BS.Demon
         //패턴 3
         public Transform[] teleportPoints; // 텔레포트 가능한 지점들
 
-        //패턴 4
-        public List<PatternPoins> patternTwoPoints;
-        public float spawnTime = 1f;
-
         //공격범위
-        [SerializeField] private GameObject[] attackRangePrefab;
+        public GameObject[] attackRangePrefab;
         public Vector3[] attackRangeScale = new Vector3[2];
         public float[] rangeSize = new float[2];
 
@@ -43,7 +34,7 @@ namespace BS.Demon
         #endregion
         private void Start()
         {
-            demon = GetComponent<DemonNextPesos>();
+            demon = GetComponent<DemonNextPhase>();
         }
         //패턴 1
         #region Pattern 1
@@ -148,6 +139,11 @@ namespace BS.Demon
                     // 텔레포트 효과 생성
                     GameObject effectgo = Instantiate(effect[2], transform.position, Quaternion.identity);
                     Destroy(effectgo, 1f);
+                    if (!demon.hasRecovered) return;
+                    if(demon.hasRecovered)
+                    {
+                        demon.lastPesosTime[2] = Time.time;
+                    }
                 }
             }
         }
@@ -161,54 +157,5 @@ namespace BS.Demon
         {
             transform.LookAt(player.position);
         }
-        //2페이지 패턴 1
-        #region 2Pesos Pattern 1
-        public void SpawnAndExplodeInOrder()
-        {
-            if (patternTwoPoints.Count == 0 || !ball[1])
-            {
-                Debug.LogWarning("Spawn points or object to spawn not set!");
-                return;
-            }
-            StartCoroutine(SpawnAndExplodeRoutine());
-            demon.lastPesosTime[0] =Time.time;
-        }
-
-        private IEnumerator SpawnAndExplodeRoutine()
-        {
-            foreach (PatternPoins points in patternTwoPoints)
-            {
-                foreach(Transform transform in points.patternTwoPoints)
-                {
-                    // 지정된 위치에 오브젝트 생성
-                    GameObject spawnedBall = Instantiate(ball[1].gameObject, transform.position, Quaternion.identity);
-                    BallRise ballRise = spawnedBall.GetComponent<BallRise>();
-
-                    // 상승 동작 시작
-                    if (ballRise != null)
-                    {
-                        ballRise.StartRise();
-                    }
-                    Explode(spawnedBall);
-                }
-                yield return new WaitForSeconds(spawnTime);
-            }
-        }
-
-        private void Explode(GameObject target)
-        {
-            if (target != null)
-            {
-                // 폭발 효과 (선택 사항)
-                GameObject effectInstance = Instantiate(effect[0], target.transform.position, Quaternion.identity);
-                Destroy(effectInstance, 1f);
-
-                // 대상 제거
-                Destroy(target);
-
-                Debug.Log("Explosion occurred at: " + target.transform.position);
-            }
-        }
-        #endregion
     }
 }

@@ -2,16 +2,16 @@ using UnityEngine;
 
 namespace BS.Demon
 {
-    public class DemonNextPesos : DemonController
+    public class DemonNextPhase : DemonController
     {
         #region Variables
-        public float[] lastPesosTime = new float[3];
-        [SerializeField]private float[] pesosAttackCool = new float[3] {6, 4, 3 };
+        [HideInInspector]public float[] lastPesosTime = new float[3];
+        [SerializeField]private float[] pesosAttackCool = new float[3];
         #endregion
-        public override void NextPesos()
+        public override void NextPhase()
         {
             index = Random.Range(0, pesosDemon.Count);
-            if (Time.time - lastPesosTime[index] >= attackCooldown[index] &&
+            if (Time.time - lastPesosTime[index] >= pesosAttackCool[index] &&
                 Vector3.Distance(transform.position, pattern.player.position) > attackRange)
             {
                 switch (index)

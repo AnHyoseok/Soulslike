@@ -9,6 +9,7 @@ namespace BS.Demon
     {
         #region Variables
         private HashSet<GameObject> damagedObjects = new HashSet<GameObject>();
+        public Collider triggerCollider;
         public int damageAmount = 10;
         #endregion
         private void Start()
@@ -32,7 +33,10 @@ namespace BS.Demon
                     StartCoroutine(ResetCollision(other.gameObject));
                 }
             }
-            StopCoroutine(TriggerOn());
+            if(triggerCollider != null)
+            {
+                StopCoroutine(TriggerOn());
+            }
         }
 
         // 일정 시간 후 충돌 정보 리셋
@@ -43,21 +47,13 @@ namespace BS.Demon
         }
         IEnumerator TriggerOn()
         {
-            if(this.GetComponent<BoxCollider>())
+            if(triggerCollider)
             {
-                this.GetComponent<BoxCollider>().enabled = false;
+                triggerCollider.enabled = false;
                 yield return new WaitForSeconds(0.5f);
-                this.GetComponent<BoxCollider>().enabled = true;
+                triggerCollider.enabled = true;
                 yield return new WaitForSeconds(0.5f);
-                this.GetComponent<BoxCollider>().enabled = false;
-            }
-            else if (this.GetComponent<SphereCollider>())
-            {
-                this.GetComponent<SphereCollider>().enabled = false;
-                yield return new WaitForSeconds(0.5f);
-                this.GetComponent<SphereCollider>().enabled = true;
-                yield return new WaitForSeconds(0.5f);
-                this.GetComponent<SphereCollider>().enabled = false;
+                triggerCollider.enabled = false;
             }
         }
     }
