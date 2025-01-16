@@ -104,6 +104,6 @@ MonoBehaviour:
   beginOffsetDegree: 0
   radius: 8
   material: {fileID: 2100000, guid: 348972ca4826f564c9d9cc7bf1416310, type: 2}
-  startAlpha: 1
+  startAlpha: 0.8
   targetAlpha: 0
   fadeSpeed: 0.5

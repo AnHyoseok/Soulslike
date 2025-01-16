@@ -99,6 +99,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 817b280988b3dae43837f24b96e0a1de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startAlpha: 1
+  startAlpha: 0.8
   targetAlpha: 0
   fadeSpeed: 1

@@ -235,9 +235,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockCoolTime: 3
+  mainCamera: {fileID: 0}
   blockCoolTimeText: {fileID: 0}
   maxHealth: 0
   currentHealth: 0
+  rotationDuration: 0.1
 --- !u!4 &39521893
 Transform:
   m_ObjectHideFlags: 0
@@ -7100,8 +7102,10 @@ MonoBehaviour:
   isBlockingAnim: 0
   isBlocking: 0
   currentBlockCoolTime: 0
-  isAttack: 0
   ComboAttackIndex: 1
+  currentUppercutCoolTime: 0
+  currentChargingPunchCoolTime: 0
+  currentBackHandSwingCoolTime: 0
 --- !u!114 &2125904650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9492,6 +9496,8 @@ MonoBehaviour:
   pt5AttackRange: {fileID: 2397058133957700630, guid: 053bdeaa5285a7a4fa8e9313ddd9cb67, type: 3}
   pt5radius: 25
   pt5spawnCount: 40
+  alien: {fileID: 5998695934361493826}
+  player: {fileID: 2125904647}
 --- !u!1 &4523729049151652951
 GameObject:
   m_ObjectHideFlags: 0

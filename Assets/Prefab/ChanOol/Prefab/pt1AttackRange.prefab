@@ -106,6 +106,6 @@ MonoBehaviour:
   targetScale: {x: 8, y: 8, z: 8}
   scaleSpeed: 20
   material: {fileID: 2100000, guid: 348972ca4826f564c9d9cc7bf1416310, type: 2}
-  startAlpha: 1
+  startAlpha: 0.8
   targetAlpha: 0
   fadeSpeed: 2

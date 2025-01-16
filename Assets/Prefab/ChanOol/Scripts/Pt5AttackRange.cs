@@ -55,7 +55,7 @@ public class Pt5AttackRange : MonoBehaviour
                 }
             }
 
-            Destroy(gameObject, 2f);
+            Destroy(gameObject, 4f);  // 오브젝트 삭제
         }
     }
 
@@ -89,11 +89,20 @@ public class Pt5AttackRange : MonoBehaviour
                 isShrinking = false; // 축소 종료
                 //Debug.Log("Reached target size!");
 
-                GameObject gameobject = Instantiate(pt5Particle, transform.position, Quaternion.identity);
+                // pt5Particle 생성 후, 2초 후에 파티클을 삭제하도록 코루틴 호출
+                GameObject particle = Instantiate(pt5Particle, transform.position, Quaternion.identity);
+                StartCoroutine(DestroyParticleAfterTime(particle, 4f)); // 4초 후 삭제
 
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(2f);  // 파티클 생성을 위한 대기 시간
             }
         }
+    }
+
+    // 파티클을 일정 시간이 지난 후 삭제하는 함수
+    private IEnumerator DestroyParticleAfterTime(GameObject particle, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Destroy(particle); // 파티클 삭제
     }
 }
 

@@ -13,29 +13,93 @@ public class AlienBossPattern : MonoBehaviour
     public Transform pt2SpawnPoint;        // 발사체 생성 위치
     public GameObject pt2AttackRange;      // 공격범위 프리팹
 
-    public GameObject pt3Particle;         // 발사체 프리팹
-    public Transform pt3SpawnPoint;        // 발사체 생성 위치
+    public GameObject pt3Particle;         // 이펙트 프리팹
+    public Transform pt3SpawnPoint;        // 이펙트 생성 위치
     public GameObject pt3AttackRange;      // 공격범위 프리팹
 
-    public GameObject pt4Particle;         // 발사체 프리팹
-    public Transform pt4SpawnPoint;        // 발사체 생성 위치
+    public GameObject pt4Particle;         // 이펙트 프리팹
+    public Transform pt4SpawnPoint;        // 이펙트 생성 위치
     public GameObject pt4AttackRange;      // 공격범위 프리팹
 
     public GameObject pt5Particle;         // 이펙트 프리팹
-    public Transform pt5SpawnPoint;        // 발사체 생성 위치
+    public Transform pt5SpawnPoint;        // 이펙트 생성 위치
     public GameObject pt5AttackRange;      // 공격범위 프리팹
     public float pt5radius = 5f;           // 공격범위 반지름
-    public int pt5spawnCount = 5;          // 이펙트 갯수
+    public int pt5spawnCount = 5;          // 공격 횟수
+
+    public GameObject alien;               // 보스
+    public GameObject player;              // 플레이어
+    private float distance;                // 보스와 플레이어의 거리
+
+    private bool canAttack = true;
+    private bool canMeleeAttack = true;
+    private bool canRangedAttack = true;
+    private int randomNumber;
+
+    int[] patternNumbers = new int[] { 1, 2, 3, 4 };
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        randomNumber = Random.Range(1, 5);  // 1 ~ 4중 랜덤한 숫자
+        Debug.Log($"랜덤넘버 : {randomNumber}");
     }
 
     // Update is called once per frame
     void Update()
     {
+        // 플레이어와 거리재기
+        distance = Vector3.Distance(alien.transform.position, player.transform.position);
+
+        if (canAttack)
+        {
+            // 플레이어와의 거리가 8 미만일때
+            if (distance < 8 && canMeleeAttack)
+            {
+                canAttack = false;
+                canMeleeAttack = false;
+                StartCoroutine(Pattern4());
+                Debug.Log($"근접공격 : {canMeleeAttack}");
+            }
+            else if (randomNumber == 1 && canRangedAttack)
+            {
+                canAttack = false;                  // 매 프레임마다 실행되는거 막기용 bool형 변수
+                canRangedAttack = false;            // 매 프레임마다 실행되는거 막기용 bool형 변수
+                StartCoroutine(Pattern1());
+                randomNumber = Random.Range(1, 5);  // 다음패턴 재설정
+                Debug.Log($"랜덤넘버 : {randomNumber}");
+                Debug.Log($"원거리공격 : {canRangedAttack}");
+            }
+            else if (randomNumber == 2 && canRangedAttack)
+            {
+                canAttack = false;
+                canRangedAttack = false;
+                StartCoroutine(Pattern2());
+                randomNumber = Random.Range(1, 5);  // 다음패턴 재설정
+                Debug.Log($"랜덤넘버 : {randomNumber}");
+                Debug.Log($"원거리공격 : {canRangedAttack}");
+            }
+            else if (randomNumber == 3 && canRangedAttack)
+            {
+                canAttack = false;
+                canRangedAttack = false;
+                StartCoroutine(Pattern3());
+                randomNumber = Random.Range(1, 5);  // 다음패턴 재설정
+                Debug.Log($"랜덤넘버 : {randomNumber}");
+                Debug.Log($"원거리공격 : {canRangedAttack}");
+            }
+            else if (randomNumber == 4 && canRangedAttack)
+            {
+                canAttack = false;
+                canRangedAttack = false;
+                StartCoroutine(Pattern5());
+                randomNumber = Random.Range(1, 5);  // 다음패턴 재설정
+                Debug.Log($"랜덤넘버 : {randomNumber}");
+                Debug.Log($"원거리공격 : {canRangedAttack}");
+            }
+        }
+        
+        // 테스트용
         if (Input.GetKeyDown(KeyCode.Q))        // 공격패턴1
         {
             StartCoroutine(Pattern1());
@@ -57,21 +121,38 @@ public class AlienBossPattern : MonoBehaviour
             StartCoroutine(Pattern5());
         }
     }
-    
+
     // 공격패턴1 : 부채꼴 공격
     public IEnumerator Pattern1()
     {
-        // 공격범위 표시
-        Instantiate(pt1AttackRange, new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z + 5.0f), Quaternion.Euler(0f, 67.5f, 180f));
+        canAttack = false;
 
-        yield return new WaitForSeconds(1.0f);
+        // 플레이어 방향 계산
+        Vector3 directionToPlayer = (player.transform.position - transform.position).normalized;  // 플레이어 방향으로 벡터 계산
+        Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);  // 플레이어를 바라보는 회전값 생성
+
+        // 공격범위 표시 (플레이어 방향을 바라보게 회전, 기존 회전 값 추가)
+        Quaternion attackRangeRotation = lookRotation * Quaternion.Euler(0f, 67.5f, 180f);  // 기존 회전 값 추가
+
+        // pt1AttackRange를 플레이어 방향으로 회전시키고, 기존 회전 값 추가
+        Instantiate(pt1AttackRange, new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z + 5.0f), attackRangeRotation);
+
+        yield return new WaitForSeconds(1.3f);
 
         animator.SetInteger("Pattern", 1); // 애니메이터 "Pattern" 값을 1로 설정
 
-        StartCoroutine(pt1ProjectileTiming(0.4f));
-
         StartCoroutine(PatternReset(0.5f)); // 일정시간 후 "Pattern" 값을 0으로 초기화
+
+        // pt1Particle도 플레이어를 바라보게 하고, 같은 방향으로 회전
+        GameObject particle = Instantiate(pt1Particle, pt1SpawnPoint.position, lookRotation);
+
+        yield return new WaitForSeconds(5.0f); // 다음 패턴을 위한 대기시간
+
+        canAttack = true;
+        canRangedAttack = true;
     }
+
+
 
     // 공격패턴2 : 맵 전체공격(원형)
     public IEnumerator Pattern2()
@@ -88,6 +169,11 @@ public class AlienBossPattern : MonoBehaviour
         animator.SetInteger("Pattern", 0); // 애니메이터 "Pattern" 값을 0으로 초기화
 
         Instantiate(pt2Particle, pt2SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
+
+        yield return new WaitForSeconds(2.0f); // 다음 패턴을 위한 대기시간
+
+        canAttack = true;
+        canRangedAttack = true;
     }
 
     // 공격패턴3 : 맵 전체공격(파도형)
@@ -103,6 +189,11 @@ public class AlienBossPattern : MonoBehaviour
         StartCoroutine(pt3Projectiles());
 
         StartCoroutine(PatternReset(0.5f)); // 일정 시간 후 "Pattern" 값 0으로 초기화
+
+        yield return new WaitForSeconds(2.0f); // 다음 패턴을 위한 대기시간
+
+        canAttack = true;
+        canRangedAttack = true;
     }
 
     // 공격패턴3 공격범위 표시
@@ -157,7 +248,10 @@ public class AlienBossPattern : MonoBehaviour
 
         animator.SetInteger("Pattern", 0); // "Pattern" 값 0으로 초기화
 
-        
+        yield return new WaitForSeconds(5.0f); // 다음 패턴을 위한 대기시간
+
+        canAttack = true;
+        canMeleeAttack = true;
     }
 
     // 공격패턴5 : 낙석 공격
@@ -173,6 +267,11 @@ public class AlienBossPattern : MonoBehaviour
         StartCoroutine(InstantiatePt5AttackRange());
 
         //Instantiate(pt4Particle, pt4SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
+
+        yield return new WaitForSeconds(6.0f); // 다음 패턴을 위한 대기시간
+
+        canAttack = true;
+        canRangedAttack = true;
     }
 
     private IEnumerator InstantiatePt5AttackRange()
@@ -198,7 +297,14 @@ public class AlienBossPattern : MonoBehaviour
     private IEnumerator pt1ProjectileTiming(float delay)
     {
         yield return new WaitForSeconds(delay);
-        Instantiate(pt1Particle, pt1SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
+        // 발사체 생성
+        GameObject projectile = Instantiate(pt1Particle, pt1SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
+
+        // 발사체가 플레이어 방향으로 회전하도록 설정
+        Vector3 directionToPlayer = (player.transform.position - pt1SpawnPoint.position).normalized;  // 플레이어 방향으로 벡터 계산
+        Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);  // 방향으로 회전할 쿼터니언 생성
+
+        projectile.transform.rotation = targetRotation;  // 발사체의 회전 설정
     }
 
     private IEnumerator pt2ProjectileTiming(float delay)
