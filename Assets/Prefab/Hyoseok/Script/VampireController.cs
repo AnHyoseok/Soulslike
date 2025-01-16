@@ -89,8 +89,9 @@ namespace BS.vampire
         // 안전 지대에 있을 시 플레이어 무적 , 그 밖에 즉사 
         public GameObject attack6Range;
         public GameObject[] safeRanges;
+        public GameObject attack6BossEffect;
         public GameObject meteorPrefab;
-       
+
 
 
         private int nextPattern = 0;
@@ -101,8 +102,8 @@ namespace BS.vampire
             {
                 animator = GetComponent<Animator>();
             }
-            //StartCoroutine(Attack2());
-            NextPatternPlay();
+            StartCoroutine(Attack6());
+            //NextPatternPlay();
 
 
         }
@@ -113,57 +114,49 @@ namespace BS.vampire
         //}
         IEnumerator RandomTeleport()
         {
-            while (true)
+          
+            yield return new WaitForSeconds(time);
+            // 애니메이션 연출 3초 후에 이동
+            animator.SetTrigger("Teleport");
+            GameObject potalEffect = Instantiate(teleportEffect, transform.position, Quaternion.identity);
+            potalEffect.transform.parent = transform;
+            Destroy(potalEffect, 3.3f);
+            yield return new WaitForSeconds(2.5f);
+            int randomIndex;
+            do
             {
-                yield return new WaitForSeconds(time);
-                //애니메이션 연출 3초후에 이동
-                animator.SetTrigger("Teleport");
-                GameObject potalEffect = Instantiate(teleportEffect, transform.position, Quaternion.identity);
-                potalEffect.transform.parent = transform;
-                Destroy(potalEffect, 3.3f);
-                yield return new WaitForSeconds(2.5f);
-                int randomIndex;
-                do
-                {
-                    randomIndex = Random.Range(0, 3);
-                }
-                while (randomIndex == previousIndex); //같은값 연속방지
-                //보스 위치를 랜덤이동
-                transform.position = teleports[randomIndex].position;
-                previousIndex = randomIndex;
+                randomIndex = Random.Range(0, 3);
+            }
+            while (randomIndex == previousIndex); // 같은 값 연속 방지
+                                                  // 보스 위치를 랜덤 이동
+            transform.position = teleports[randomIndex].position;
+            previousIndex = randomIndex;
 
-                //플레이어 바라보며 걷기
-                transform.LookAt(player.transform.position);
-                //animator.SetTrigger("Walk");
+            // 플레이어 바라보며 걷기
+            transform.LookAt(player.transform.position);
+            // animator.SetTrigger("Walk");
 
-                float walkDuration = 5f;
-                float elapsedTime = 0f;
+            float walkDuration = 5f;
+            float elapsedTime = 0f;
 
-                Vector3 StartPos = transform.position;
-                Vector3 endPos = transform.position + new Vector3(transform.forward.x, 0, transform.forward.z) * 5f;
+            Vector3 startPos = transform.position;
+            Vector3 endPos = transform.position + new Vector3(transform.forward.x, 0, transform.forward.z) * 5f;
 
-                //걷는 동안 탄막발사
-                //생성으로 교체
-                Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
-                GameObject tan = Instantiate(pingpongShot, spawnPosition, pingpongShot.transform.rotation);
+            // 걷는 동안 탄막 발사
+            // 생성으로 교체
+            Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
+            GameObject tan = Instantiate(pingpongShot, spawnPosition, pingpongShot.transform.rotation);
+            Destroy(tan, 10f);
 
-
-                Destroy(tan, 10f);
-                while (elapsedTime < walkDuration)
-                {
-                    transform.position = Vector3.Lerp(StartPos, endPos, elapsedTime / walkDuration);
-                    elapsedTime += Time.deltaTime;
-                    yield return null;
-                }
-
-
-
-
-
-                yield return new WaitForSeconds(10f);
-
+            while (elapsedTime < walkDuration)
+            {
+                transform.position = Vector3.Lerp(startPos, endPos, elapsedTime / walkDuration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
             }
         }
+
+        //배트자폭
         IEnumerator Attack1()
         {
             transform.LookAt(player.transform);
@@ -223,7 +216,7 @@ namespace BS.vampire
             yield return null;
         }
 
-
+        //상하좌우 레이져 패턴
         IEnumerator Attack2()
         {
             //보스 중앙이동
@@ -263,6 +256,7 @@ namespace BS.vampire
 
         }
 
+        //배트날리기
         IEnumerator Attack3()
         {
             yield return new WaitForSeconds(5f);
@@ -295,7 +289,7 @@ namespace BS.vampire
             NextPatternPlay();
             yield return null;
         }
-
+        //소환된 배트가 플레이어타격 레이져발사
         IEnumerator Attack4()
         {
             yield return new WaitForSeconds(7f);
@@ -400,6 +394,7 @@ namespace BS.vampire
             NextPatternPlay();
             yield return null;
         }
+        //레이저 배트소환
         IEnumerator Attack5()
         {
             if (isAttack5BatSummon)
@@ -410,14 +405,14 @@ namespace BS.vampire
             transform.LookAt(player.transform);
             isAttack5BatSummon = true;
             animator.SetTrigger("Attack1");
-            GameObject summonEffect = Instantiate(attack5SummonEffect,transform.position, Quaternion.identity);
+            GameObject summonEffect = Instantiate(attack5SummonEffect, transform.position, Quaternion.identity);
             summonEffect.transform.parent = transform;
-            Destroy(summonEffect,3f );
+            Destroy(summonEffect, 3f);
             yield return new WaitForSeconds(3f);
             // 공격 모션 시간
             GameObject attackObject1 = Instantiate(attack5BatPrefab, attack5Lotations[0].position, attack5Lotations[0].rotation);
             GameObject attackObject2 = Instantiate(attack5BatPrefab, attack5Lotations[1].position, attack5Lotations[1].rotation);
-          
+
 
             // 첫 번째 오브젝트 (z축으로 이동)
             Attack5BatMove firstObject = attackObject1.GetComponent<Attack5BatMove>();
@@ -426,34 +421,80 @@ namespace BS.vampire
             // 두 번째 오브젝트 (x축으로 이동)
             Attack5BatMove secondObject = attackObject2.GetComponent<Attack5BatMove>();
             secondObject.moveInZAxis = false;
-        
+
 
             NextPatternPlay();
             yield return null;
         }
 
         //공격 6 즉사기
-       
+
         IEnumerator Attack6()
         {
-            //공중 날기 애니메이션
+            // 공중 날기 애니메이션
+            animator.SetBool("IsFly", true);
+            float flyHeight = 3f; // 높이
+            float flyDuration = 5f; //걸리는 시간
+            Vector3 startPos = transform.position;
+            Vector3 endPos = startPos + new Vector3(0, flyHeight, 0);
+            float elapsedTime = 0f;
 
-            //애니메이션 시전 시간
-            yield return new WaitForSeconds(5f);
-            //안전지대 위험구역 생성
-            attack6Range.SetActive(true);
-            for (int i = 0; i < safeRanges.Length; i++)
+            // 보스를 느린 속도로 위로 이동
+            while (elapsedTime < flyDuration)
             {
-
+                transform.position = Vector3.Lerp(startPos, endPos, elapsedTime / flyDuration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
             }
-            //안전지대 플레이어 무적, 그밖에 즉사
 
-            //기모으는 이펙트
+            yield return new WaitForSeconds(2f);
+            Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y +2f, transform.position.z);
+        
+            //마법진이펙트 
+            GameObject bossEffectGo = Instantiate(attack6BossEffect, spawnPosition, attack6BossEffect.transform.rotation);
+            bossEffectGo.transform.parent = transform;
+            Destroy(bossEffectGo, 14f);
+            // 애니메이션 시전 시간
+            yield return new WaitForSeconds(5f);
+            // 안전지대 위험구역 생성
+            attack6Range.SetActive(true);
 
-            //기모으기 5초 
+            int randomIndex;
+            int safeIndex;
+            randomIndex = Random.Range(0, 3);
+            safeIndex = randomIndex;
+            safeRanges[safeIndex].SetActive(true);
+            // 안전지대 플레이어 무적, 그밖에 즉사
 
-            //메테오시전
+            
 
+
+
+
+            // 기모으기 5초 
+            yield return new WaitForSeconds(4f);
+            // 메테오 시전
+            GameObject Meteors = Instantiate(meteorPrefab, meteorPrefab.transform.position, meteorPrefab.transform.rotation);
+            Destroy(Meteors, 5f);
+
+            // 6초 이후 안전지대 위험구역 끄기, 보스 내려오기 
+            yield return new WaitForSeconds(6f);
+          
+            attack6Range.SetActive(false);
+            safeRanges[safeIndex].SetActive(false);
+
+            // 보스가 다시 내려오게 하기
+            startPos = transform.position;
+            endPos = startPos - new Vector3(0, flyHeight, 0);
+            elapsedTime = 0f;
+
+            while (elapsedTime < flyDuration)
+            {
+                transform.position = Vector3.Lerp(startPos, endPos, elapsedTime / flyDuration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            animator.SetBool("IsFly", false);
 
             NextPatternPlay();
             yield return null;
@@ -467,9 +508,17 @@ namespace BS.vampire
 
         void NextPatternPlay()
         {
-            StartCoroutine(RandomTeleport());
+            // 패턴을 순환
+            nextPattern = (nextPattern % 6) + 1;
+
+            // 특정 패턴에서만 RandomTeleport 실행
+            if (nextPattern == 1 || nextPattern == 2)
+            {
+                StartCoroutine(RandomTeleport());
+            }
+
             transform.LookAt(player.transform);
-            nextPattern = (nextPattern % 5) + 1; // 패턴을 순환
+
             switch (nextPattern)
             {
                 case 1:
@@ -490,9 +539,14 @@ namespace BS.vampire
                     break;
                 case 5:
                     StartCoroutine(Attack5());
-                    Debug.Log("4번패턴실행");
+                    Debug.Log("5번패턴실행");
+                    break;
+                case 6:
+                    StartCoroutine(Attack6());
+                    Debug.Log("6번패턴실행");
                     break;
             }
         }
+
     }
 }
