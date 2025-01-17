@@ -69,5 +69,5 @@ MonoBehaviour:
   triggerCollider: {fileID: 0}
   damageAmount: 10
   isstun: 1
-  Stuntime: 5
+  Stuntime: 1.5
   StunEffect: {fileID: 4917206617894853698, guid: 2e14b181b576e204685708a1768541c5, type: 3}

@@ -7,7 +7,9 @@ namespace BS.Demon
     public class DemonPattern : MonoBehaviour
     {
         #region Variables
+        //공통
         [HideInInspector]public DemonNextPhase demon;
+        public GameObject Warningeffect;
         public GameObject[] effect;
 
         //패턴 1
@@ -151,6 +153,16 @@ namespace BS.Demon
         public void CloseAttack()
         {
             transform.LookAt(player.position);
+        }
+        public void Warning()
+        {
+            StartCoroutine(WarningWindow());
+        }
+        IEnumerator WarningWindow()
+        {
+            Warningeffect.SetActive(true);
+            yield return new WaitForSeconds(1);
+            Warningeffect.SetActive(false);
         }
     }
 }

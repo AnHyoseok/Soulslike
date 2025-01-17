@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 namespace BS.Demon
@@ -5,16 +6,12 @@ namespace BS.Demon
     public class SceneManager : MonoBehaviour
     {
         public DemonController controller;
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
+        public GameObject WarningCanvas;
+        public Camera main;
         void Update()
         {
-            if(Input.GetKeyDown(KeyCode.V))
+            WarningCanvas.transform.LookAt(WarningCanvas.transform.position + main.transform.rotation * Vector3.forward, main.transform.rotation * Vector3.up);
+            if (Input.GetKeyDown(KeyCode.V))
             {
                 controller.TakeDamage(5);
             }
