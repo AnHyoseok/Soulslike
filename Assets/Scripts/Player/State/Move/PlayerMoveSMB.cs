@@ -10,7 +10,7 @@ public class PlayerMoveSMB : StateMachineBehaviour
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log("MOVE ENTER");
+        //Debug.Log("MOVE ENTER");
         if (psm == null) // 초기화되지 않았다면 캐싱
         {
             psm = PlayerStateMachine.Instance; // Singleton 사용
@@ -21,10 +21,14 @@ public class PlayerMoveSMB : StateMachineBehaviour
         }
         if (ps != null)
         {
-            Debug.Log("MOVE STATE ENTER");
+            //Debug.Log("MOVE STATE ENTER");
             //ps.isAttack = false;
             animator.SetBool("IsAttacking", false);
             animator.SetFloat("StateTime", 0.15f);
+            ps.isMoving = true;
+            ps.isUppercut = false;
+            ps.isBackHandSwing = false;
+            ps.isChargingPunch = false;
         }
     }
 
@@ -32,7 +36,7 @@ public class PlayerMoveSMB : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         time += Time.deltaTime;
-        if(time >= 0.4f)
+        if (time >= 0.4f)
         {
             time = 0;
             animator.SetBool("IsAttacking", false);
@@ -40,6 +44,10 @@ public class PlayerMoveSMB : StateMachineBehaviour
         if (ps != null)
         {
             //ps.isAttack = false;
+            ps.isMoving = true;
+            ps.isUppercut = false;
+            ps.isBackHandSwing = false;
+            ps.isChargingPunch = false;
             animator.SetFloat("StateTime", 0.15f);
         }
     }
@@ -67,7 +75,7 @@ public class PlayerMoveSMB : StateMachineBehaviour
     {
         if (ps != null)
         {
-            Debug.Log("MOVE STATEMACHINE ENTER");
+            //Debug.Log("MOVE STATEMACHINE ENTER");
             //ps.isAttack = false;
             animator.SetBool("IsAttacking", false);
             animator.SetFloat("StateTime", 0.15f);

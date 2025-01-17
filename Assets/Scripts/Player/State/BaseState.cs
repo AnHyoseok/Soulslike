@@ -18,6 +18,8 @@ namespace BS.State
         protected const string IsBlock = "IsBlock";
         protected const string IsAttack = "IsAttack";
         protected const string IsUppercut = "IsUppercut";
+        protected const string IsBackHandSwing = "IsBackHandSwing";
+        protected const string IsChargingPunch = "IsChargingPunch";
         #endregion
 
         public BaseState(PlayerStateMachine stateMachine)
@@ -36,6 +38,8 @@ namespace BS.State
             stateMachine.animator.ResetTrigger(IsBlock);
             stateMachine.animator.ResetTrigger(IsAttack);
             stateMachine.animator.ResetTrigger(IsUppercut);
+            stateMachine.animator.ResetTrigger(IsBackHandSwing);
+            stateMachine.animator.ResetTrigger(IsChargingPunch);
 
             // 현재 상태에 맞는 트리거 설정
             stateMachine.animator.SetTrigger(triggerToSet);

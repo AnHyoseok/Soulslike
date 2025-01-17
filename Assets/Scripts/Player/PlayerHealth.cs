@@ -86,12 +86,17 @@ namespace BS.Player
             while (ps.currentBlockCoolTime > 0f)
             {
                 ps.currentBlockCoolTime -= Time.deltaTime;
-                blockCoolTimeText.text = Mathf.Max(0, ps.currentBlockCoolTime).ToString("F1");
+                if (blockCoolTimeText != null)
+                {
+                    blockCoolTimeText.text = Mathf.Max(0, ps.currentBlockCoolTime).ToString("F1");
+                }
                 yield return null;
             }
         }
         public void DoBlock()
         {
+            if (!ps.isBlockable) return;
+
             ps.isBlockingAnim = true;
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -100,6 +105,10 @@ namespace BS.Player
                 if (hit.transform.gameObject.CompareTag("Ground"))
                 {
                     ps.targetPosition = hit.point;
+                    ps.isUppercut = false;
+                    ps.isBackHandSwing = false;
+                    ps.isChargingPunch = false;
+                    psm.animator.SetBool("IsBlocking", true);
                 }
             }
             RotatePlayer();
@@ -118,6 +127,7 @@ namespace BS.Player
         public void UnBlock()
         {
             ps.isBlocking = false;
+            psm.animator.SetBool("IsBlocking", false);
         }
 
         // 최대체력 세팅

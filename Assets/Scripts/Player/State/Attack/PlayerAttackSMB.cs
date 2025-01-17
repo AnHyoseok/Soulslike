@@ -60,6 +60,18 @@ public class PlayerAttackSMB : StateMachineBehaviour
             {
                 psm.ChangeState(psm.BlockState);
             }
+            else if (ps.isUppercut)
+            {
+                psm.ChangeState(psm.UppercutState);
+            }
+            else if (ps.isBackHandSwing)
+            {
+                psm.ChangeState(psm.BackHandSwingState);
+            }
+            else if (ps.isChargingPunch)
+            {
+                psm.ChangeState(psm.ChargingPunchState);
+            }
         }
     }
 

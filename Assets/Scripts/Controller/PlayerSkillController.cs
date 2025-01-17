@@ -55,11 +55,11 @@ namespace BS.Player
                     case "Uppercut":
                         currentCoolTime = ps.currentUppercutCoolTime;
                         break;
-                    case "ChargingPunch":
-                        currentCoolTime = ps.currentChargingPunchCoolTime;
-                        break;
                     case "BackHandSwing":
                         currentCoolTime = ps.currentBackHandSwingCoolTime;
+                        break;
+                    case "ChargingPunch":
+                        currentCoolTime = ps.currentChargingPunchCoolTime;
                         break;
 
                     default:

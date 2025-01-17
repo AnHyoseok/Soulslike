@@ -1,6 +1,7 @@
 using BS.State;
 using DG.Tweening;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 namespace BS.Player
@@ -22,10 +23,15 @@ namespace BS.Player
         // 백스윙
         public float backHandSwingDuration = 1.5f;                   // 백스윙 시간
         public float backHandSwingCoolTime = 1f;                     // SD 백스윙 쿨타임
+
         //public float backHandSwingDistance = 5f;                   // 백스윙 거리
-        
+
         public Camera mainCamera;                           // Camera 변수
         public float rotationDuration = 0.1f;               // 회전 지속 시간
+
+        public TextMeshProUGUI uppercutCoolTimeText;
+        public TextMeshProUGUI backHandSwingCoolTimeText;
+        public TextMeshProUGUI chargingPunchCoolTimeText;
         Animator animator;
         void Start()
         {
@@ -36,8 +42,8 @@ namespace BS.Player
             psm = PlayerStateMachine.Instance;
             animator = GetComponent<Animator>();
             PlayerSkillController.skillList.Add(KeyCode.E, ("Uppercut", uppercutCoolTime, DoUppercut));
-            PlayerSkillController.skillList.Add(KeyCode.W, ("ChargingPunch", chargingPunchCoolTime, DoChargingPunch));
-            PlayerSkillController.skillList.Add(KeyCode.Q, ("BackHandSwing", backHandSwingCoolTime, DobackHandSwing));
+            PlayerSkillController.skillList.Add(KeyCode.W, ("BackHandSwing", backHandSwingCoolTime, DoBackHandSwing));
+            PlayerSkillController.skillList.Add(KeyCode.Q, ("ChargingPunch", chargingPunchCoolTime, DoChargingPunch));
         }
 
         // Update is called once per frame
@@ -46,11 +52,21 @@ namespace BS.Player
 
         }
 
+        // 애니메이션 실행중 호출 Update
+        void OnAnimatorMove()
+        {
+            // Root Motion 데이터를 PlayerController에 반영
+            if (animator)
+            //&& characterTransform)
+            {
+                transform.parent.transform.position = animator.rootPosition; // 캐릭터의 Root Motion 위치
+            }
+        }
+
         public void DoUppercut()
         {
-            //TODO :: 다른애니메이션이랑 연계되는데 필요한 분기처리
-            
-            //if (!ps.isDashing && ps.currentDashCoolTime <= 0f && !ps.isBlockingAnim)
+            if (psm.animator.GetBool("IsAttacking")) return;
+            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isBackHandSwing && !ps.isChargingPunch)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -58,26 +74,80 @@ namespace BS.Player
                 {
                     if (hit.transform.gameObject.CompareTag("Ground"))
                     {
-                        //TODO :: 땅으로 꺼지는현상 
-                        //TODO :: 이동중 사용할시 멈췄다가 시전하도록
-
-                        psm.ChangeState(psm.UppercutState);
                         ps.targetPosition = hit.point;
                         RotatePlayer();
+
+                        psm.ChangeState(psm.UppercutState);
                         StartCoroutine(CoUppercutCooldown());
                     }
                 }
+                ps.isUppercut = true;
             }
         }
 
         public void DoChargingPunch()
         {
+            if (psm.animator.GetBool("IsAttacking")) return;
+            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isBackHandSwing && !ps.isUppercut)
+            {
+                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                RaycastHit[] hits = Physics.RaycastAll(ray);
+                foreach (RaycastHit hit in hits)
+                {
+                    if (hit.transform.gameObject.CompareTag("Ground"))
+                    {
+                        ps.targetPosition = hit.point;
+                        RotatePlayer();
 
+                        psm.ChangeState(psm.ChargingPunchState);
+                        StartCoroutine(CoChargingPunchCooldown());
+                    }
+                }
+                ps.isChargingPunch = true;
+            }
         }
 
-        public void DobackHandSwing()
+        public void DoBackHandSwing()
         {
+            if (psm.animator.GetBool("IsAttacking")) return;
+            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isUppercut && !ps.isChargingPunch)
+            {
+                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                RaycastHit[] hits = Physics.RaycastAll(ray);
+                foreach (RaycastHit hit in hits)
+                {
+                    if (hit.transform.gameObject.CompareTag("Ground"))
+                    {
+                        ps.targetPosition = hit.point;
+                        RotatePlayer();
 
+                        psm.ChangeState(psm.BackHandSwingState);
+                        StartCoroutine(CobackHandSwingCooldown());
+                    }
+                }
+                ps.isBackHandSwing = true;
+                Debug.Log("IS TEST1 = " + ps.isBackHandSwing);
+            }
+        }
+
+        // DoTween 회전 처리
+        void RotatePlayer()
+        {
+            transform.parent.transform.DOKill(complete: false); // 트랜스폼과 관련된 모든 트윈 제거 (완료 콜백은 실행되지 않음)
+
+            if (ps.isUppercut || ps.isBackHandSwing || ps.isChargingPunch) return;
+
+            // 목표 회전값 계산
+            Vector3 direction = (ps.targetPosition - transform.parent.transform.position).normalized;
+            direction = new Vector3(direction.x, 0, direction.z);
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.parent.transform.DORotateQuaternion(targetRotation, rotationDuration)
+                        .SetAutoKill(true)
+                        .SetEase(Ease.InOutSine)
+                        .OnComplete(() =>
+                        {
+
+                        });
         }
         // 대쉬 쿨타임
         IEnumerator CoUppercutCooldown()
@@ -86,7 +156,10 @@ namespace BS.Player
             while (ps.currentUppercutCoolTime > 0f)
             {
                 ps.currentUppercutCoolTime -= Time.deltaTime;
-                //uppercutCoolTimeText.text = Mathf.Max(0, ps.currentuppercutCoolTime).ToString("F1");
+                if (uppercutCoolTimeText != null)
+                {
+                    uppercutCoolTimeText.text = Mathf.Max(0, ps.currentUppercutCoolTime).ToString("F1");
+                }
                 yield return null;
             }
         }
@@ -97,7 +170,10 @@ namespace BS.Player
             while (ps.currentChargingPunchCoolTime > 0f)
             {
                 ps.currentChargingPunchCoolTime -= Time.deltaTime;
-                //dashCoolTimeText.text = Mathf.Max(0, ps.currentchargingPunchCoolTime).ToString("F1");
+                if (chargingPunchCoolTimeText != null)
+                {
+                    chargingPunchCoolTimeText.text = Mathf.Max(0, ps.currentChargingPunchCoolTime).ToString("F1");
+                }
                 yield return null;
             }
         }
@@ -108,36 +184,47 @@ namespace BS.Player
             while (ps.currentBackHandSwingCoolTime > 0f)
             {
                 ps.currentBackHandSwingCoolTime -= Time.deltaTime;
-                //dashCoolTimeText.text = Mathf.Max(0, ps.currentbackHandSwingCoolTime).ToString("F1");
+                if (backHandSwingCoolTimeText != null)
+                {
+                    backHandSwingCoolTimeText.text = Mathf.Max(0, ps.currentBackHandSwingCoolTime).ToString("F1");
+                }
                 yield return null;
             }
         }
 
-        // DoTween 회전 처리
-        void RotatePlayer()
+
+
+
+        // 어퍼컷이 끝날때 호출
+        public void EndUppercut()
         {
-            transform.parent.transform.DOKill(complete: false); // 트랜스폼과 관련된 모든 트윈 제거 (완료 콜백은 실행되지 않음)
-
-            // 목표 회전값 계산
-            Vector3 direction = (ps.targetPosition - transform.parent.transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-
-            transform.parent.transform.DORotateQuaternion(targetRotation, rotationDuration)
-                        .SetAutoKill(true)
-                        .SetEase(Ease.InOutSine)
-                        .OnComplete(() =>
-                        {
-
-                        });
+            ps.isUppercut = false;
+            ps.targetPosition = this.transform.position;
         }
-        void OnAnimatorMove()
+        // 백핸드스윙이 끝날때 호출
+        public void EndBackHandSwing()
         {
-            // Root Motion 데이터를 PlayerController에 반영
-            if (animator)
-            //&& characterTransform)
-            {
-                transform.parent.transform.position = animator.rootPosition; // 캐릭터의 Root Motion 위치
-            }
+            ps.isBackHandSwing = false;
+            ps.targetPosition = this.transform.position;
+        }
+        // 차징펀지이 끝날때 호출
+        public void EndChargingPunch()
+        {
+            ps.isChargingPunch = false;
+            ps.targetPosition = this.transform.position;
+        }
+
+        // 다른행동이 불가능 하도록 설정
+        public void CannotOtherAct()
+        {
+            ps.isDashable = false;
+            ps.isBlockable = false;
+        }
+        // 다른행동이 가능 하도록 설정
+        public void CanOtherAct()
+        {
+            ps.isDashable = true;
+            ps.isBlockable = true;
         }
     }
 }

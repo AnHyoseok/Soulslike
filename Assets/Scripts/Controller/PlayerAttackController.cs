@@ -59,13 +59,12 @@ namespace BS.Player
             // 마우스 좌클릭 공격
             if (Input.GetMouseButton(0))
             {
-                Debug.Log("TESTATTACK");
+                //Debug.Log("TESTATTACK");
                 // BlockingAnim 진행중에는 Return 하도록
                 if (ps.isBlockingAnim || ps.isDashing) return;
 
                 bool test = false;
                 //if (!ps.isAttack)
-
 
                 isAttackable = true;
                 ps.isMoving = false;
@@ -107,7 +106,7 @@ namespace BS.Player
                 {
                     psm.animator.SetBool("IsAttacking", true);
                     test = true;
-                    Debug.Log("TEST1 = " + psm.animator.GetBool("IsAttacking"));
+                    //Debug.Log("TEST1 = " + psm.animator.GetBool("IsAttacking"));
                 }
             }
         }

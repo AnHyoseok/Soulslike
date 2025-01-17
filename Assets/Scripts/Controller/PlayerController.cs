@@ -41,12 +41,15 @@ namespace BS.Player
 
         // UI
         public TextMeshProUGUI dashCoolTimeText;
+
+        // 보간 속도
+        public float lerpSpeed = 10f;
         #endregion
         protected virtual void Start()
         {
             ps = PlayerState.Instance;
             psm = PlayerStateMachine.Instance;
-            
+
             //playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
             //playerStateMachine.animator = transform.GetChild(0).GetComponent<Animator>();
 
@@ -63,8 +66,13 @@ namespace BS.Player
         {
             MoveToTarget();
             HandleInput();
+            RotatePlayer();
         }
-        
+        protected virtual void FixedUpdate()
+        {
+            SetPlayerYPos();
+        }
+
 
         #region Input
         // 키 입력 처리
@@ -88,7 +96,7 @@ namespace BS.Player
                     if (hit.transform.gameObject.CompareTag("Ground"))
                     {
                         ps.targetPosition = hit.point;
-                        RotatePlayer();
+                        
                         gizmoPosition = hit.point; // Gizmo 위치 저장
 
                         Debug.DrawRay(ray.origin, ray.direction * hit.distance, rayColor, rayDuration);
@@ -106,7 +114,7 @@ namespace BS.Player
         {
             //if (ps.isAttack) return;
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (ps.isMoving && !ps.isDashing && !ps.isBlockingAnim)
+            if (ps.isMoving && !ps.isDashing && !ps.isBlockingAnim && !ps.isUppercut && !ps.isBackHandSwing && !ps.isChargingPunch)
             {
                 SetMoveState();
                 transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);
@@ -122,11 +130,16 @@ namespace BS.Player
         // DoTween 회전 처리
         void RotatePlayer()
         {
-            // 목표 회전값 계산
-            Vector3 direction = (ps.targetPosition - transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            if (psm.animator.GetBool("IsAttacking")) return;
+            if (ps.isMoving && !ps.isBlockingAnim && !ps.isUppercut && !ps.isBackHandSwing && !ps.isChargingPunch)
+            {
+                // 목표 회전값 계산
+                Vector3 direction = (ps.targetPosition - transform.position).normalized;
+                direction = new Vector3(direction.x, 0, direction.z);
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
 
-            transform.DORotateQuaternion(targetRotation, rotationDuration);
+                transform.DORotateQuaternion(targetRotation, rotationDuration);
+            }
         }
 
         // Player 상태 변경
@@ -160,7 +173,7 @@ namespace BS.Player
         // 대쉬
         void DoDash()
         {
-            if (!ps.isDashing && ps.currentDashCoolTime <= 0f && !ps.isBlockingAnim)
+            if (!ps.isDashing && ps.currentDashCoolTime <= 0f && !ps.isBlockingAnim && ps.isDashable)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -178,6 +191,10 @@ namespace BS.Player
                             psm.prevState = psm.SprintState;
                         }
                         psm.ChangeState(psm.SprintState);
+                        ps.isUppercut = false;
+                        ps.isBackHandSwing = false;
+                        ps.isChargingPunch = false;
+                        psm.animator.SetBool("IsDash", true);
                         ps.targetPosition = dashTarget;
                         RotatePlayer();
 
@@ -195,7 +212,6 @@ namespace BS.Player
         // 대쉬 끝
         void EndDash()
         {
-            ps.isDashing = false;
             if (psm.GetPrevState() is RunState)
             {
                 psm.ChangeState(psm.RunState);
@@ -212,12 +228,14 @@ namespace BS.Player
             {
                 psm.ChangeState(psm.SprintState);
             }
+            psm.animator.SetBool("IsDash", false);
         }
 
         // 대쉬 끝 무적해제 => TODO :: 피격면역으로 바꿀수있으면 바꾸자
         void DisableInvincibility()
         {
             ps.isInvincible = false;
+            ps.isDashing = false;
         }
 
         // 대쉬 쿨타임
@@ -227,7 +245,10 @@ namespace BS.Player
             while (ps.currentDashCoolTime > 0f)
             {
                 ps.currentDashCoolTime -= Time.deltaTime;
-                dashCoolTimeText.text = Mathf.Max(0, ps.currentDashCoolTime).ToString("F1");
+                if (dashCoolTimeText != null)
+                {
+                    dashCoolTimeText.text = Mathf.Max(0, ps.currentDashCoolTime).ToString("F1");
+                }
                 yield return null;
             }
         }
@@ -241,6 +262,19 @@ namespace BS.Player
                 Gizmos.DrawSphere(gizmoPosition.Value, 0.2f); // 반지름 0.2의 구체 그리기
             }
         }
+
+        private void SetPlayerYPos()
+        {
+            Vector3 position = transform.position;
+
+            if (position.y < 0)
+            {
+                // y 좌표를 0으로 보간
+                position.y = Mathf.Lerp(position.y, 0, Time.deltaTime * lerpSpeed);
+                transform.position = position;
+            }
+        }
+
     }
 }
 

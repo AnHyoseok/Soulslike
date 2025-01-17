@@ -21,6 +21,8 @@ namespace BS.State
         public BaseState AttackState { get; private set; }
         public BaseState BlockState { get; private set; }
         public BaseState UppercutState { get; private set; }
+        public BaseState BackHandSwingState { get; private set; }
+        public BaseState ChargingPunchState { get; private set; }
         #endregion
 
         protected override void Awake()
@@ -34,6 +36,8 @@ namespace BS.State
             AttackState = new AttackState(this);
             BlockState = new BlockState(this);
             UppercutState = new UppercutState(this);
+            BackHandSwingState = new BackHandSwingState(this);
+            ChargingPunchState = new ChargingPunchState(this);
 
             // 기본 상태 설정
             ChangeState(IdleState);

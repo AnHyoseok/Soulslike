@@ -14,7 +14,7 @@ namespace BS.State
 
         public override void Enter()
         {
-            Debug.Log("ATTACK STATE ENTER");
+            //Debug.Log("ATTACK STATE ENTER");
             ResetAndSetTrigger(IsAttack);
             stateMachine.animator.SetBool("IsAttacking", true);
         }
