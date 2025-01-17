@@ -103,7 +103,7 @@ namespace BS.Demon
         }
         IEnumerator AttackRangeBall()
         {
-            Vector3 ballRange = new Vector3(ballTranfrom.position.x, 0.2f, ballTranfrom.position.z);
+            Vector3 ballRange = new Vector3(ballTranfrom.position.x, -0.9f, ballTranfrom.position.z);
             GameObject Range = Instantiate(attackRangePrefab[0], ballRange, Quaternion.identity);
             Range.GetComponent<DemonAttackRange>().StartGrowing(attackRangeScale[1], rangeSize[1]);
             Destroy(Range, 1f);
@@ -139,11 +139,6 @@ namespace BS.Demon
                     // 텔레포트 효과 생성
                     GameObject effectgo = Instantiate(effect[2], transform.position, Quaternion.identity);
                     Destroy(effectgo, 1f);
-                    if (!demon.hasRecovered) return;
-                    if(demon.hasRecovered)
-                    {
-                        demon.lastPesosTime[2] = Time.time;
-                    }
                 }
             }
         }

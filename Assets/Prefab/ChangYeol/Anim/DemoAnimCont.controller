@@ -113,7 +113,7 @@ AnimatorStateMachine:
     m_Position: {x: 80, y: 210, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4943549752685412432}
-    m_Position: {x: 170, y: -210, z: 0}
+    m_Position: {x: 110, y: -180, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3467905684288343769}
     m_Position: {x: 450, y: -210, z: 0}
@@ -236,6 +236,9 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 1
     m_ConditionEvent: Attack02
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsRecovered
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: -4994812535659656190}
   m_DstState: {fileID: 0}
@@ -452,6 +455,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 3
     m_ConditionEvent: GetDamaged
     m_EventTreshold: 0.1
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsRecovered
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3467905684288343769}
   m_Solo: 0
@@ -1148,6 +1154,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Attack03
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsRecovered
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 8232822380909903212}
   m_DstState: {fileID: 0}
   m_Solo: 0
@@ -1308,7 +1317,10 @@ AnimatorTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 3
+    m_ConditionEvent: GetDamaged
+    m_EventTreshold: 0.1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3467905684288343769}
   m_Solo: 0
@@ -1444,6 +1456,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Teleport
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsRecovered
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 8069968540313996638}
   m_DstState: {fileID: 0}
   m_Solo: 0
@@ -1564,12 +1579,6 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Die
-    m_Type: 9
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
   - m_Name: IsRecovered
     m_Type: 4
     m_DefaultFloat: 0
@@ -1578,6 +1587,12 @@ AnimatorController:
     m_Controller: {fileID: 9100000}
   - m_Name: GetDamaged
     m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: Die
+    m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
@@ -1627,7 +1642,10 @@ AnimatorTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Die
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -4943549752685412432}
   m_Solo: 0
@@ -1662,16 +1680,16 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: 2906835342424610737}
-    second:
-    - {fileID: -7318082490189518201}
-    - {fileID: 7755966001935331696}
-    - {fileID: 7002058724376128944}
   - first: {fileID: 2588478717141269507}
     second:
     - {fileID: 2481650706103134140}
     - {fileID: -225529910315691728}
     - {fileID: -1850154138442803548}
+  - first: {fileID: 2906835342424610737}
+    second:
+    - {fileID: -7318082490189518201}
+    - {fileID: 7755966001935331696}
+    - {fileID: 7002058724376128944}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 50, y: -10, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
@@ -2444,7 +2462,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsRecovered
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -6401831554725800020}
   m_Solo: 0
@@ -2625,6 +2646,9 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 1
     m_ConditionEvent: Attack01
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsRecovered
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 3866042529228453980}
   m_DstState: {fileID: 0}

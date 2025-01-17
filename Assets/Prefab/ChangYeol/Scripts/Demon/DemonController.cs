@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BS.Demon
 {
@@ -32,10 +34,12 @@ namespace BS.Demon
         public float maxHealth = 100f; // 최대 체력
         [SerializeField] private float currentHealth; // 현재 체력
         public bool hasRecovered = false; // 회복 실행 여부 플래그
+        private bool isDie = false;     //죽음 여부및 한 번만 죽이기
+        public Image healthBarFill;       // 체력바의 Foreground Image
+        public TextMeshProUGUI healthText; // 체력 퍼센트 Text (TextMeshPro 사용)
         [SerializeField]private GameObject angryEffect;
 
         protected DemonPattern pattern;
-        private float timer = 1;
         private bool istimer = false;
         #endregion
         private void Start()
@@ -48,22 +52,26 @@ namespace BS.Demon
 
         private void Update()
         {
+            UpdateHealthBar();
+            if (isDie) return;
             if (currentHealth <= maxHealth * 0.5f && !hasRecovered)
             {
                 RecoverHealth();
                 istimer = true;
             }
-            if(hasRecovered)
+            if (hasRecovered)
             {
                 if(istimer)
                 {
                     StartCoroutine(DemonCurrentState(true, 2f));
                     istimer=false;
+                    return;
                 }
                 else
                 {
                     StartCoroutine(DemonCurrentState(false));
                 }
+                return;
             }
             StartCoroutine(DemonCurrentState(false));
         }
@@ -95,7 +103,6 @@ namespace BS.Demon
                         ChangeState(DEMON.Idle);
                         break;
                     case DEMON.Die:
-                        HandleDieState();
                         break;
                 }
             }
@@ -124,7 +131,6 @@ namespace BS.Demon
                         ChangeState(DEMON.Idle);
                         break;
                     case DEMON.Die:
-                        HandleDieState();
                         break;
                 }
             }
@@ -148,6 +154,15 @@ namespace BS.Demon
 
             // 상태에 따른 애니메이션 재생
             animator.SetFloat(newState.ToString(), newfloat);
+        }
+        public void ChangeBoolState(DEMON newState, bool newbool)
+        {
+            if (currentState == newState) return;
+
+            currentState = newState;
+
+            // 상태에 따른 애니메이션 재생
+            animator.SetBool(newState.ToString(), newbool);
         }
         #endregion
         // 상태 처리
@@ -187,11 +202,6 @@ namespace BS.Demon
                 ChangeState(DEMON.Idle);
             }
         }
-        private void HandleDieState()
-        {
-            // 사망 처리 (애니메이션 완료 후 파괴)
-            Destroy(gameObject, 2f);
-        }
         // 애니메이션 초기화
         public void ResetTriggers()
         {
@@ -210,21 +220,32 @@ namespace BS.Demon
             ChangeFloatState(DEMON.GetDamaged,damage);
             if (currentHealth <= 0)
             {
-                ChangeState(DEMON.Die);
+                isDie = true;
+                ChangeBoolState(DEMON.Die, isDie);
+                Destroy(gameObject, 5f);
             }
+        }
+        void UpdateHealthBar()
+        {
+            // 부드러운 FillAmount 업데이트
+            healthBarFill.fillAmount = Mathf.Lerp(healthBarFill.fillAmount, currentHealth / maxHealth, Time.deltaTime * 5f);
+
+            // 퍼센트 텍스트 업데이트
+            float healthPercent = (currentHealth / maxHealth) * 100;
+            healthText.text = $"{healthPercent:F1}%";
         }
         private void RecoverHealth()
         {
-            hasRecovered = true; // 회복 플래그 활성화
-            animator.SetBool("IsRecovered", hasRecovered);
             //회복 이펙트
             GameObject heal = Instantiate(pattern.effect[3], transform.position, Quaternion.identity);
             angryEffect.SetActive(true);
             // 감소한 체력의 절반만큼 회복
-            float healthToRecover = (maxHealth * 0.5f - currentHealth) * 0.5f;
+            float healthToRecover = (maxHealth * 0.5f) * 0.5f;
             currentHealth += healthToRecover;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // 체력 범위 제한
             Destroy(heal, 2f);
+            hasRecovered = true; // 회복 플래그 활성화
+            animator.SetBool("IsRecovered", hasRecovered);
         }
     }
 }

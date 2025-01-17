@@ -11,8 +11,7 @@ namespace BS.Demon
         public override void NextPhase()
         {
             index = Random.Range(0, pesosDemon.Count);
-            if (Time.time - lastPesosTime[index] >= pesosAttackCool[index] &&
-                Vector3.Distance(transform.position, pattern.player.position) > attackRange)
+            if (Time.time - lastPesosTime[index] >= pesosAttackCool[index])
             {
                 switch (index)
                 {

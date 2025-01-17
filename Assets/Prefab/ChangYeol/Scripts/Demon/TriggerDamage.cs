@@ -11,6 +11,8 @@ namespace BS.Demon
         private HashSet<GameObject> damagedObjects = new HashSet<GameObject>();
         public Collider triggerCollider;
         public int damageAmount = 10;
+        [SerializeField]private bool isstun = false;
+        [SerializeField]private float Stuntime = 1;
         #endregion
         private void Start()
         {
@@ -31,6 +33,10 @@ namespace BS.Demon
                     playerHealth.TakeDamage(damageAmount, false);
                     damagedObjects.Add(other.gameObject);
                     StartCoroutine(ResetCollision(other.gameObject));
+                    if (isstun)
+                    {
+                        StartCoroutine(PlayerStun(playerController, Stuntime));
+                    }
                 }
             }
             if(triggerCollider != null)
@@ -55,6 +61,14 @@ namespace BS.Demon
                 yield return new WaitForSeconds(0.5f);
                 triggerCollider.enabled = false;
             }
+        }
+        IEnumerator PlayerStun(PlayerController player, float Time)
+        {
+            player.enabled = false;
+            Debug.Log("Stun");
+            yield return new WaitForSeconds(Time);
+            player.enabled = true;
+            Destroy(gameObject,0.2f);
         }
     }
 }

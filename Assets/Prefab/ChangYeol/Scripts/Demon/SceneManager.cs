@@ -16,7 +16,7 @@ namespace BS.Demon
         {
             if(Input.GetKeyDown(KeyCode.V))
             {
-                controller.TakeDamage(10);
+                controller.TakeDamage(5);
             }
         }
     }

@@ -14331,6 +14331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerCollider: {fileID: 0}
   damageAmount: 10
+  isstun: 0
 --- !u!1 &100010
 GameObject:
   m_ObjectHideFlags: 0
