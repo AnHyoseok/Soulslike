@@ -119,6 +119,7 @@ namespace BS.Demon
                     transform.LookAt(pattern.player.position);
                     // 텔레포트 효과 생성
                     GameObject effectgo = Instantiate(effect[3], transform.position, Quaternion.identity);
+                    GameObject trigger = Instantiate(effect[4], transform.position, Quaternion.identity);
                     Destroy(effectgo, 1f);
                     pattern.demon.lastPesosTime[2] = Time.time;
                 }

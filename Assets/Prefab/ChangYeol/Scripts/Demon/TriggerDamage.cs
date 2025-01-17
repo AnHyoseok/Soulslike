@@ -1,4 +1,5 @@
 using BS.Player;
+using BS.State;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace BS.Demon
         public int damageAmount = 10;
         [SerializeField]private bool isstun = false;
         [SerializeField]private float Stuntime = 1;
+        public GameObject StunEffect;
         #endregion
         private void Start()
         {
@@ -65,9 +67,14 @@ namespace BS.Demon
         IEnumerator PlayerStun(PlayerController player, float Time)
         {
             player.enabled = false;
+            Vector3 effectpos = new Vector3(player.gameObject.transform.position.x, StunEffect.transform.position.y ,player.gameObject.transform.position.z);
+            GameObject stun = Instantiate(StunEffect, effectpos, Quaternion.identity);
+            PlayerStateMachine playerState = player.GetComponent<PlayerStateMachine>();
+            playerState.ChangeState(playerState.IdleState);
             Debug.Log("Stun");
             yield return new WaitForSeconds(Time);
             player.enabled = true;
+            Destroy(stun, 0.2f);
             Destroy(gameObject,0.2f);
         }
     }
