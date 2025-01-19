@@ -17,7 +17,7 @@ public class PlayerMoveSMB : StateMachineBehaviour
         }
         if (ps == null) // 초기화되지 않았다면 캐싱
         {
-            ps = PlayerState.Instance; // Singleton 사용
+            ps = FindFirstObjectByType<PlayerState>();
         }
         if (ps != null)
         {
@@ -25,10 +25,10 @@ public class PlayerMoveSMB : StateMachineBehaviour
             //ps.isAttack = false;
             animator.SetBool("IsAttacking", false);
             animator.SetFloat("StateTime", 0.15f);
-            ps.isMoving = true;
-            ps.isUppercut = false;
-            ps.isBackHandSwing = false;
-            ps.isChargingPunch = false;
+            //ps.isMoving = true;
+            ps.isUppercuting = false;
+            ps.isBackHandSwinging = false;
+            ps.isChargingPunching = false;
         }
     }
 
@@ -44,10 +44,10 @@ public class PlayerMoveSMB : StateMachineBehaviour
         if (ps != null)
         {
             //ps.isAttack = false;
-            ps.isMoving = true;
-            ps.isUppercut = false;
-            ps.isBackHandSwing = false;
-            ps.isChargingPunch = false;
+            //ps.isMoving = true;
+            ps.isUppercuting = false;
+            ps.isBackHandSwinging = false;
+            ps.isChargingPunching = false;
             animator.SetFloat("StateTime", 0.15f);
         }
     }

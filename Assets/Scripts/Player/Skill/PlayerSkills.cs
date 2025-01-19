@@ -33,17 +33,18 @@ namespace BS.Player
         public TextMeshProUGUI backHandSwingCoolTimeText;
         public TextMeshProUGUI chargingPunchCoolTimeText;
         Animator animator;
-        void Start()
+        void Awake()
         {
             if (mainCamera == null)
                 mainCamera = Camera.main;
 
-            ps = PlayerState.Instance;
+            ps = FindFirstObjectByType<PlayerState>();
             psm = PlayerStateMachine.Instance;
             animator = GetComponent<Animator>();
-            PlayerSkillController.skillList.Add(KeyCode.E, ("Uppercut", uppercutCoolTime, DoUppercut));
-            PlayerSkillController.skillList.Add(KeyCode.W, ("BackHandSwing", backHandSwingCoolTime, DoBackHandSwing));
-            PlayerSkillController.skillList.Add(KeyCode.Q, ("ChargingPunch", chargingPunchCoolTime, DoChargingPunch));
+            // 스킬 구조체에 맞게 스킬을 추가
+            PlayerSkillController.skillList.Add("Q", new Skill("Uppercut", uppercutCoolTime, DoUppercut));
+            PlayerSkillController.skillList.Add("W", new Skill("BackHandSwing", backHandSwingCoolTime, DoBackHandSwing));
+            PlayerSkillController.skillList.Add("E", new Skill("ChargingPunch", chargingPunchCoolTime, DoChargingPunch));
         }
 
         // Update is called once per frame
@@ -66,7 +67,7 @@ namespace BS.Player
         public void DoUppercut()
         {
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isBackHandSwing && !ps.isChargingPunch)
+            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isBackHandSwinging && !ps.isChargingPunching)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -78,17 +79,17 @@ namespace BS.Player
                         RotatePlayer();
 
                         psm.ChangeState(psm.UppercutState);
-                        StartCoroutine(CoUppercutCooldown());
+                        //StartCoroutine(CoUppercutCooldown());
                     }
                 }
-                ps.isUppercut = true;
+                ps.isUppercuting = true;
             }
         }
 
         public void DoChargingPunch()
         {
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isBackHandSwing && !ps.isUppercut)
+            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isBackHandSwinging && !ps.isUppercuting)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -100,17 +101,17 @@ namespace BS.Player
                         RotatePlayer();
 
                         psm.ChangeState(psm.ChargingPunchState);
-                        StartCoroutine(CoChargingPunchCooldown());
+                        //StartCoroutine(CoChargingPunchCooldown());
                     }
                 }
-                ps.isChargingPunch = true;
+                ps.isChargingPunching = true;
             }
         }
 
         public void DoBackHandSwing()
         {
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isUppercut && !ps.isChargingPunch)
+            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isUppercuting && !ps.isChargingPunching)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -122,11 +123,11 @@ namespace BS.Player
                         RotatePlayer();
 
                         psm.ChangeState(psm.BackHandSwingState);
-                        StartCoroutine(CobackHandSwingCooldown());
+                        //StartCoroutine(CobackHandSwingCooldown());
                     }
                 }
-                ps.isBackHandSwing = true;
-                Debug.Log("IS TEST1 = " + ps.isBackHandSwing);
+                ps.isBackHandSwinging = true;
+                Debug.Log("IS TEST1 = " + ps.isBackHandSwinging);
             }
         }
 
@@ -135,7 +136,7 @@ namespace BS.Player
         {
             transform.parent.transform.DOKill(complete: false); // 트랜스폼과 관련된 모든 트윈 제거 (완료 콜백은 실행되지 않음)
 
-            if (ps.isUppercut || ps.isBackHandSwing || ps.isChargingPunch) return;
+            if (ps.isUppercuting || ps.isBackHandSwinging || ps.isChargingPunching) return;
 
             // 목표 회전값 계산
             Vector3 direction = (ps.targetPosition - transform.parent.transform.position).normalized;
@@ -198,19 +199,19 @@ namespace BS.Player
         // 어퍼컷이 끝날때 호출
         public void EndUppercut()
         {
-            ps.isUppercut = false;
+            ps.isUppercuting = false;
             ps.targetPosition = this.transform.position;
         }
         // 백핸드스윙이 끝날때 호출
         public void EndBackHandSwing()
         {
-            ps.isBackHandSwing = false;
+            ps.isBackHandSwinging = false;
             ps.targetPosition = this.transform.position;
         }
         // 차징펀지이 끝날때 호출
         public void EndChargingPunch()
         {
-            ps.isChargingPunch = false;
+            ps.isChargingPunching = false;
             ps.targetPosition = this.transform.position;
         }
 

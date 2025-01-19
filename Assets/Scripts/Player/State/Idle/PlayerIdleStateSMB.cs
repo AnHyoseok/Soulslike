@@ -15,13 +15,13 @@ public class PlayerIdleStateSMB : StateMachineBehaviour
         }
         if (ps == null) // 초기화되지 않았다면 캐싱
         {
-            ps = PlayerState.Instance; // Singleton 사용
+            ps = FindFirstObjectByType<PlayerState>();
         }
 
         psm.ChangeState(psm.IdleState);
-        ps.isUppercut = false;
-        ps.isBackHandSwing = false;
-        ps.isChargingPunch = false;
+        ps.isUppercuting = false;
+        ps.isBackHandSwinging = false;
+        ps.isChargingPunching = false;
         animator.SetBool("IsAttacking", false);
     }
 
@@ -29,7 +29,7 @@ public class PlayerIdleStateSMB : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetBool("IsAttacking", false);
-        ps.isUppercut = false;
+        ps.isUppercuting = false;
         //ps.isBackHandSwing = false;
         //ps.isChargingPunch = false;
     }

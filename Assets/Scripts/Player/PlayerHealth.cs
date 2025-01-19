@@ -59,16 +59,21 @@ namespace BS.Player
         public UnityAction<float> OnDamaged;        // 데미지를 받을 때 호출하는 이벤트
         public UnityAction OnBlocked;                // 블록 성공할 때 호출하는 이벤트
         #endregion
+
+        private void Awake()
+        {
+            PlayerSkillController.skillList.Add("R", new Skill("Block", blockCoolTime, DoBlock));
+        }
+
         void Start()
         {
             if (mainCamera == null)
                 mainCamera = Camera.main;
 
-            ps = PlayerState.Instance;
+            
             psm = PlayerStateMachine.Instance;
-            //playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
+            ps = FindFirstObjectByType<PlayerState>();
             //playerStateMachine.animator = transform.GetChild(0).GetComponent<Animator>();
-            PlayerSkillController.skillList.Add(KeyCode.R, ("Block", blockCoolTime, DoBlock));
             OnDamaged += CalculateDamage;
             maxHealth = 1000f;
             currentHealth = MaxHealth;
@@ -105,16 +110,16 @@ namespace BS.Player
                 if (hit.transform.gameObject.CompareTag("Ground"))
                 {
                     ps.targetPosition = hit.point;
-                    ps.isUppercut = false;
-                    ps.isBackHandSwing = false;
-                    ps.isChargingPunch = false;
+                    ps.isUppercuting = false;
+                    ps.isBackHandSwinging = false;
+                    ps.isChargingPunching = false;
                     psm.animator.SetBool("IsBlocking", true);
                 }
             }
             RotatePlayer();
             Invoke(nameof(SetIsBlockingAnim), 1f);
             psm.ChangeState(psm.BlockState);
-            StartCoroutine(CoBlockCooldown());
+            //StartCoroutine(CoBlockCooldown());
         }
         void SetIsBlockingAnim()
         {

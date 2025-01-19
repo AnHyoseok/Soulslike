@@ -8,22 +8,13 @@ namespace BS.Player
     /// <summary>
     /// Player를 공격 컨트롤
     /// </summary>
-    public class PlayerAttackController : MonoBehaviour
+    public class PlayerAttackController : PlayerController
     {
         #region Variables
-        // Camera
-        public Camera mainCamera;                           // Camera 변수
-
-        // rotation
-        public float rotationDuration = 0.1f;               // 회전 지속 시간
 
         public float comboableTime;                        // 연계 공격 가능 시간
         public float _comboableTime = 1f;                  // SD 연계 공격 가능 시간
         public bool isAttackable = false;
-
-        // State
-        PlayerState ps;
-        PlayerStateMachine psm;
 
         public Animator animator;
 
@@ -31,24 +22,24 @@ namespace BS.Player
         public TextMeshProUGUI txt2;
         #endregion
 
-        void Start()
-        {
-            comboableTime = _comboableTime;
-            ps = PlayerState.Instance;
-            psm = PlayerStateMachine.Instance;
-            //playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
 
-            if (mainCamera == null)
-                mainCamera = Camera.main;
+        protected override void Awake()
+        {
+            base.Awake();
+        }
+        protected override void Start()
+        {
+            base.Start();
+            comboableTime = _comboableTime;
         }
 
-        void Update()
+        protected override void Update()
         {
             calculateTime();
             txt1.text = ps.ComboAttackIndex.ToString();
             txt2.text = Mathf.RoundToInt(comboableTime).ToString();
         }
-        private void FixedUpdate()
+        protected override void FixedUpdate()
         {
             HandleInput();
         }
@@ -57,11 +48,11 @@ namespace BS.Player
         void HandleInput()
         {
             // 마우스 좌클릭 공격
-            if (Input.GetMouseButton(0))
+            if (m_Input.LeftClick)
             {
                 //Debug.Log("TESTATTACK");
                 // BlockingAnim 진행중에는 Return 하도록
-                if (ps.isBlockingAnim || ps.isDashing) return;
+                //if (ps.isBlockingAnim || ps.isDashing) return;
 
                 bool test = false;
                 //if (!ps.isAttack)

@@ -16,7 +16,7 @@ public class PlayerAttackSMB : StateMachineBehaviour
         }
         if (ps == null) // 초기화되지 않았다면 캐싱
         {
-            ps = PlayerState.Instance; // Singleton 사용
+            ps = FindFirstObjectByType<PlayerState>();
             //ps.isAttack = true;
         }
         //Debug.Log("TEST ENTER");
@@ -60,15 +60,15 @@ public class PlayerAttackSMB : StateMachineBehaviour
             {
                 psm.ChangeState(psm.BlockState);
             }
-            else if (ps.isUppercut)
+            else if (ps.isUppercuting)
             {
                 psm.ChangeState(psm.UppercutState);
             }
-            else if (ps.isBackHandSwing)
+            else if (ps.isBackHandSwinging)
             {
                 psm.ChangeState(psm.BackHandSwingState);
             }
-            else if (ps.isChargingPunch)
+            else if (ps.isChargingPunching)
             {
                 psm.ChangeState(psm.ChargingPunchState);
             }
