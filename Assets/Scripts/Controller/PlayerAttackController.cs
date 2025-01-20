@@ -17,11 +17,7 @@ namespace BS.Player
         public bool isAttackable = false;
 
         public Animator animator;
-
-        public TextMeshProUGUI txt1;
-        public TextMeshProUGUI txt2;
         #endregion
-
 
         protected override void Awake()
         {
@@ -36,8 +32,6 @@ namespace BS.Player
         protected override void Update()
         {
             calculateTime();
-            txt1.text = ps.ComboAttackIndex.ToString();
-            txt2.text = Mathf.RoundToInt(comboableTime).ToString();
         }
         protected override void FixedUpdate()
         {

@@ -5,9 +5,8 @@ using UnityEngine;
 
 namespace BS.Player
 {
-
-public class PlayerMoveController : PlayerController
-{
+    public class PlayerMoveController : PlayerController
+    {
         // Dash
         public float dashDuration = 0.2f;                   // 대쉬 시간
         public float dashCoolTime = 3f;                     // SD 대쉬 쿨타임
@@ -49,7 +48,7 @@ public class PlayerMoveController : PlayerController
             //if (ps.isAttack) return;
             //if (ps.isBlockingAnim) return;
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (ps.isMoving && !ps.isDashing && !ps.isBlockingAnim && !ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching)
+            if (ps.isMoving && !ps.isBlockingAnim && !ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching)
             {
                 SetMoveState();
                 transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);
@@ -156,21 +155,6 @@ public class PlayerMoveController : PlayerController
             ps.isInvincible = false;
             ps.isDashing = false;
         }
-
-        // 대쉬 쿨타임
-        //IEnumerator CoDashCooldown()
-        //{
-        //    ps.currentDashCoolTime = dashCoolTime;
-        //    while (ps.currentDashCoolTime > 0f)
-        //    {
-        //        ps.currentDashCoolTime -= Time.deltaTime;
-        //        if (dashCoolTimeText != null)
-        //        {
-        //            dashCoolTimeText.text = Mathf.Max(0, ps.currentDashCoolTime).ToString("F1");
-        //        }
-        //        yield return null;
-        //    }
-        //}
         #endregion
     }
 }
