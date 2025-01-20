@@ -15,6 +15,8 @@ namespace BS.vampire
         public GameObject presentEffect;
         public GameObject player;
         #endregion
+
+
         private void Awake()
         {
             PattonSummon pattonSummon = boss.GetComponent<PattonSummon>();
