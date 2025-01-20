@@ -16,18 +16,18 @@ namespace BS.Enemy.Set
         {
             if (hitCheck) return;
 
-            // Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®ÀÇ ·¹ÀÌ¾î°¡ "Player"ÀÎÁö È®ÀÎ
+            // ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ì˜ ë ˆì´ì–´ê°€ "Player"ì¸ì§€ í™•ì¸
             if (other.gameObject.layer == LayerMask.NameToLayer(SetProperty.PLAYER_LAYER))
             {
-                // ÇÃ·¹ÀÌ¾î¿¡°Ô µ¥¹ÌÁö¸¦ ÁÖ´Â ·ÎÁ÷ Ã³¸®
-                Debug.Log("ÇÃ·¹ÀÌ¾î¿¡°Ô µ¥¹ÌÁö!");
+                // í”Œë ˆì´ì–´ì—ê²Œ ë°ë¯¸ì§€ë¥¼ ì£¼ëŠ” ë¡œì§ ì²˜ë¦¬
+                Debug.Log("í”Œë ˆì´ì–´ì—ê²Œ ë°ë¯¸ì§€!");
                 hitCheck = true;
 
-                //TODO : µ¥¹ÌÁö¸¦ ÁÖ°í ÇÊ¿ä½Ã ³Ë¹é, °æÁ÷ ±¸Çö
+                //TODO : ë°ë¯¸ì§€ë¥¼ ì£¼ê³  í•„ìš”ì‹œ ë„‰ë°±, ê²½ì§ êµ¬í˜„
                 //PlayerStats playerStats = other.GetComponent<PlayerStats>();
                 //if (playerStats != null)
                 //{
-                //    playerStats.TakeDamage(damage); // ¿¹½Ã µ¥¹ÌÁö °ª
+                //    playerStats.TakeDamage(damage); // ì˜ˆì‹œ ë°ë¯¸ì§€ ê°’
                 //}
 
 

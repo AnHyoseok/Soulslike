@@ -108,9 +108,9 @@ namespace BS.vampire
                 animator = GetComponent<Animator>();
             }
             //Waring();
-            StartCoroutine(Attack6());
+            //StartCoroutine(Attack7());
 
-            //NextPatternPlay();
+            NextPatternPlay();
 
 
         }
@@ -121,7 +121,7 @@ namespace BS.vampire
         //}
         IEnumerator RandomTeleport()
         {
-            Waring();
+          
 
             // 애니메이션 연출 3초 후에 이동
             animator.SetTrigger("Teleport");
@@ -129,6 +129,7 @@ namespace BS.vampire
             potalEffect.transform.parent = transform;
             Destroy(potalEffect, 3.3f);
             yield return new WaitForSeconds(3.3f);
+            Waring();
             int randomIndex;
             do
             {
@@ -166,9 +167,10 @@ namespace BS.vampire
         //배트자폭
         IEnumerator Attack1()
         {
-            Waring();
+       
             transform.LookAt(player.transform);
             yield return new WaitForSeconds(5f);
+            Waring();
             for (int i = 0; i < attackCount; i++)
             {
                 // 공격 모션 시간
@@ -233,10 +235,11 @@ namespace BS.vampire
             GameObject potalEffect = Instantiate(teleportEffect, transform.position, Quaternion.identity);
             potalEffect.transform.parent = transform;
             Destroy(potalEffect, 3.3f);
-            Waring();
+
             yield return new WaitForSeconds(2.5f);
             transform.position = centerTeleport.position;
             transform.LookAt(player.transform);
+            Waring();
             //보스 스킬 연출
             GameObject skillEffectGo = Instantiate(attack2EffectPrefab, transform.position, Quaternion.identity);
             Destroy(skillEffectGo, 2f);
@@ -306,9 +309,10 @@ namespace BS.vampire
             yield return new WaitForSeconds(5f);
 
             transform.LookAt(player.transform);
-            Waring();
+    
             for (int j = 0; j < attack4count; j++)
             {
+                Waring();
                 // 공격4용 위치 저장
                 originalPositions = new Vector3[summonObject.Length];
                 for (int i = 0; i < summonObject.Length; i++)
@@ -410,6 +414,7 @@ namespace BS.vampire
         //레이저 배트소환
         IEnumerator Attack5()
         {
+            Waring();
             if (isAttack5BatSummon)
             {
                 NextPatternPlay();
@@ -516,13 +521,16 @@ namespace BS.vampire
           
             yield return null;
         }
-        //돌진
         IEnumerator Attack7()
         {
+            // 벽 레이어 가져오기
+            int wallLayerMask = LayerMask.GetMask("Wall");
+
             for (int i = 0; i < 3; i++)
             {
+                Waring();
                 transform.LookAt(player.transform);
-              
+
                 // 공중 날기 - 날기 애니메이션
                 animator.SetBool("IsFlying", true);
 
@@ -534,23 +542,44 @@ namespace BS.vampire
                 attack7Range.SetActive(true);
 
                 yield return new WaitForSeconds(0.5f);
-            
+
                 attack7collider.SetActive(true);
 
                 // 돌진 시작
                 Vector3 startPos = transform.position;
-                 // 플레이어를 향한 방향
                 float dashDistance = 35f; // 돌진 거리 증가
-                //float dashSpeed = 20f; // 돌진 속도 증가
                 float elapsedTime = 0f;
                 float flyDuration = 0.75f; // 돌진 지속 시간 단축 (빠르게 돌진)
 
-                Vector3 targetPosition = startPos + dashDirection * dashDistance; // 플레이어 방향으로 돌진 거리만큼 이동
+                Vector3 targetPosition = startPos + dashDirection * dashDistance;
+                float safeDistance = 3.0f; // 벽과의 안전 거리
+
+                // 벽 감지를 위한 변수 추가
+                bool hitWall = false;
 
                 while (elapsedTime < flyDuration)
                 {
+                    float remainingDistance = Vector3.Distance(transform.position, targetPosition);
+
+                    // 벽과의 충돌 감지 (레이어 기반)
+                    if (Physics.Raycast(transform.position, dashDirection, out RaycastHit hit, remainingDistance, wallLayerMask))
+                    {
+                        if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
+                        {
+                            // 벽과 충돌을 감지한 경우, 안전한 위치로 목표를 변경
+                            targetPosition = hit.point - dashDirection * safeDistance;
+                            hitWall = true;
+                        }
+                    }
+
+                    // 벽과 충돌하지 않았거나, 조정된 목표 위치로 계속 이동
                     transform.position = Vector3.Lerp(startPos, targetPosition, elapsedTime / flyDuration);
                     elapsedTime += Time.deltaTime;
+
+                    // 벽과 충돌한 경우 더 이상 진행하지 않고 종료
+                    if (hitWall && Vector3.Distance(transform.position, targetPosition) <= 0.1f)
+                        break;
+
                     yield return null;
                 }
 
@@ -565,10 +594,11 @@ namespace BS.vampire
             }
         }
 
+
+
         void Waring()
         {
             GameObject waring = Instantiate(waringSquarePrefab, waringSquarePrefab.transform.position,Quaternion.identity);
-         
             waring.transform.SetParent(transform,false);
             Destroy(waring, 3f);
         }

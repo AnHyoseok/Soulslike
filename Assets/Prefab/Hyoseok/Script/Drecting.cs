@@ -1,4 +1,5 @@
 using BS.Player;
+using BS.PlayerInput;
 using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
@@ -14,11 +15,13 @@ namespace BS.vampire
         public Animator animator;
         public GameObject presentEffect;
         public GameObject player;
+        private PlayerInputActions playerInputActions;
         #endregion
 
 
         private void Awake()
         {
+
             PattonSummon pattonSummon = boss.GetComponent<PattonSummon>();
             VampireController vampireController = boss.GetComponent<VampireController>();
             pattonSummon.enabled = false;
@@ -36,8 +39,9 @@ namespace BS.vampire
 
             PattonSummon pattonSummon = boss.GetComponent<PattonSummon>();
             VampireController vampireController = boss.GetComponent<VampireController>();
+            playerInputActions = player.GetComponent<PlayerInputActions>();
             PlayerController playerController = player.GetComponent<PlayerController>();
-
+            playerInputActions.enabled = false;
             playerController.enabled = false;
             boss.transform.position = new Vector3(boss.transform.position.x, 10f, boss.transform.position.z);
 
@@ -72,6 +76,7 @@ namespace BS.vampire
             pattonSummon.enabled = true;
             vampireController.enabled = true;
             playerController.enabled = true;
+            playerInputActions.enabled = true;
          yield return null;
         }
     }
