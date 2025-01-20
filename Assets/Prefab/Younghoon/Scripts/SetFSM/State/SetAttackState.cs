@@ -2,6 +2,8 @@ using BS.Player;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using System.Linq;
+using System;
 
 namespace BS.Enemy.Set
 {
@@ -59,54 +61,37 @@ namespace BS.Enemy.Set
         /// <summary>
         /// 플레이어와의 거리에 따라 공격 패턴 선택 및 수행
         /// </summary>
+        /// <summary>
+        /// 플레이어와의 거리에 따라 공격 패턴 선택 및 수행
+        /// </summary>
         private void SelectAndPerformAttack(float distance)
         {
             isAttacking = true;
-            // 해당 거리 범위에 맞는 공격 범위를 리스트에 추가
-            var availableAttacks = new List<string>();
 
-            if (distance <= property.CloseRange && property.LastAttackType != SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES)
+            // 거리와 공격 유형, 실행 메서드 매핑
+            var attackCandidates = new List<(float range, string type, Action perform)>
             {
-                availableAttacks.Add(SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES);
-            }
-            if (distance <= property.MidRange && property.LastAttackType != SetProperty.SET_ANIM_TRIGGER_PULLATTACK)
-            {
-                availableAttacks.Add(SetProperty.SET_ANIM_TRIGGER_PULLATTACK);
-            }
-            if (distance <= property.LongRange && property.LastAttackType != SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC)
-            {
-                availableAttacks.Add(SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC);
-            }
-            if (property.LastAttackType != SetProperty.SET_ANIM_TRIGGER_ROAR) // 특수 공격은 거리와 상관없음
-            {
-                availableAttacks.Add(SetProperty.SET_ANIM_TRIGGER_ROAR);
-            }
+                (property.CloseRange, SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES, PerformCloseRangeAttack),
+                (property.MidRange, SetProperty.SET_ANIM_TRIGGER_PULLATTACK, PerformMidRangeAttack),
+                (property.LongRange, SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC, PerformLongRangeAttack),
+                (float.MaxValue, SetProperty.SET_ANIM_TRIGGER_ROAR, PerformSpecialAttack) // 특수 공격은 거리 제한 없음
+            };
 
-            // 만약 선택할 공격이 있다면 랜덤으로 선택
+            // 가능한 공격을 필터링
+            var availableAttacks = attackCandidates
+                .Where(a => distance <= a.range && property.LastAttackType != a.type)
+                .ToList();
+
+            // 공격 실행
             if (availableAttacks.Count > 0)
             {
-                string attackToPerform = availableAttacks[Random.Range(0, availableAttacks.Count)];
-
-                // 선택된 공격을 실행
-                switch (attackToPerform)
-                {
-                    case SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES:
-                        PerformCloseRangeAttack();
-                        break;
-                    case SetProperty.SET_ANIM_TRIGGER_PULLATTACK:
-                        PerformMidRangeAttack();
-                        break;
-                    case SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC:
-                        PerformLongRangeAttack();
-                        break;
-                    case SetProperty.SET_ANIM_TRIGGER_ROAR:
-                        PerformSpecialAttack();
-                        break;
-                    default:
-                        Debug.LogWarning("No attack selected.");
-                        break;
-                }
-                property.LastAttackType = attackToPerform;
+                var selectedAttack = availableAttacks[UnityEngine.Random.Range(0, availableAttacks.Count)];
+                selectedAttack.perform?.Invoke(); // 공격 실행
+                property.LastAttackType = selectedAttack.type; // 마지막 공격 타입 갱신
+            }
+            else
+            {
+                Debug.LogWarning("No valid attack available.");
             }
         }
 
