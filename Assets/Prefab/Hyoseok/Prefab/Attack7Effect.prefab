@@ -14440,7 +14440,7 @@ GameObject:
   - component: {fileID: 11400002}
   - component: {fileID: 114000010902552418}
   m_Layer: 0
-  m_Name: Kunai
+  m_Name: Attack7Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

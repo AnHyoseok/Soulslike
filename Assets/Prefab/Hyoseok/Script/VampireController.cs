@@ -19,7 +19,7 @@ namespace BS.vampire
         public GameObject player;   //바닥
         public GameObject playerBody;   //플레이어몸체 
         public float testAttackNumber;
-
+        public GameObject waringSquarePrefab;  //경고창
         private int direction;  // 방향
 
         public float time = 20f; // 공격 대기 시간
@@ -91,7 +91,12 @@ namespace BS.vampire
         public GameObject[] safeRanges;
         public GameObject attack6BossEffect;
         public GameObject meteorPrefab;
-
+        [Header("Attack7")]
+        //공격 7 돌진기 
+        //보스가 플레이어 방향으로 돌진 앞에 콜라이더생성
+        public GameObject attack7Range;
+        public GameObject attack7collider;
+        public GameObject attack7Effect;
 
 
         private int nextPattern = 0;
@@ -102,7 +107,7 @@ namespace BS.vampire
             {
                 animator = GetComponent<Animator>();
             }
-
+            //Waring();
             StartCoroutine(Attack6());
 
             //NextPatternPlay();
@@ -116,8 +121,8 @@ namespace BS.vampire
         //}
         IEnumerator RandomTeleport()
         {
-          
-     
+            Waring();
+
             // 애니메이션 연출 3초 후에 이동
             animator.SetTrigger("Teleport");
             GameObject potalEffect = Instantiate(teleportEffect, transform.position, Quaternion.identity);
@@ -161,6 +166,7 @@ namespace BS.vampire
         //배트자폭
         IEnumerator Attack1()
         {
+            Waring();
             transform.LookAt(player.transform);
             yield return new WaitForSeconds(5f);
             for (int i = 0; i < attackCount; i++)
@@ -214,18 +220,20 @@ namespace BS.vampire
 
                 yield return new WaitForSeconds(0.1f);
             }
-            NextPatternPlay();
+           
             yield return null;
         }
 
         //상하좌우 레이져 패턴
         IEnumerator Attack2()
         {
+
             //보스 중앙이동
             //animator.SetTrigger("Teleport");
             GameObject potalEffect = Instantiate(teleportEffect, transform.position, Quaternion.identity);
             potalEffect.transform.parent = transform;
             Destroy(potalEffect, 3.3f);
+            Waring();
             yield return new WaitForSeconds(2.5f);
             transform.position = centerTeleport.position;
             transform.LookAt(player.transform);
@@ -253,7 +261,7 @@ namespace BS.vampire
                 bloodBeams[i].SetActive(false);
             }
 
-            NextPatternPlay();
+         
             yield return null;
 
         }
@@ -263,6 +271,7 @@ namespace BS.vampire
         {
             yield return new WaitForSeconds(4f);
             transform.LookAt(player.transform);
+            Waring();
             animator.SetTrigger("Attack1");
             //웨이브
             for (int i = 0; i < waveCount; i++)
@@ -288,14 +297,16 @@ namespace BS.vampire
                 }
                 yield return new WaitForSeconds(0.3f);
             }
-            NextPatternPlay();
+        
             yield return null;
         }
         //소환된 배트가 플레이어타격 레이져발사
         IEnumerator Attack4()
         {
             yield return new WaitForSeconds(5f);
+
             transform.LookAt(player.transform);
+            Waring();
             for (int j = 0; j < attack4count; j++)
             {
                 // 공격4용 위치 저장
@@ -393,7 +404,7 @@ namespace BS.vampire
                 }
             }
             yield return new WaitForSeconds(3f);
-            NextPatternPlay();
+           
             yield return null;
         }
         //레이저 배트소환
@@ -425,7 +436,7 @@ namespace BS.vampire
             secondObject.moveInZAxis = false;
 
 
-            NextPatternPlay();
+         
             yield return null;
         }
 
@@ -435,6 +446,7 @@ namespace BS.vampire
         {
             transform.position = centerTeleport.position;
             transform.LookAt(player.transform);
+            Waring();
             // 공중 날기 애니메이션
             animator.SetBool("IsFly", true);
             float flyHeight = 4f; // 높이
@@ -462,27 +474,27 @@ namespace BS.vampire
             yield return new WaitForSeconds(5f);
             // 안전지대 위험구역 생성
             attack6Range.SetActive(true);
-    
+
             int randomIndex;
             int safeIndex;
             randomIndex = Random.Range(0, 3);
             safeIndex = randomIndex;
             safeRanges[safeIndex].SetActive(true);
-  
+
 
             // 기모으기 4초
             yield return new WaitForSeconds(4f);
             // 메테오 시전
             GameObject Meteors = Instantiate(meteorPrefab, meteorPrefab.transform.position, meteorPrefab.transform.rotation);
             Destroy(Meteors, 5f);
-            
+
             // 플레이어 위치 확인 및 데미지 적용
             DangerZone dangerZone = attack6Range.GetComponent<DangerZone>();
             dangerZone.enabled = true;
 
             // 6초 이후 안전지대 위험구역 끄기, 보스 내려오기
             yield return new WaitForSeconds(6f);
-     
+
             attack6Range.SetActive(false);
             yield return new WaitForSeconds(0.5f);
 
@@ -501,57 +513,102 @@ namespace BS.vampire
             }
             animator.SetBool("IsFly", false);
 
-            NextPatternPlay();
+          
             yield return null;
         }
+        //돌진
+        IEnumerator Attack7()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                transform.LookAt(player.transform);
+              
+                // 공중 날기 - 날기 애니메이션
+                animator.SetBool("IsFlying", true);
 
-       
+                // 공격 이펙트 생성
+                attack7Effect.SetActive(true);
 
-     
+                // Range 활성화
+                Vector3 dashDirection = (player.transform.position - transform.position).normalized;
+                attack7Range.SetActive(true);
+
+                yield return new WaitForSeconds(0.5f);
+            
+                attack7collider.SetActive(true);
+
+                // 돌진 시작
+                Vector3 startPos = transform.position;
+                 // 플레이어를 향한 방향
+                float dashDistance = 35f; // 돌진 거리 증가
+                //float dashSpeed = 20f; // 돌진 속도 증가
+                float elapsedTime = 0f;
+                float flyDuration = 0.75f; // 돌진 지속 시간 단축 (빠르게 돌진)
+
+                Vector3 targetPosition = startPos + dashDirection * dashDistance; // 플레이어 방향으로 돌진 거리만큼 이동
+
+                while (elapsedTime < flyDuration)
+                {
+                    transform.position = Vector3.Lerp(startPos, targetPosition, elapsedTime / flyDuration);
+                    elapsedTime += Time.deltaTime;
+                    yield return null;
+                }
+
+                // 착륙 애니메이션
+                animator.SetBool("IsFlying", false);
+                attack7Effect.SetActive(false);
+                attack7Range.SetActive(false);
+
+                // 돌진 종료 
+                attack7collider.SetActive(false);
+                yield return new WaitForSeconds(0.5f);
+            }
+        }
+
+        void Waring()
+        {
+            GameObject waring = Instantiate(waringSquarePrefab, waringSquarePrefab.transform.position,Quaternion.identity);
+         
+            waring.transform.SetParent(transform,false);
+            Destroy(waring, 3f);
+        }
 
 
 
         void NextPatternPlay()
         {
-            // 패턴을 순환
+            // 패턴을 순환 (1~6)
             nextPattern = (nextPattern % 6) + 1;
 
-            // 특정 패턴에서만 RandomTeleport 실행
-            if (nextPattern == 1 || nextPattern == 2  ||nextPattern==5)
-            {
-                StartCoroutine(RandomTeleport());
-            }
-
+            // 플레이어를 바라보게 설정
             transform.LookAt(player.transform);
 
-            switch (nextPattern)
-            {
-                case 1:
-                    StartCoroutine(Attack1());
-                    Debug.Log("1번패턴실행");
-                    break;
-                case 2:
-                    StartCoroutine(Attack2());
-                    Debug.Log("2번패턴실행");
-                    break;
-                case 3:
-                    StartCoroutine(Attack3());
-                    Debug.Log("3번패턴실행");
-                    break;
-                case 4:
-                    StartCoroutine(Attack5());
-                    Debug.Log("5번패턴실행");
-                    break;
-                case 5:         
-                    StartCoroutine(Attack4());
-                    Debug.Log("4번패턴실행");
-                    break;
-                case 6:
-                    StartCoroutine(Attack6());
-                    Debug.Log("6번패턴실행");
-                    break;
-            }
+            // 패턴 실행
+            StartCoroutine(ExecutePattern(nextPattern));
         }
 
+        IEnumerator ExecutePattern(int pattern)
+        {
+            Debug.Log($"{pattern}번 패턴 실행");
+
+            // 패턴에 따라 추가 행동 실행
+            if (pattern == 1 || pattern == 2 || pattern == 5)
+                yield return StartCoroutine(RandomTeleport());
+
+            if (pattern == 3 || pattern == 5)
+                yield return StartCoroutine(Attack7()); // 돌진 공격 실행
+
+            // 패턴 실행
+            switch (pattern)
+            {
+                case 1: yield return StartCoroutine(Attack1()); break;
+                case 2: yield return StartCoroutine(Attack2()); break;
+                case 3: yield return StartCoroutine(Attack3()); break;
+                case 4: yield return StartCoroutine(Attack5()); break;
+                case 5: yield return StartCoroutine(Attack4()); break;
+                case 6: yield return StartCoroutine(Attack6()); break;
+            }
+            NextPatternPlay();
+        }
     }
 }

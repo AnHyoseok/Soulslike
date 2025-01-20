@@ -15,11 +15,19 @@ namespace BS.vampire
         public GameObject presentEffect;
         public GameObject player;
         #endregion
-
+        private void Awake()
+        {
+            PattonSummon pattonSummon = boss.GetComponent<PattonSummon>();
+            VampireController vampireController = boss.GetComponent<VampireController>();
+            pattonSummon.enabled = false;
+            vampireController.enabled = false;
+        }
         private void Start()
         {
+          
             StartCoroutine(Opening());
         }
+        
 
         IEnumerator Opening()
         {
@@ -27,12 +35,11 @@ namespace BS.vampire
             PattonSummon pattonSummon = boss.GetComponent<PattonSummon>();
             VampireController vampireController = boss.GetComponent<VampireController>();
             PlayerController playerController = player.GetComponent<PlayerController>();
-            pattonSummon.enabled=false;
-            vampireController.enabled=false;
+
             playerController.enabled = false;
             boss.transform.position = new Vector3(boss.transform.position.x, 10f, boss.transform.position.z);
 
-            float descentDuration = 7f; // 내려오는 데 걸리는 시간
+            float descentDuration = 5f; // 내려오는 데 걸리는 시간
             float elapsedTime = 0f;
             Vector3 startPos = boss.transform.position;
             Vector3 endPos = new Vector3(boss.transform.position.x, 0f, boss.transform.position.z);
@@ -46,7 +53,7 @@ namespace BS.vampire
                 yield return null;
             }
             animator.SetBool("IsFlying", false);
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
             
             animator.SetTrigger("Attack1");
             bossCanvas.SetActive(true);
