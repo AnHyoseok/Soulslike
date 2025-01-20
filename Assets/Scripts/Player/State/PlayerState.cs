@@ -106,6 +106,9 @@ namespace BS.Player
         public bool isBackHandSwingable = true;   // 백핸드스윙 가능 여부
         public bool isBackHandSwinging = false;// 백핸드스윙 진행 여부
         public float currentBackHandSwingCoolTime = 0f;         // BD 백스윙 쿨타임
+
+        // Skill 사용 가능 여부
+        public bool canSkill = true;
         #endregion
         void Awake()
         {

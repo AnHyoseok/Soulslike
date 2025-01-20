@@ -11,7 +11,8 @@ namespace BS.State
         #region Variables
         private BaseState currentState;
         public BaseState prevState;
-        public string CurrentSkillName;
+        public string currentSkillName;
+        public Transform prevTransform;
         // Animator 및 상태 참조
         public Animator animator;
         public BaseState IdleState { get; private set; }
@@ -46,7 +47,6 @@ namespace BS.State
         private void Update()
         {
             currentState?.Update();
-            Debug.Log("CURR SKILL = " + CurrentSkillName);
         }
 
         public void ChangeState(BaseState newState)

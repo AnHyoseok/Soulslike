@@ -41,11 +41,10 @@ namespace BS.Player
                     float currentSkillDamage = GetCurrentSkillDamage();
                     if (currentSkillDamage > 0)
                     {
-                        Vector3 hitPoint = collision.contacts[0].point;
-                        hitPoint.y = 0;
-                        psk.hitPos = hitPoint;
-                        psk.isHit = true;
-                        Debug.Log("TEST = " + transform.position);
+                        //Vector3 hitPoint = collision.contacts[0].point;
+                        //hitPoint.y = 0;
+                        //psk.hitPos = hitPoint;
+                        //psk.isHit = true;
                         // 적에게 대미지 입힘
                         enemyHealth.TakeDamage((int)currentSkillDamage);
 
@@ -61,11 +60,15 @@ namespace BS.Player
 
         private void OnTriggerEnter(Collider other)
         {
+            if (psm.animator.GetBool("IsAttacking") == false 
+                && !ps.isUppercuting 
+                && !ps.isBackHandSwinging 
+                && !ps.isChargingPunching )
+            {
+                return;
+            }
             // 적 레이어인지 확인
-            if (other.gameObject.layer == LayerMask.NameToLayer(enemyLayerName)
-                //&& psm.animator.GetBool("IsAttacking")
-                && ps.isChargingPunching
-                )
+            if (other.gameObject.layer == LayerMask.NameToLayer(enemyLayerName))
             {
                 var enemyHealth = other.gameObject.GetComponent<BossHealthTest>();
                 if (enemyHealth != null)
@@ -78,11 +81,13 @@ namespace BS.Player
                     float currentSkillDamage = GetCurrentSkillDamage();
                     if (currentSkillDamage > 0)
                     {
-                        Vector3 hitPoint = other.ClosestPoint(transform.position);
-                        hitPoint.y = 0;
-                        psk.hitPos = hitPoint;
-                        psk.isHit = true;
-                        Debug.Log("TEST = " + transform.position);
+                        if (ps.isChargingPunching)
+                        {
+                            Vector3 hitPoint = other.ClosestPoint(transform.position);
+                            hitPoint.y = 0;
+                            psk.hitPos = hitPoint;
+                            psk.isHit = true;
+                        }
                         // 적에게 대미지 입힘
                         enemyHealth.TakeDamage((int)currentSkillDamage);
 
@@ -100,7 +105,7 @@ namespace BS.Player
         private float GetCurrentSkillDamage()
         {
             // PlayerSkillController의 현재 스킬 확인
-            if (PlayerSkillController.skillList.TryGetValue(psm.CurrentSkillName, out var skill))
+            if (PlayerSkillController.skillList.TryGetValue(psm.currentSkillName, out var skill))
             {
                 return skill.damage;
             }

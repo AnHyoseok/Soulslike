@@ -64,14 +64,13 @@ namespace BS.Player
             {
                 if (isHit)
                 {
-                    Debug.Log("IS HIT = " + isHit);
                     // 루트 모션을 무시하고 충돌 지점에서 고정
                     animator.applyRootMotion = false; // 루트 모션 비활성화
-                    transform.parent.position = hitPos;
+                    Vector3 temp = (hitPos - psm.prevTransform.position).normalized;
+                    transform.parent.position = hitPos - temp;
                 }
                 else
                 {
-                    Debug.Log("IS NOT HIT = " + isHit);
                     // 일반 루트 모션 업데이트
                     animator.applyRootMotion = true; // 루트 모션 활성화
                     transform.parent.transform.position = animator.rootPosition; // 캐릭터의 Root Motion 위치
@@ -90,6 +89,7 @@ namespace BS.Player
                 {
                     if (hit.transform.gameObject.CompareTag("Ground"))
                     {
+                        ps.canSkill = false;
                         ps.targetPosition = hit.point;
                         RotatePlayer();
 
@@ -113,6 +113,7 @@ namespace BS.Player
                 {
                     if (hit.transform.gameObject.CompareTag("Ground"))
                     {
+                        ps.canSkill = false;
                         ps.targetPosition = hit.point;
                         RotatePlayer();
 
@@ -136,6 +137,7 @@ namespace BS.Player
                 {
                     if (hit.transform.gameObject.CompareTag("Ground"))
                     {
+                        ps.canSkill = false;
                         ps.targetPosition = hit.point;
                         RotatePlayer();
 
@@ -172,24 +174,27 @@ namespace BS.Player
         {
             ps.isUppercuting = false;
             ps.targetPosition = this.transform.position;
-            psm.CurrentSkillName = "";
+            psm.currentSkillName = "";
             isHit = false;
+            ps.canSkill = true;
         }
         // 백핸드스윙이 끝날때 호출
         public void EndBackHandSwing()
         {
             ps.isBackHandSwinging = false;
             ps.targetPosition = this.transform.position;
-            psm.CurrentSkillName = "";
+            psm.currentSkillName = "";
             isHit = false;
+            ps.canSkill = true;
         }
         // 차징펀지이 끝날때 호출
         public void EndChargingPunch()
         {
             ps.isChargingPunching = false;
             ps.targetPosition = this.transform.position;
-            psm.CurrentSkillName = "";
+            psm.currentSkillName = "";
             isHit = false;
+            ps.canSkill = true;
         }
 
         // 다른행동이 불가능 하도록 설정
