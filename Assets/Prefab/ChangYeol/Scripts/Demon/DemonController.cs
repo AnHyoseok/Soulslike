@@ -37,7 +37,6 @@ namespace BS.Demon
         private bool isDie = false;     //죽음 여부및 한 번만 죽이기
         public Image healthBarFill;       // 체력바의 Foreground Image
         public TextMeshProUGUI healthText; // 체력 퍼센트 Text (TextMeshPro 사용)
-        [SerializeField]private GameObject angryEffect;
 
         protected DemonPattern pattern;
         private bool istimer = false;
@@ -48,6 +47,7 @@ namespace BS.Demon
             animator = GetComponent<Animator>();
             pattern = GetComponent<DemonPattern>();
             currentHealth = maxHealth; // 초기 체력 설정
+            hasRecovered = false;
         }
 
         private void Update()
@@ -236,14 +236,10 @@ namespace BS.Demon
         }
         private void RecoverHealth()
         {
-            //회복 이펙트
-            GameObject heal = Instantiate(pattern.effect[3], transform.position, Quaternion.identity);
-            angryEffect.SetActive(true);
             // 감소한 체력의 절반만큼 회복
             float healthToRecover = (maxHealth * 0.5f) * 0.5f;
             currentHealth += healthToRecover;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // 체력 범위 제한
-            Destroy(heal, 2f);
             hasRecovered = true; // 회복 플래그 활성화
             animator.SetBool("IsRecovered", hasRecovered);
         }

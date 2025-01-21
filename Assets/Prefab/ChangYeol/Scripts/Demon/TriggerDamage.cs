@@ -1,4 +1,5 @@
 using BS.Player;
+using BS.PlayerInput;
 using BS.State;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,23 +23,17 @@ namespace BS.Demon
         }
         void OnTriggerEnter(Collider other)
         {
-            PlayerController playerController = other.GetComponent<PlayerController>();
-            if (playerController != null)
+            // 자식 객체에서 PlayerHealth 컴포넌트를 찾음
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null && !damagedObjects.Contains(other.gameObject))
             {
-                Debug.Log("플레이어 발견!");
-
-                // 자식 객체에서 PlayerHealth 컴포넌트를 찾음
-                PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
-                if (playerHealth != null && !damagedObjects.Contains(other.gameObject))
+                Debug.Log($"{damageAmount}만큼 데미지 입음");
+                playerHealth.TakeDamage(damageAmount, false);
+                damagedObjects.Add(other.gameObject);
+                StartCoroutine(ResetCollision(other.gameObject));
+                if (isstun)
                 {
-                    Debug.Log($"{damageAmount}만큼 데미지 입음");
-                    playerHealth.TakeDamage(damageAmount, false);
-                    damagedObjects.Add(other.gameObject);
-                    StartCoroutine(ResetCollision(other.gameObject));
-                    if (isstun)
-                    {
-                        StartCoroutine(PlayerStun(playerController, Stuntime));
-                    }
+                    StartCoroutine(PlayerStun(playerHealth, Stuntime));
                 }
             }
             if(triggerCollider != null)
@@ -64,16 +59,18 @@ namespace BS.Demon
                 triggerCollider.enabled = false;
             }
         }
-        IEnumerator PlayerStun(PlayerController player, float Time)
+        IEnumerator PlayerStun(PlayerHealth player, float Time)
         {
-            player.enabled = false;
+            PlayerStateMachine playerState = GameObject.Find("PlayerController ").GetComponent<PlayerStateMachine>();
+            PlayerInputActions inputActions = playerState.GetComponent<PlayerInputActions>();
+            inputActions.UnInputActions();
             Vector3 effectpos = new Vector3(player.gameObject.transform.position.x, StunEffect.transform.position.y ,player.gameObject.transform.position.z);
             GameObject stun = Instantiate(StunEffect, effectpos, Quaternion.identity);
-            PlayerStateMachine playerState = player.GetComponent<PlayerStateMachine>();
+            
             playerState.ChangeState(playerState.IdleState);
             Debug.Log("Stun");
             yield return new WaitForSeconds(Time);
-            player.enabled = true;
+            inputActions.OnInputActions();
             Destroy(stun, 0.2f);
             Destroy(gameObject,0.2f);
         }

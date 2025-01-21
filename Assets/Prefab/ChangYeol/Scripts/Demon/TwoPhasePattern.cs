@@ -52,6 +52,7 @@ namespace BS.Demon
 
                     // 지정된 위치에 오브젝트 생성
                     GameObject spawnedBall = Instantiate(pattern.ball[1].gameObject, transform.position, Quaternion.identity);
+                    spawnedBall.transform.parent = spawnedBall.GetComponent<BallRise>().pattern.parent.transform;
                     spawnedBall.GetComponent<BallRise>().StartRise();
                 }
                 yield return new WaitForSeconds(spawnTime);
@@ -61,8 +62,10 @@ namespace BS.Demon
         #region 2Phase Pattern 2
         public void AttackBallDot()
         {
-            GameObject attackball = Instantiate(pattern.ballInstantiate, pattern.ballTranfrom.position, Quaternion.identity);
+            GameObject attackball = Instantiate(pattern.ballInstantiate, pattern.ballTransfrom.position, Quaternion.identity);
             GameObject effgo = Instantiate(effect[1], attackball.transform.position, Quaternion.identity);
+            attackball.transform.parent = pattern.parent.transform;
+            effgo.transform.parent = pattern.parent.transform;
             Destroy(attackball, 1f);
             Destroy(effgo, 1f);
             Vector3 Explosionpos = new Vector3(effgo.transform.position.x, attackball.transform.position.y + -1.9f, effgo.transform.position.z);
@@ -78,7 +81,7 @@ namespace BS.Demon
         }
         IEnumerator AttackRangeBall()
         {
-            GameObject Range = Instantiate(pattern.attackRangePrefab[0], balltransform.transform.position, Quaternion.identity);
+            GameObject Range = Instantiate(pattern.attackRangePrefab[0], balltransform.position, Quaternion.identity);
             Range.GetComponent<DemonAttackRange>().StartGrowing(pattern.attackRangeScale[1], pattern.rangeSize[1]);
             yield return new WaitForSeconds(1);
             Destroy(Range);

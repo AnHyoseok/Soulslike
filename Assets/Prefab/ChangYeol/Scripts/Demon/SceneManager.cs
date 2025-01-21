@@ -1,7 +1,10 @@
+using BS.Managers;
 using BS.Player;
+using BS.PlayerInput;
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 
 namespace BS.Demon
@@ -18,13 +21,19 @@ namespace BS.Demon
         public PlayerController player;
 
         private bool isPhase = false;
-        ToggleRendererFeature toggleRenderer;
+        private ToggleRendererFeature toggleRenderer;
+        public GameObject canvas;
+        private CameraManager manager;
+        [SerializeField] private GameObject angryEffect;
         #endregion
 
         private void Start()
         {
             toggleRenderer = GetComponent<ToggleRendererFeature>();
             toggleRenderer.enabled = false;
+            manager = main.GetComponent<CameraManager>();
+            manager.enabled = false;
+            isPhase = false;
             StartCoroutine(OpeningDemon());
         }
         void Update()
@@ -39,54 +48,61 @@ namespace BS.Demon
                 
                 StartCoroutine (PhaseDemon());
                 isPhase = true;
+                pattern.demon.animator.SetBool("Isphase", isPhase);
             }
         }
         IEnumerator OpeningDemon()
         {
+            manager.enabled = false;
             pattern.demon.enabled = false;
             player.enabled = false;
+            PlayerInputActions actions = player.GetComponent<PlayerInputActions>();
+            actions.UnInputActions();
             pattern.demon.gameObject.SetActive(false);
             GameObject eff = Instantiate(presentEffect, pattern.gameObject.transform.position, presentEffect.transform.rotation);
             yield return new WaitForSeconds(0.2f);
             pattern.demon.gameObject.SetActive(true);
             float descentDuration = 4f; //작아지는 시간
             float elapsedTime = 0f;
-            
+            bossCanvas.SetActive(true);
             yield return new WaitForSeconds(0.5f);
-            ToggleRendererFeature toggleRenderer = GetComponent<ToggleRendererFeature>();
-            toggleRenderer.enabled = true;
+            toggleRenderer.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", true);
             while (elapsedTime < descentDuration)
             {
                 eff.transform.localScale = Vector3.Lerp(eff.transform.localScale, new Vector3(0.1f,0.1f,0.1f)*-0f, elapsedTime / descentDuration);
                 elapsedTime += Time.deltaTime;
-                // 목표 크기에 도달했는지 확인
-                if (Vector3.Distance(transform.localScale, new Vector3(0.1f, 0.1f, 0.1f) * -0f) < 0.01f)
-                {
-                    Destroy(eff,0.5f);
-                }
                 yield return null;
             }
+            Destroy(eff,0.8f);
             //TODO : 카메라 흔들면서 연출 효과 나오고 이름 나오고 시작
-
+            canvas.SetActive(false);
+            bossCanvas.SetActive(false);
             yield return new WaitForSeconds(0.5f);
-            toggleRenderer.enabled = false;
+            toggleRenderer.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", false);
             drectingCamera.SetActive(false);
+            canvas.SetActive(true);
             pattern.demon.enabled = true;
             pattern.demon.ChangeState(DEMON.Idle);
             player.enabled = true;
+            actions.OnInputActions();
+            manager.enabled = true;
             yield return null;
         }
         IEnumerator PhaseDemon()
         {
-            drectingCamera.SetActive(!isPhase);
+            drectingCamera.SetActive(true);
             Debug.Log("dd");
             yield return new WaitForSeconds(0.5f);
             pattern.demon.enabled = false;
             player.enabled = false;
-
-            yield return new WaitForSeconds(10f);
+            toggleRenderer.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", true);
+            yield return new WaitForSeconds(2f);
+            angryEffect.SetActive(true);
+            GameObject heal = Instantiate(pattern.effect[3], transform.position, Quaternion.identity);
+            yield return new WaitForSeconds(2f);
             //TODO : 카메라 흔들리면서 시작
-
+            toggleRenderer.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", false);
+            yield return new WaitForSeconds(0.5f);
             drectingCamera.SetActive(false);
             pattern.demon.enabled = true;
             pattern.demon.ChangeState(DEMON.Idle);
