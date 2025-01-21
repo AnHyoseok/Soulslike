@@ -18,13 +18,13 @@ namespace BS.Utility
         // 게임 내에서 사용할 오디오 그룹을 정의합니다.
         public enum AudioGroups
         {
-            MUSIC,
-            SOUND,
-            SKILL,
+            Music,
+            Sound,
+            Skill,
         }
 
         // 특정 위치에서 사운드 효과(AudioClip)를 생성하고 재생합니다.
-        public static void CreateSFX(AudioClip clip, Vector3 position, AudioGroups audioGroup, float spatialBlend = 1f, float rolloffDistanceMin = 1f, float maxDistance = 15f)
+        public static void CreateSFX(AudioClip clip, Vector3 position, AudioGroups audioGroup, float spatialBlend = 0f, float rolloffDistanceMin = 1f, float maxDistance = 15f)
         {
             // 새 오브젝트 생성: 사운드 효과를 재생할 임시 오브젝트를 만듭니다.
             GameObject impactSfxInstance = new GameObject("SFX_" + clip.name);

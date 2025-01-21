@@ -61,11 +61,11 @@ AudioMixerController:
   - guid: 737902c32a14091418baa03742e35e7e
     name: MASTER
   - guid: 0ff2ed3a4bb67a548929041f3e5d5e65
-    name: MUSIC
+    name: Music
   - guid: 84181727b26041e4bbe594c7a84468ff
-    name: SKILL
+    name: Skill
   - guid: 49986e3202bd47449ae569cb99e04c19
-    name: SOUND
+    name: Sound
   m_AudioMixerGroupViews:
   - guids:
     - 582b209306f7a54479cd92ebb0f492cf
@@ -131,7 +131,7 @@ AudioMixerGroupController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SKill
+  m_Name: Skill
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: 6b75eb67ce4205842a0919b36e088ae2
   m_Children: []

@@ -12,14 +12,18 @@ namespace BS.Audio
         // AudioMixer 배열은 프로젝트에서 사용할 오디오 믹서들을 참조
         // AudioMixer는 Unity의 오디오 시스템에서 여러 오디오 트랙을 믹싱하고 처리하는 데 사
         public AudioMixer[] AudioMixers;
+
+        public AudioSource audioSource;
         [SerializeField] public Slider m_AudioMasterSlider;
         [SerializeField] public Slider m_AudioSoundSlider;
         [SerializeField] public Slider m_AudioMusicSlider;
 
-        public AudioClip playBGM;
+        public AudioClip playBGM;                                   //기본 BGM
+        public AudioClip changeBGM;                                 //교체할 BGM
 
         private void Awake()
         {
+            audioSource = GetComponent<AudioSource>();
             m_AudioMasterSlider.onValueChanged.AddListener(value => AudioUtility.SetVolume(value, Constants.AUDIO_UTIL_MASTER));
             m_AudioSoundSlider.onValueChanged.AddListener(value => AudioUtility.SetVolume(value, Constants.AUDIO_UTIL_SOUND));
             m_AudioMusicSlider.onValueChanged.AddListener(value => AudioUtility.SetVolume(value, Constants.AUDIO_UTIL_MUSIC));
