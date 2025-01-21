@@ -16,13 +16,13 @@ namespace BS.vampire
             PlayerController playerController = other.GetComponent<PlayerController>();
             if (playerController != null)
             {
-                Debug.Log("ÇÃ·¹ÀÌ¾î ¹ß°ß!");
+                Debug.Log("í”Œë ˆì´ì–´ ë°œê²¬!");
 
-                // ÀÚ½Ä °´Ã¼¿¡¼­ PlayerHealth ÄÄÆ÷³ÍÆ®¸¦ Ã£À½
+                // ìì‹ ê°ì²´ì—ì„œ PlayerHealth ì»´í¬ë„ŒíŠ¸ë¥¼ ì°¾ìŒ
                 PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
                 if (playerHealth != null && !damagedObjects.Contains(other.gameObject))
                 {
-                    Debug.Log($"{damageAmount}¸¸Å­ µ¥¹ÌÁö ÀÔÀ½");
+                    Debug.Log($"{damageAmount}ë§Œí¼ ë°ë¯¸ì§€ ì…ìŒ");
                     playerHealth.TakeDamage(damageAmount,false);
                     Debug.Log($"hp={playerHealth.CurrentHealth}");
                     damagedObjects.Add(other.gameObject);
@@ -31,7 +31,7 @@ namespace BS.vampire
             }
         }
 
-        // ÀÏÁ¤ ½Ã°£ ÈÄ Ãæµ¹ Á¤º¸ ¸®¼Â
+        // ì¼ì • ì‹œê°„ í›„ ì¶©ëŒ ì •ë³´ ë¦¬ì…‹
         IEnumerator ResetCollision(GameObject other)
         {
             yield return new WaitForSeconds(0.5f);

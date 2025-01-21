@@ -14,6 +14,7 @@ namespace BS.Demon
             if (effgo && !phasePattern)
             {
                 GameObject effcetgo = Instantiate(effgo, transform.position, Quaternion.identity);
+                effcetgo.transform.parent = transform;
                 Destroy(effcetgo, 1.5f);
                 Destroy(this.gameObject);
             }
@@ -27,13 +28,18 @@ namespace BS.Demon
             if (target != null)
             {
                 GameObject effcetgo = Instantiate(phasePattern, transform.position, Quaternion.identity);
+                effcetgo.transform.parent = transform;
                 Destroy(effcetgo, 3.5f);
                 yield return new WaitForSeconds(3.5f);
                 // 폭발 효과 (선택 사항)
                 GameObject effectInstance = Instantiate(twoPhase.effect[0], target.transform.position, Quaternion.identity);
-                Destroy(effectInstance, 0.7f);
+                effectInstance.transform.parent = transform;
                 // 대상 제거
-                Destroy(target);
+                if(!effcetgo)
+                {
+                    Destroy(effectInstance, 0.7f);
+                    Destroy(target);
+                }
             }
         }
     }
