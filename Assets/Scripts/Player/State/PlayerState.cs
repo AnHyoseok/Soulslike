@@ -90,7 +90,7 @@ namespace BS.Player
         // Attack
         public bool isAttackable = true;          // 공격 가능 여부
         public bool isAttacking = false;                  // 공격 진행 여부
-        public int ComboAttackIndex = 1;                        // ComboAttack 인덱스 
+        public int comboAttackIndex = 1;                        // ComboAttack 인덱스 
 
         // Uppercut
         public bool isUppercutable = true;       // 어퍼컷 가능 여부

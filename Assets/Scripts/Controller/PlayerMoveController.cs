@@ -33,10 +33,12 @@ namespace BS.Player
         // Target Position 설정
         private void SetTargetPosition()
         {
-            if (m_Input.RightClick)
+            if (m_Input.RightClick && ps.isMovable)
             {
                 GetMousePosition();
-                ps.isMoving = true;
+                RotatePlayer();
+                if(!ps.isMoving)
+                    ps.isMoving = true;
             }
         }
 
@@ -45,14 +47,20 @@ namespace BS.Player
         // Player 이동
         private void MoveToTargetPos()
         {
+            // TODO :: 이동이 불가능한 상태 분기처리 리턴
             //if (ps.isAttack) return;
             //if (ps.isBlockingAnim) return;
-            if (psm.animator.GetBool("IsAttacking")) return;
-            if (ps.isMoving && !ps.isBlockingAnim && !ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching)
+            //if (psm.animator.GetBool("IsAttacking")) return;
+            if (ps.isMoving 
+                && !ps.isBlockingAnim 
+                && !ps.isUppercuting 
+                && !ps.isBackHandSwinging 
+                && !ps.isChargingPunching
+                && !ps.isAttacking )
             {
                 SetMoveState();
                 transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);
-                RotateToTargetPos();
+                
                 if (Vector3.Distance(transform.position, ps.targetPosition) < 0.01f)
                 {
                     ps.isMoving = false; // 목표 지점 도달 시 이동 멈춤

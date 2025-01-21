@@ -12,10 +12,13 @@ namespace BS.Player
     {
         #region Variables
 
-        public float comboableTime;                        // 연계 공격 가능 시간
-        public float _comboableTime = 1f;                  // SD 연계 공격 가능 시간
-        public bool isAttackable = false;
+        public float comboableTime = 0f;                    // 연계 공격 가능 시간
+        public float _comboableTime = 1f;                   // SD 연계 공격 가능 시간
+        public double lastAttackTime = 0;                   // 마지막 공격 시간
 
+        private bool isMousePressed = false;
+        private float timeSinceLastClick = 0f;
+        private float clickInterval = 0.12f;                // 클릭 반복 간격
         public Animator animator;
         #endregion
 
@@ -31,106 +34,83 @@ namespace BS.Player
 
         protected override void Update()
         {
-            calculateTime();
+            SetTargetPosition();
         }
+        
         protected override void FixedUpdate()
         {
-            HandleInput();
-        }
-        #region Input
-        // 키 입력 처리
-        void HandleInput()
-        {
-            // 마우스 좌클릭 공격
+            // 마우스 좌클릭 상태 확인
             if (m_Input.LeftClick)
             {
-                //Debug.Log("TESTATTACK");
-                // BlockingAnim 진행중에는 Return 하도록
-                //if (ps.isBlockingAnim || ps.isDashing) return;
+                if (!isMousePressed)
+                {
+                    // 좌클릭이 처음 눌린 순간
+                    ComboAttack();
+                    isMousePressed = true;
+                    timeSinceLastClick = 0f; // 초기화
+                }
+                else
+                {
+                    // 계속 눌려있을 때, 일정 시간 간격마다 함수 호출
+                    timeSinceLastClick += Time.deltaTime;
+                    if (timeSinceLastClick >= clickInterval)
+                    {
+                        ComboAttack();
+                        timeSinceLastClick = 0f; // 시간 초기화
+                    }
+                }
+            }
+            else
+            {
+                // 마우스 버튼을 떼었을 때 초기화
+                isMousePressed = false;
+            }
+        }
 
-                bool test = false;
-                //if (!ps.isAttack)
+        // Target Position 설정
+        private void SetTargetPosition()
+        {
+            //if (!m_Input.LeftClick)
+            //{
+            //    ps.isAttacking = false;
+            //}
+            // 언제주지 ?
 
-                isAttackable = true;
+            // SMB 나오면서 ?
+            // State가 바뀌면서 ? 
+            // 
+
+            if (m_Input.LeftClick && ps.isAttackable)
+            {
+                GetMousePosition();
+                RotatePlayer();
+                if(!ps.isAttacking)
+                    ps.isAttacking = true;
+            }
+        }
+
+        void ComboAttack()
+        {
+            if (ps.isAttacking)
+            {
                 ps.isMoving = false;
                 ps.isMovable = false;
-                comboableTime = _comboableTime;
 
-                // TODO :: CursorManager에서 반환하면 좋을듯
-                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-                RaycastHit[] hits = Physics.RaycastAll(ray);
-
-                foreach (RaycastHit hit in hits)
+                // 공격을 한지 {comboableTime}초이상 지났을 경우 다시 combo1로 들어가게끔 설정
+                if ((Time.time - lastAttackTime) > comboableTime && ps.comboAttackIndex != 1)
                 {
-                    if (test)
-                    {
-                        Debug.Log("HIT go = " + hit.transform.gameObject.name);
-                    }
-                    if (hit.transform.gameObject.CompareTag("Ground"))
-                    {
-                        if (test)
-                        {
-                            Debug.Log("TEST2");
-                        }
-
-                        ps.targetPosition = hit.point;
-                        RotatePlayer();
-
-                        // 공격 가능한 경우
-                        //TODO :: 하드코딩
-                        if (animator.GetFloat("StateTime") >= 0.15f && isAttackable)
-                        {
-                            // 공격 Trigger 발동
-                            psm.animator.SetInteger("ComboAttack", ps.ComboAttackIndex);
-                            psm.ChangeState(psm.AttackState);
-                        }
-                        break;
-                    }
+                    ps.comboAttackIndex = 1;
                 }
-                if (!psm.animator.GetBool("IsAttacking"))
-                {
-                    psm.animator.SetBool("IsAttacking", true);
-                    test = true;
-                    //Debug.Log("TEST1 = " + psm.animator.GetBool("IsAttacking"));
-                }
+
+                // 공격 Trigger 발동
+                psm.animator.SetInteger("ComboAttack", ps.comboAttackIndex);
+                psm.ChangeState(psm.AttackState);
+                lastAttackTime = Time.time;
+
+                // combo4까지 모두 끝난 경우
+                if (ps.comboAttackIndex > 4)
+                    ps.comboAttackIndex = 1;
             }
-        }
-        #endregion
-
-        void calculateTime()
-        {
-            if (isAttackable)
-            {
-                comboableTime -= Time.deltaTime;
-            }
-
-            if (comboableTime <= 0f)
-            {
-                isAttackable = false;
-                ps.ComboAttackIndex = 1;
-            }
-        }
-
-        // DoTween 회전 처리
-        void RotatePlayer()
-        {
-            //if (ps.isAttack) return;
-            if (psm.animator.GetBool("IsAttacking")) return;
-            transform.DOKill(complete: false); // 트랜스폼과 관련된 모든 트윈 제거 (완료 콜백은 실행되지 않음)
-
-            // 목표 회전값 계산
-            Vector3 direction = (ps.targetPosition - transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-
-            transform.DORotateQuaternion(targetRotation, rotationDuration)
-                        .SetAutoKill(true)
-                        .SetEase(Ease.InOutSine)
-                        .OnComplete(() =>
-                        {
-
-                        });
         }
     }
 }
-
-// MEMO :: 어퍼컷, 차징펀지, 팔꿈치

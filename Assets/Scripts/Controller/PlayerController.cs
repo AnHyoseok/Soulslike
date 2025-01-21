@@ -18,12 +18,12 @@ namespace BS.Player
         // TODO :: ScriptableObject를 사용해보자 (movespeed)
         #region Variables
         // Debug
-        private Vector3? gizmoPosition;                     
+        private Vector3? gizmoPosition;
 
         // Reference
         protected Camera mainCamera;                          // 카메라 참조
         protected PlayerInputActions m_Input;                 // PlayerInputActions
-        protected PlayerState ps;                             
+        protected PlayerState ps;
         protected PlayerStateMachine psm;
 
         // Mouse
@@ -40,7 +40,7 @@ namespace BS.Player
         //protected bool isAttackalbe = false;                  // 공격 가능 여부
         //protected bool isAttacking = false;                   // 공격 여부
 
-        public float rotationDuration = 0.1f;
+        public float rotationDuration = 0.3f;
 
         // UI
         //public TextMeshProUGUI dashCoolTimeText;
@@ -66,7 +66,7 @@ namespace BS.Player
 
         protected virtual void Update()
         {
-            RotateToTargetPos();
+            //RotateToTargetPos();
             //RotatePlayer();
         }
         protected virtual void FixedUpdate()
@@ -103,7 +103,7 @@ namespace BS.Player
             {
                 // 목표 방향 계산
                 Vector3 direction = ps.targetPosition - transform.position;
-        
+
                 // 방향이 존재하면 회전
                 if (direction != Vector3.zero)
                 {
@@ -121,16 +121,22 @@ namespace BS.Player
         }
 
         // DoTween 회전 처리
-        void RotatePlayer()
+        protected virtual void RotatePlayer()
         {
-            if (psm.animator.GetBool("IsAttacking")) return;
-            if (ps.isMoving && !ps.isBlockingAnim && !ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching)
+            //if (psm.animator.GetBool("IsAttacking")) return;
+            if (!ps.isBlockingAnim
+                && !ps.isUppercuting
+                && !ps.isBackHandSwinging
+                && !ps.isChargingPunching
+                && !ps.isAttacking
+                )
             {
+                transform.DOKill(complete: false); // 트랜스폼과 관련된 모든 트윈 제거 (완료 콜백은 실행되지 않음)
                 // 목표 회전값 계산
                 Vector3 direction = (ps.targetPosition - transform.position).normalized;
                 direction = new Vector3(direction.x, 0, direction.z);
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
-        
+
                 transform.DORotateQuaternion(targetRotation, rotationDuration);
             }
         }

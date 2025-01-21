@@ -21,14 +21,14 @@ public class PlayerAttackSMB : StateMachineBehaviour
         }
         //Debug.Log("TEST ENTER");
         // Combo 공격이 4번째 모션인 경우
-        if (ps.ComboAttackIndex == 4)
+        if (ps.comboAttackIndex == 4)
         {
-            ps.ComboAttackIndex = 1;
+            ps.comboAttackIndex = 1;
         }
         // Combo 공격이 1,2,3번째 모션인 경우
         else
         {
-            ps.ComboAttackIndex++;
+            ps.comboAttackIndex++;
         }
     }
 
@@ -76,9 +76,13 @@ public class PlayerAttackSMB : StateMachineBehaviour
     }
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
-    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //}
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        if (ps != null) // 초기화되지 않았다면 캐싱
+        {
+            //animator.SetBool("IsAttacking", false);
+        }
+    }
 
     // OnStateMove is called before OnStateMove is called on any state inside this state machine
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -109,7 +113,8 @@ public class PlayerAttackSMB : StateMachineBehaviour
         if (ps != null) // 초기화되지 않았다면 캐싱
         {
             animator.SetBool("IsAttacking", false);
-            //ps.isAttack = false;
+            ps.isAttacking = false;
+            ps.isMovable = true;
             //Debug.Log("TEST Exit");
         }
     }

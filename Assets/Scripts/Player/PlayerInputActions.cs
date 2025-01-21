@@ -33,8 +33,6 @@ namespace BS.PlayerInput
         public Vector2 MousePosition { get; private set; }              // Mouse Position
         public bool RightClick { get; private set; }                    // 우클릭 여부
         public bool LeftClick { get; private set; }                     // 좌클릭 여부
-        public double PrevLeftClickTime { get; private set; }           // 이전 좌클릭 시간
-        public double CurrLeftClickTime { get; private set; }           // 현재 좌클릭 시간
         #endregion
 
         private void Awake()
@@ -48,8 +46,7 @@ namespace BS.PlayerInput
 
         private void Start()
         {
-            PrevLeftClickTime = 0;
-            CurrLeftClickTime = 0;
+
         }
 
         private void OnEnable()
@@ -80,7 +77,6 @@ namespace BS.PlayerInput
             playerActionMap?.Disable();
         }
 
-
         #region NewInput SendMessage
         // RightClick 액션 처리 (performed와 canceled를 동일한 메서드에서 처리)
         private void OnRightClickEvent(InputAction.CallbackContext context)
@@ -91,9 +87,14 @@ namespace BS.PlayerInput
         // LeftClick 액션 처리 (performed와 canceled를 동일한 메서드에서 처리)
         private void OnLeftClickEvent(InputAction.CallbackContext context)
         {
-            LeftClick = context.performed;  // performed가 true이면 클릭, canceled면 false
-            PrevLeftClickTime = CurrLeftClickTime;
-            CurrLeftClickTime = context.time;
+            if (context.performed)
+            {
+                LeftClick = true;  // 클릭 상태를 true로 설정
+            }
+            else if (context.canceled)
+            {
+                LeftClick = false; // 클릭 상태를 false로 설정
+            }
         }
 
         // MousePosition SendMessage

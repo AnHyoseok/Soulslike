@@ -73,7 +73,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.2
+  m_TransitionDuration: 0
   m_TransitionOffset: 0
   m_ExitTime: 0.9464286
   m_HasExitTime: 0
@@ -353,7 +353,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.2
+  m_TransitionDuration: 0
   m_TransitionOffset: 0
   m_ExitTime: 0.9464286
   m_HasExitTime: 0
@@ -587,7 +587,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.2
+  m_TransitionDuration: 0
   m_TransitionOffset: 0
   m_ExitTime: 0.9464286
   m_HasExitTime: 0
@@ -2051,11 +2051,6 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: 5482312146553769074}
-    second:
-    - {fileID: 9025563785924390853}
-    - {fileID: -7477804563323350639}
-    - {fileID: -1145441506845540734}
   - first: {fileID: -2097551432246478645}
     second:
     - {fileID: -8530034855992293260}
@@ -2065,16 +2060,6 @@ AnimatorStateMachine:
     - {fileID: 4547884040574553491}
     - {fileID: 13056104501201871}
     - {fileID: -6228470485332323967}
-  - first: {fileID: 8500516953437836711}
-    second:
-    - {fileID: 8848995887384145628}
-    - {fileID: -4420916434218955593}
-    - {fileID: 6565437659878763345}
-    - {fileID: -7069891564774464792}
-    - {fileID: 25733402607129820}
-    - {fileID: 2781098105962234283}
-    - {fileID: -7230258468219567100}
-    - {fileID: 3240240026593954004}
   - first: {fileID: -806623420866820632}
     second:
     - {fileID: 6098500696787529688}
@@ -2084,6 +2069,21 @@ AnimatorStateMachine:
     - {fileID: 2119822276905376713}
     - {fileID: -6425737562767216296}
     - {fileID: 4068453522891325628}
+  - first: {fileID: 5482312146553769074}
+    second:
+    - {fileID: 9025563785924390853}
+    - {fileID: -7477804563323350639}
+    - {fileID: -1145441506845540734}
+  - first: {fileID: 8500516953437836711}
+    second:
+    - {fileID: 8848995887384145628}
+    - {fileID: -4420916434218955593}
+    - {fileID: 6565437659878763345}
+    - {fileID: -7069891564774464792}
+    - {fileID: 25733402607129820}
+    - {fileID: 2781098105962234283}
+    - {fileID: 3240240026593954004}
+    - {fileID: -7230258468219567100}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 40, y: 20, z: 0}
   m_EntryPosition: {x: 40, y: 110, z: 0}
