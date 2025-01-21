@@ -37,9 +37,14 @@ namespace BS.Player
             {
                 GetMousePosition();
                 RotatePlayer();
-                if(!ps.isMoving)
-                    ps.isMoving = true;
+                if(psm.animator.GetBool("IsMoving") == false)
+                {
+                    SetMoveSpeed(1);
+                    psm.animator.SetTrigger("DoRun");
+                    psm.animator.SetBool("IsMoving", true);
+                }
             }
+            SetMoveState();
         }
 
         // TODO :: DOTween 적용해보자
@@ -51,20 +56,28 @@ namespace BS.Player
             //if (ps.isAttack) return;
             //if (ps.isBlockingAnim) return;
             //if (psm.animator.GetBool("IsAttacking")) return;
-            if (ps.isMoving 
+            if ((psm.animator.GetBool("IsMoving") == true 
+                //|| psm.animator.GetBool("IsWalking") == true || psm.animator.GetBool("IsSprinting") == true
+                )
                 && !ps.isBlockingAnim 
                 && !ps.isUppercuting 
                 && !ps.isBackHandSwinging 
                 && !ps.isChargingPunching
-                && !ps.isAttacking )
-            {
-                SetMoveState();
+                && psm.animator.GetBool("IsAttacking") == false
+                )
+            {   
                 transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);
                 
                 if (Vector3.Distance(transform.position, ps.targetPosition) < 0.01f)
                 {
                     ps.isMoving = false; // 목표 지점 도달 시 이동 멈춤
-                    psm.ChangeState(psm.IdleState);
+                    psm.animator.ResetTrigger("DoRun");
+                    psm.animator.ResetTrigger("DoWalk");
+                    psm.animator.ResetTrigger("DoSprint");
+                    psm.animator.SetBool("IsMoving", false);
+                    psm.animator.SetBool("IsWalking", false);
+                    psm.animator.SetBool("IsSprinting", false);
+                    //psm.ChangeState(psm.IdleState);
                 }
             }
         }
@@ -72,20 +85,38 @@ namespace BS.Player
         // Player 상태 변경
         void SetMoveState()
         {
-            if (Input.GetKey(KeyCode.C))
+            
+            if (m_Input.C)
             {
+                Debug.Log("걷기 작업중");
+                return;
+                Debug.Log("Test1");
                 SetMoveSpeed(0.5f);
-                psm.ChangeState(psm.WalkState);
-            }
-            else if (Input.GetKey(KeyCode.LeftShift))
-            {
-                SetMoveSpeed(2);
-                psm.ChangeState(psm.SprintState);
+                psm.animator.SetTrigger("DoWalk");
+                psm.animator.SetBool("IsWalking", true);
+                //psm.ChangeState(psm.WalkState);
             }
             else
             {
                 SetMoveSpeed(1);
-                psm.ChangeState(psm.RunState);
+                //psm.animator.ResetTrigger("DoWalk");
+                //psm.animator.SetBool("IsWalking", true);
+            }
+
+            if (m_Input.Shift)
+            {
+                Debug.Log("뛰기 작업중");
+                return;
+                SetMoveSpeed(2);
+                psm.animator.SetTrigger("DoSprint");
+                psm.animator.SetBool("IsSprinting", true);
+                //psm.ChangeState(psm.SprintState);
+            }
+            else
+            {
+                SetMoveSpeed(1);
+                //psm.animator.ResetTrigger("DoSprint");
+                //psm.animator.SetBool("IsSprinting", true);
             }
         }
 
@@ -99,6 +130,8 @@ namespace BS.Player
         // 대쉬
         void DoDash()
         {
+            Debug.Log("대쉬 작업중");
+            return;
             if (!ps.isDashing && ps.currentDashCoolTime <= 0f && !ps.isBlockingAnim && ps.isDashable)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);

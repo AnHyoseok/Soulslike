@@ -70,30 +70,23 @@ namespace BS.Player
         // Target Position 설정
         private void SetTargetPosition()
         {
-            //if (!m_Input.LeftClick)
-            //{
-            //    ps.isAttacking = false;
-            //}
-            // 언제주지 ?
-
-            // SMB 나오면서 ?
-            // State가 바뀌면서 ? 
-            // 
-
             if (m_Input.LeftClick && ps.isAttackable)
             {
                 GetMousePosition();
                 RotatePlayer();
-                if(!ps.isAttacking)
-                    ps.isAttacking = true;
+                if (psm.animator.GetBool("IsAttacking") == false)
+                {
+                    psm.animator.SetBool("IsAttacking", true);
+                }
             }
         }
 
         void ComboAttack()
         {
-            if (ps.isAttacking)
+            if (psm.animator.GetBool("IsAttacking") == true)
             {
-                ps.isMoving = false;
+                psm.animator.SetBool("IsMoving", false);
+                //ps.isMoving = false;
                 ps.isMovable = false;
 
                 // 공격을 한지 {comboableTime}초이상 지났을 경우 다시 combo1로 들어가게끔 설정
@@ -104,7 +97,7 @@ namespace BS.Player
 
                 // 공격 Trigger 발동
                 psm.animator.SetInteger("ComboAttack", ps.comboAttackIndex);
-                psm.ChangeState(psm.AttackState);
+                psm.animator.SetTrigger("DoAttack");
                 lastAttackTime = Time.time;
 
                 // combo4까지 모두 끝난 경우

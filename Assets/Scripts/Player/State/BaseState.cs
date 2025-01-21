@@ -11,12 +11,12 @@ namespace BS.State
         #region Variables
 
         protected PlayerStateMachine stateMachine;
-        protected const string IsIdle = "IsIdle";
-        protected const string IsWalk = "IsWalk";
-        protected const string IsRun = "IsRun";
-        protected const string IsSprint = "IsSprint";
-        protected const string IsBlock = "IsBlock";
-        protected const string IsAttack = "IsAttack";
+        //protected const string IsIdle = "DoIdle";
+        protected const string IsWalk = "DoWalk";
+        protected const string IsRun = "DoRun";
+        protected const string IsSprint = "DoSprint";
+        protected const string IsBlock = "DoBlock";
+        protected const string IsAttack = "DoAttack";
         protected const string IsUppercut = "IsUppercut";
         protected const string IsBackHandSwing = "IsBackHandSwing";
         protected const string IsChargingPunch = "IsChargingPunch";
@@ -31,7 +31,7 @@ namespace BS.State
         protected virtual void ResetAndSetTrigger(string triggerToSet)
         {
             // 공통된 트리거 초기화
-            stateMachine.animator.ResetTrigger(IsIdle);
+            //stateMachine.animator.ResetTrigger(IsIdle);
             stateMachine.animator.ResetTrigger(IsWalk);
             stateMachine.animator.ResetTrigger(IsRun);
             stateMachine.animator.ResetTrigger(IsSprint);

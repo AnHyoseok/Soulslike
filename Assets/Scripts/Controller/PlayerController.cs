@@ -128,7 +128,7 @@ namespace BS.Player
                 && !ps.isUppercuting
                 && !ps.isBackHandSwinging
                 && !ps.isChargingPunching
-                && !ps.isAttacking
+                && psm.animator.GetBool("IsAttacking") == false
                 )
             {
                 transform.DOKill(complete: false); // 트랜스폼과 관련된 모든 트윈 제거 (완료 콜백은 실행되지 않음)

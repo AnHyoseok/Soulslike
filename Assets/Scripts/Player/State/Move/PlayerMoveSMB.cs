@@ -23,33 +23,33 @@ public class PlayerMoveSMB : StateMachineBehaviour
         {
             //Debug.Log("MOVE STATE ENTER");
             //ps.isAttack = false;
-            animator.SetBool("IsAttacking", false);
-            animator.SetFloat("StateTime", 0.15f);
+            //animator.SetBool("IsAttacking", false);
+            //animator.SetFloat("StateTime", 0.15f);
             //ps.isMoving = true;
-            ps.isUppercuting = false;
-            ps.isBackHandSwinging = false;
-            ps.isChargingPunching = false;
+            //ps.isUppercuting = false;
+            //ps.isBackHandSwinging = false;
+            //ps.isChargingPunching = false;
         }
     }
 
     // OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        time += Time.deltaTime;
-        if (time >= 0.4f)
-        {
-            time = 0;
-            animator.SetBool("IsAttacking", false);
-        }
-        if (ps != null)
-        {
-            //ps.isAttack = false;
-            //ps.isMoving = true;
-            ps.isUppercuting = false;
-            ps.isBackHandSwinging = false;
-            ps.isChargingPunching = false;
-            animator.SetFloat("StateTime", 0.15f);
-        }
+        //time += Time.deltaTime;
+        //if (time >= 0.4f)
+        //{
+        //    time = 0;
+        //    animator.SetBool("IsAttacking", false);
+        //}
+        //if (ps != null)
+        //{
+        //    //ps.isAttack = false;
+        //    //ps.isMoving = true;
+        //    ps.isUppercuting = false;
+        //    ps.isBackHandSwinging = false;
+        //    ps.isChargingPunching = false;
+        //    animator.SetFloat("StateTime", 0.15f);
+        //}
     }
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
@@ -77,8 +77,8 @@ public class PlayerMoveSMB : StateMachineBehaviour
         {
             //Debug.Log("MOVE STATEMACHINE ENTER");
             //ps.isAttack = false;
-            animator.SetBool("IsAttacking", false);
-            animator.SetFloat("StateTime", 0.15f);
+            //animator.SetBool("IsAttacking", false);
+            //animator.SetFloat("StateTime", 0.15f);
         }
     }
 

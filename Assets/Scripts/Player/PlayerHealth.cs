@@ -84,20 +84,6 @@ namespace BS.Player
         {
 
         }
-        // 블락 쿨타임
-        IEnumerator CoBlockCooldown()
-        {
-            ps.currentBlockCoolTime = blockCoolTime;
-            while (ps.currentBlockCoolTime > 0f)
-            {
-                ps.currentBlockCoolTime -= Time.deltaTime;
-                if (blockCoolTimeText != null)
-                {
-                    blockCoolTimeText.text = Mathf.Max(0, ps.currentBlockCoolTime).ToString("F1");
-                }
-                yield return null;
-            }
-        }
         public void DoBlock()
         {
             if (!ps.isBlockable) return;
@@ -118,7 +104,7 @@ namespace BS.Player
             }
             RotatePlayer();
             Invoke(nameof(SetIsBlockingAnim), 1f);
-            psm.ChangeState(psm.BlockState);
+            psm.animator.SetTrigger("DoBlock");
             //StartCoroutine(CoBlockCooldown());
         }
         void SetIsBlockingAnim()

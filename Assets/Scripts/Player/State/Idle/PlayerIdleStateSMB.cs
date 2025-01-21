@@ -18,18 +18,18 @@ public class PlayerIdleStateSMB : StateMachineBehaviour
             ps = FindFirstObjectByType<PlayerState>();
         }
 
-        psm.ChangeState(psm.IdleState);
-        ps.isUppercuting = false;
-        ps.isBackHandSwinging = false;
-        ps.isChargingPunching = false;
-        animator.SetBool("IsAttacking", false);
+        //psm.ChangeState(psm.IdleState);
+        //ps.isUppercuting = false;
+        //ps.isBackHandSwinging = false;
+        //ps.isChargingPunching = false;
+        //animator.SetBool("IsAttacking", false);
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetBool("IsAttacking", false);
-        ps.isUppercuting = false;
+        //animator.SetBool("IsAttacking", false);
+        //ps.isUppercuting = false;
         //ps.isBackHandSwing = false;
         //ps.isChargingPunch = false;
     }

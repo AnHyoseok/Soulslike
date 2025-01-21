@@ -3,7 +3,7 @@ using UnityEngine;
 namespace BS.State
 {
     /// <summary>
-    /// PlayerÀÇ Idle »óÅÂ¸¦ Á¤ÀÇ
+    /// Playerì˜ Idle ìƒíƒœë¥¼ ì •ì˜
     /// </summary>
     public class IdleState : MoveState
     {
@@ -14,7 +14,7 @@ namespace BS.State
 
         public override void Enter()
         {
-            ResetAndSetTrigger(IsIdle);
+
         }
 
         public override void Exit()

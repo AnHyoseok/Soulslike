@@ -1,4 +1,5 @@
 using BS.Player;
+using BS.PlayerInput;
 using BS.State;
 using System.Collections;
 using UnityEngine;
@@ -7,6 +8,7 @@ public class PlayerAttackSMB : StateMachineBehaviour
 {
     PlayerStateMachine psm;
     PlayerState ps;
+    PlayerInputActions m_Input;
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -17,6 +19,7 @@ public class PlayerAttackSMB : StateMachineBehaviour
         if (ps == null) // 초기화되지 않았다면 캐싱
         {
             ps = FindFirstObjectByType<PlayerState>();
+            m_Input = FindFirstObjectByType<PlayerInputActions>();
             //ps.isAttack = true;
         }
         //Debug.Log("TEST ENTER");
@@ -30,6 +33,8 @@ public class PlayerAttackSMB : StateMachineBehaviour
         {
             ps.comboAttackIndex++;
         }
+        animator.ResetTrigger("DoRun");
+        animator.SetBool("IsMoving", false);
     }
 
      //OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
@@ -37,26 +42,26 @@ public class PlayerAttackSMB : StateMachineBehaviour
     {
         if (ps != null)
         {
-            if (ps.isMoving)
-            {
-                float moveSpeed = 5f;
-                if (Input.GetKey(KeyCode.C))
-                {
-                    ps.inGameMoveSpeed = moveSpeed * 0.5f;
-                    psm.ChangeState(psm.WalkState);
-                }
-                else if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    ps.inGameMoveSpeed = moveSpeed * 2f;
-                    psm.ChangeState(psm.SprintState);
-                }
-                else
-                {
-                    ps.inGameMoveSpeed = moveSpeed * 0.5f;
-                    psm.ChangeState(psm.RunState);
-                }
-            }
-            else if (ps.isBlocking)
+            //if (ps.isMoving)
+            //{
+            //    float moveSpeed = 5f;
+            //    if (Input.GetKey(KeyCode.C))
+            //    {
+            //        ps.inGameMoveSpeed = moveSpeed * 0.5f;
+            //        psm.ChangeState(psm.WalkState);
+            //    }
+            //    else if (Input.GetKey(KeyCode.LeftShift))
+            //    {
+            //        ps.inGameMoveSpeed = moveSpeed * 2f;
+            //        psm.ChangeState(psm.SprintState);
+            //    }
+            //    else
+            //    {
+            //        ps.inGameMoveSpeed = moveSpeed * 0.5f;
+            //        psm.ChangeState(psm.RunState);
+            //    }
+            //}
+            if (ps.isBlocking)
             {
                 psm.ChangeState(psm.BlockState);
             }
@@ -76,13 +81,9 @@ public class PlayerAttackSMB : StateMachineBehaviour
     }
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        if (ps != null) // 초기화되지 않았다면 캐싱
-        {
-            //animator.SetBool("IsAttacking", false);
-        }
-    }
+    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    //{
+    //}
 
     // OnStateMove is called before OnStateMove is called on any state inside this state machine
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -105,16 +106,20 @@ public class PlayerAttackSMB : StateMachineBehaviour
     // OnStateMachineExit is called when exiting a state machine via its Exit Node
     override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
-        if (psm != null)
-        {
-            //TODO :: 하드코딩
-            animator.SetFloat("StateTime", 0.15f);
-        }
         if (ps != null) // 초기화되지 않았다면 캐싱
         {
             animator.SetBool("IsAttacking", false);
-            ps.isAttacking = false;
             ps.isMovable = true;
+            //ps.isAttacking = false;
+            if (m_Input.RightClick)
+            {
+                if (Input.GetKey(KeyCode.C))
+                    animator.SetTrigger("DoWalk");
+                else if (Input.GetKey(KeyCode.LeftShift))
+                    animator.SetTrigger("DoSprint");
+                else
+                    animator.SetTrigger("DoRun");
+            }
             //Debug.Log("TEST Exit");
         }
     }
