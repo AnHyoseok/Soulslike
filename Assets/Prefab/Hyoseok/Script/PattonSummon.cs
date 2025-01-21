@@ -1,3 +1,4 @@
+using BS.Utility;
 using System.Collections;
 using System.Linq;
 using Unity.VisualScripting;
@@ -8,15 +9,18 @@ namespace BS.vampire
     public class PattonSummon : MonoBehaviour
     {
 
+        public AudioClip shildSummonSound;
+        public AudioClip shildBreakSound;
+
         public GameObject batPrefab;
         public GameObject summonEffect;
         public GameObject shildEffect;
-        public Transform[] summonLocations; // ¼ÒÈ¯ À§Ä¡
-        public Transform effectLocation; // ¼ÒÈ¯ÀÌÆåÆ® À§Ä¡
-        public Transform shildLocation; // ½¯µå  À§Ä¡
-        public float summonInterval = 5f; // ¼ÒÈ¯ °£°İ 
+        public Transform[] summonLocations; // ì†Œí™˜ ìœ„ì¹˜
+        public Transform effectLocation; // ì†Œí™˜ì´í™íŠ¸ ìœ„ì¹˜
+        public Transform shildLocation; // ì‰´ë“œ  ìœ„ì¹˜
+        public float summonInterval = 5f; // ì†Œí™˜ ê°„ê²© 
 
-        private GameObject currentShild; //ÇöÀç ½¯µå »óÅÂ
+        private GameObject currentShild; //í˜„ì¬ ì‰´ë“œ ìƒíƒœ
        public VamprieState vamprieState;
         void Start()
         {
@@ -41,7 +45,7 @@ namespace BS.vampire
             bool Summoned = false;
             foreach (Transform location in summonLocations)
             {
-                // ÇöÀç À§Ä¡¿¡ Bat È®ÀÎ
+                // í˜„ì¬ ìœ„ì¹˜ì— Bat í™•ì¸
                 if (location.childCount == 0)
                 {
                     GameObject bat = Instantiate(batPrefab, location.position, location.rotation, location);
@@ -59,16 +63,17 @@ namespace BS.vampire
 
         }
 
-        //¼ÒÈ¯ ¸÷ Á¸Àç½Ã ½¯µå »ı¼º ¾øÀ»½Ã ½¯µå ÆÄ±«
+        //ì†Œí™˜ ëª¹ ì¡´ì¬ì‹œ ì‰´ë“œ ìƒì„± ì—†ì„ì‹œ ì‰´ë“œ íŒŒê´´
         void shild(bool batExist)
         {
             if (batExist)
             {
                 if (currentShild == null)
                 {
+                    AudioUtility.CreateSFX(shildSummonSound, transform.position, AudioUtility.AudioGroups.Sound);
                     currentShild = Instantiate(shildEffect, shildLocation.position, shildLocation.rotation);
                     currentShild.transform.parent = shildLocation.transform;
-                    //º¸½º ¹«Àû ¿Â
+                    //ë³´ìŠ¤ ë¬´ì  ì˜¨
                     vamprieState.SetInvincible(true);   
                 }
             }
@@ -84,9 +89,10 @@ namespace BS.vampire
                 }
                 if (allEmpty && currentShild != null)
                 {
+                    AudioUtility.CreateSFX(shildBreakSound, transform.position, AudioUtility.AudioGroups.Sound);
                     Destroy(currentShild);
                     currentShild = null;
-                    //º¸½º ¹«Àû ÇØÁ¦
+                    //ë³´ìŠ¤ ë¬´ì  í•´ì œ
                     vamprieState.SetInvincible(false);
 
                 }

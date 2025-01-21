@@ -6,6 +6,7 @@ using BS.Player;
 using static UnityEngine.GraphicsBuffer;
 using UnityEngine.UIElements;
 using BS.Particle;
+using BS.Utility;
 
 namespace BS.vampire
 {
@@ -29,6 +30,19 @@ namespace BS.vampire
         [SerializeField] float attack2;
         [SerializeField] float attack3;
         [SerializeField] float attack4;
+
+        [Header("Audio")]
+        public AudioClip teleportSound;
+        public AudioClip shotSound;
+        public AudioClip rushSound;
+        public AudioClip warningSound;
+        public AudioClip laserSound;
+        public AudioClip lightningSound;
+        public AudioClip explosionSound;
+        public AudioClip castingSound;
+        public AudioClip meteoSound;
+
+
 
         [Header("Teleport")]
         public GameObject pingpongShot;
@@ -108,7 +122,7 @@ namespace BS.vampire
                 animator = GetComponent<Animator>();
             }
             //Waring();
-            //StartCoroutine(Attack7());
+            //StartCoroutine(Attack5());
 
             NextPatternPlay();
 
@@ -121,15 +135,17 @@ namespace BS.vampire
         //}
         IEnumerator RandomTeleport()
         {
-          
+
+           
 
             // 애니메이션 연출 3초 후에 이동
-            animator.SetTrigger("Teleport");
+            //animator.SetTrigger("Teleport");
             GameObject potalEffect = Instantiate(teleportEffect, transform.position, Quaternion.identity);
             potalEffect.transform.parent = transform;
             Destroy(potalEffect, 3.3f);
             yield return new WaitForSeconds(3.3f);
-            Waring();
+            AudioUtility.CreateSFX(teleportSound, transform.position, AudioUtility.AudioGroups.Sound);
+        
             int randomIndex;
             do
             {
@@ -143,8 +159,10 @@ namespace BS.vampire
             // 플레이어 바라보며 걷기
             transform.LookAt(player.transform.position);
             // animator.SetTrigger("Walk");
-
-            float walkDuration = 5f;
+            yield return new WaitForSeconds(0.5f);
+            AudioUtility.CreateSFX(shotSound, transform.position, AudioUtility.AudioGroups.Sound);
+            Waring();
+            float walkDuration = 4f;
             float elapsedTime = 0f;
 
             Vector3 startPos = transform.position;
@@ -169,7 +187,7 @@ namespace BS.vampire
         {
        
             transform.LookAt(player.transform);
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(1f);
             Waring();
             for (int i = 0; i < attackCount; i++)
             {
@@ -203,6 +221,7 @@ namespace BS.vampire
                     attackObject1.transform.LookAt(player.transform);
                 }).OnComplete(() =>
                 {
+                   
                     // 타격 지점에 도달 시 터트리고 제거
                     GameObject impactEffect = Instantiate(impactEffectPrefab, attackObject1.transform.position, Quaternion.identity);
                     Destroy(attackObject1, 1f);
@@ -217,13 +236,20 @@ namespace BS.vampire
                     // 타격 지점에 도달 시 터트리고 제거
                     GameObject impactEffect = Instantiate(impactEffectPrefab, attackObject2.transform.position, Quaternion.identity);
                     Destroy(attackObject2, 1f);
+                  
                     Destroy(impactEffect, 1.5f);
+                    Invoke("PlayExplosionSound",1f);
                 });
-
+            
                 yield return new WaitForSeconds(0.1f);
             }
            
             yield return null;
+        }
+        //폭발할때 사운드 키기 invoke사용
+        void PlayExplosionSound()
+        {
+            AudioUtility.CreateSFX(explosionSound, transform.position, AudioUtility.AudioGroups.Sound);
         }
 
         //상하좌우 레이져 패턴
@@ -235,7 +261,7 @@ namespace BS.vampire
             GameObject potalEffect = Instantiate(teleportEffect, transform.position, Quaternion.identity);
             potalEffect.transform.parent = transform;
             Destroy(potalEffect, 3.3f);
-
+            AudioUtility.CreateSFX(teleportSound, transform.position, AudioUtility.AudioGroups.Sound);
             yield return new WaitForSeconds(2.5f);
             transform.position = centerTeleport.position;
             transform.LookAt(player.transform);
@@ -258,6 +284,7 @@ namespace BS.vampire
 
             for (int i = 0; i < bloodBeams.Length; i++)
             {
+                AudioUtility.CreateSFX(laserSound, transform.position, AudioUtility.AudioGroups.Sound);
                 //레이보여주는시간
                 bloodBeams[i].SetActive(true);
                 yield return new WaitForSeconds(1f);
@@ -279,12 +306,13 @@ namespace BS.vampire
             //웨이브
             for (int i = 0; i < waveCount; i++)
             {
+                AudioUtility.CreateSFX(shotSound, transform.position, AudioUtility.AudioGroups.Sound);
                 foreach (Transform batTransform in batTransforms)
                 {
                     GameObject bat = Instantiate(Attack3BatPrefab, batTransform.position, batTransform.rotation);
                     Rigidbody rb = bat.GetComponent<Rigidbody>();
 
-
+                   
                     Vector3 directionToPlayer = (player.transform.position - batTransform.position).normalized;
                     directionToPlayer.y = 0;
                     //directionToPlayer.z = 0;
@@ -344,6 +372,7 @@ namespace BS.vampire
                             summonObject[i].transform.LookAt(playerBody.transform);
 
                             Vector3 eulerAngles = summonObject[i].transform.rotation.eulerAngles;
+
                             eulerAngles.y += Random.Range(-10f, 10f);
                             //eulerAngles.z += Random.Range(-10f, 10f);
                             summonObject[i].transform.rotation = Quaternion.Euler(eulerAngles);
@@ -375,6 +404,7 @@ namespace BS.vampire
                 // 레이저 발사
                 for (int i = 0; i < summonObject.Length; i++)
                 {
+                    AudioUtility.CreateSFX(laserSound, transform.position, AudioUtility.AudioGroups.Sound);
                     GameObject attackEffect = Instantiate(attack4EffectPrefab, summonObject[i].transform.position, summonObject[i].transform.rotation);
                     attackEffect.transform.parent = summonObject[i].transform;
                     attackEffect.transform.rotation *= Quaternion.Euler(90f, 0f, 0f);
@@ -423,6 +453,7 @@ namespace BS.vampire
             transform.LookAt(player.transform);
             isAttack5BatSummon = true;
             animator.SetTrigger("Attack1");
+            AudioUtility.CreateSFX(lightningSound, transform.position, AudioUtility.AudioGroups.Sound);
             GameObject summonEffect = Instantiate(attack5SummonEffect, transform.position, Quaternion.identity);
             summonEffect.transform.parent = transform;
             Destroy(summonEffect, 3f);
@@ -459,7 +490,7 @@ namespace BS.vampire
             Vector3 startPos = transform.position;
             Vector3 endPos = startPos + new Vector3(0, flyHeight, 0);
             float elapsedTime = 0f;
-
+            AudioUtility.CreateSFX(castingSound, transform.position, AudioUtility.AudioGroups.Sound);
             // 보스를 느린 속도로 위로 이동
             while (elapsedTime < flyDuration)
             {
@@ -472,6 +503,7 @@ namespace BS.vampire
             Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z);
 
             // 마법진 이펙트
+       
             GameObject bossEffectGo = Instantiate(attack6BossEffect, spawnPosition, attack6BossEffect.transform.rotation);
             bossEffectGo.transform.parent = transform;
             Destroy(bossEffectGo, 14f);
@@ -490,6 +522,7 @@ namespace BS.vampire
             // 기모으기 4초
             yield return new WaitForSeconds(4f);
             // 메테오 시전
+            AudioUtility.CreateSFX(meteoSound, transform.position, AudioUtility.AudioGroups.Sound);
             GameObject Meteors = Instantiate(meteorPrefab, meteorPrefab.transform.position, meteorPrefab.transform.rotation);
             Destroy(Meteors, 5f);
 
@@ -559,6 +592,7 @@ namespace BS.vampire
 
                 while (elapsedTime < flyDuration)
                 {
+                    AudioUtility.CreateSFX(rushSound, transform.position, AudioUtility.AudioGroups.Sound);
                     float remainingDistance = Vector3.Distance(transform.position, targetPosition);
 
                     // 벽과의 충돌 감지 (레이어 기반)
@@ -598,6 +632,7 @@ namespace BS.vampire
 
         void Waring()
         {
+            AudioUtility.CreateSFX(warningSound, transform.position, AudioUtility.AudioGroups.Sound);
             GameObject waring = Instantiate(waringSquarePrefab, waringSquarePrefab.transform.position,Quaternion.identity);
             waring.transform.SetParent(transform,false);
             Destroy(waring, 3f);
@@ -607,6 +642,8 @@ namespace BS.vampire
 
         void NextPatternPlay()
         {
+
+
             // 패턴을 순환 (1~6)
             nextPattern = (nextPattern % 6) + 1;
 
