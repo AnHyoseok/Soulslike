@@ -5,23 +5,23 @@ using UnityEngine;
 namespace BS.Managers
 {
     /// <summary>
-    /// Camera °ü·Ã Script
+    /// Camera ê´€ë ¨ Script
     /// </summary>
     public class CameraManager : MonoBehaviour
     {
         #region Variables
-        public Transform player;  // ÇÃ·¹ÀÌ¾î ¿ÀºêÁ§Æ®
-        public Camera mainCamera; // Ä«¸Ş¶ó
-        public List<Renderer> prevRayObj; // ÀÌÀü¿¡ ºñÈ°¼ºÈ­µÈ ¿ÀºêÁ§Æ®µé
+        public Transform player;  // í”Œë ˆì´ì–´ ì˜¤ë¸Œì íŠ¸
+        public Camera mainCamera; // ì¹´ë©”ë¼
+        public List<Renderer> prevRayObj; // ì´ì „ì— ë¹„í™œì„±í™”ëœ ì˜¤ë¸Œì íŠ¸ë“¤
         public Renderer lastRayObj;
-        public Vector3 offset = new Vector3(0f, 10f, -10f); // ÇÃ·¹ÀÌ¾î¿ÍÀÇ °Å¸®
-        public float followSpeed = 5f; // Ä«¸Ş¶ó ÀÌµ¿ ¼Óµµ
+        public Vector3 offset = new Vector3(0f, 10f, -10f); // í”Œë ˆì´ì–´ì™€ì˜ ê±°ë¦¬
+        public float followSpeed = 5f; // ì¹´ë©”ë¼ ì´ë™ ì†ë„
         private PlayerStateMachine playerStateMachine;
         RaycastHit hit;
         #endregion
 
-        // TODO :: Shader·Î °¡¸²¸·ÀÇ Åõ¸íµµ¸¦ Á¶Á¤ÇØº¸ÀÚ
-        // TODO :: cinemachineÀ» »ç¿ëÇØº¸ÀÚ
+        // TODO :: Shaderë¡œ ê°€ë¦¼ë§‰ì˜ íˆ¬ëª…ë„ë¥¼ ì¡°ì •í•´ë³´ì
+        // TODO :: cinemachineì„ ì‚¬ìš©í•´ë³´ì
 
         private void Start()
         {
@@ -53,24 +53,24 @@ namespace BS.Managers
             HandleObjectVisibility();
         }
 
-        // ÇÃ·¹ÀÌ¾î¸¦ µû¶ó´Ù´Ï´Â ·ÎÁ÷
+        // í”Œë ˆì´ì–´ë¥¼ ë”°ë¼ë‹¤ë‹ˆëŠ” ë¡œì§
         private void FollowPlayer()
         {
-            // Ä«¸Ş¶ó ¸ñÇ¥ À§Ä¡ °è»ê (ÇÃ·¹ÀÌ¾î À§Ä¡ + ¿ÀÇÁ¼Â)
+            // ì¹´ë©”ë¼ ëª©í‘œ ìœ„ì¹˜ ê³„ì‚° (í”Œë ˆì´ì–´ ìœ„ì¹˜ + ì˜¤í”„ì…‹)
             Vector3 targetPosition = player.position + offset;
 
-            // Ä«¸Ş¶ó À§Ä¡¸¦ ¸ñÇ¥ À§Ä¡·Î ºÎµå·´°Ô ÀÌµ¿
+            // ì¹´ë©”ë¼ ìœ„ì¹˜ë¥¼ ëª©í‘œ ìœ„ì¹˜ë¡œ ë¶€ë“œëŸ½ê²Œ ì´ë™
             mainCamera.transform.position = Vector3.Lerp(
                 mainCamera.transform.position,
                 targetPosition,
                 followSpeed * Time.deltaTime
             );
 
-            // ÇÃ·¹ÀÌ¾î¸¦ ¹Ù¶óº¸µµ·Ï È¸Àü
+            // í”Œë ˆì´ì–´ë¥¼ ë°”ë¼ë³´ë„ë¡ íšŒì „
             mainCamera.transform.LookAt(player);
         }
 
-        // Ä«¸Ş¶ó¿Í ÇÃ·¹ÀÌ¾î »çÀÌÀÇ ¿ÀºêÁ§Æ® Åõ¸í Ã³¸®
+        // ì¹´ë©”ë¼ì™€ í”Œë ˆì´ì–´ ì‚¬ì´ì˜ ì˜¤ë¸Œì íŠ¸ íˆ¬ëª… ì²˜ë¦¬
         private void HandleObjectVisibility()
         {
             Vector3 directionToPlayer = player.position - mainCamera.transform.position;
@@ -80,10 +80,10 @@ namespace BS.Managers
                 Renderer hitRenderer = hit.transform.GetComponent<Renderer>();
                 if (lastRayObj != hitRenderer)
                 {
-                    // ÀÌÀü¿¡ ºñÈ°¼ºÈ­µÈ ¿ÀºêÁ§Æ®µéÀÇ ·»´õ·¯ È°¼ºÈ­
+                    // ì´ì „ì— ë¹„í™œì„±í™”ëœ ì˜¤ë¸Œì íŠ¸ë“¤ì˜ ë Œë”ëŸ¬ í™œì„±í™”
                     SetRendererT();
 
-                    // »õ·Î¿î Ãæµ¹ÀÌ ÀÖ´Â °æ¿ì ºñÈ°¼ºÈ­
+                    // ìƒˆë¡œìš´ ì¶©ëŒì´ ìˆëŠ” ê²½ìš° ë¹„í™œì„±í™”
                     SetRendererF(hit);
 
                     lastRayObj = hitRenderer;
@@ -91,7 +91,7 @@ namespace BS.Managers
             }
         }
 
-        // Renderer ºñÈ°¼ºÈ­
+        // Renderer ë¹„í™œì„±í™”
         private void SetRendererF(RaycastHit hit)
         {
             if (hit.transform.gameObject.tag == "Wall")
@@ -104,20 +104,20 @@ namespace BS.Managers
                     if (!prevRayObj.Contains(renderer))
                         prevRayObj.Add(renderer);
 
-                    // TODO: shader È¿°ú·Î Åõ¸íÇØÁö´Â È¿°ú Ãß°¡
+                    // TODO: shader íš¨ê³¼ë¡œ íˆ¬ëª…í•´ì§€ëŠ” íš¨ê³¼ ì¶”ê°€
                     renderer.enabled = false;
                 }
             }
         }
 
-        // Renderer È°¼ºÈ­
+        // Renderer í™œì„±í™”
         private void SetRendererT()
         {
             List<Renderer> toRemove = new List<Renderer>();
 
             foreach (Renderer prevRenderer in prevRayObj)
             {
-                // TODO: shader È¿°ú·Î Åõ¸íÇØÁö´Â È¿°ú Ãß°¡
+                // TODO: shader íš¨ê³¼ë¡œ íˆ¬ëª…í•´ì§€ëŠ” íš¨ê³¼ ì¶”ê°€
                 prevRenderer.enabled = true;
                 toRemove.Add(prevRenderer);
             }

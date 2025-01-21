@@ -1,5 +1,7 @@
 using System.Collections;
+using BS.Utility;
 using UnityEngine;
+using static BS.Utility.AudioUtility;
 
 public class Pt5AttackRange : MonoBehaviour
 {
@@ -17,6 +19,9 @@ public class Pt5AttackRange : MonoBehaviour
     [SerializeField] private float targetAlpha = 0f; // 목표 알파 값
     [SerializeField] private float fadeSpeed = 0.5f; // 초당 변경 속도
     private bool isFading = true; // 알파 값 전환 활성화 여부
+
+    // 사운드
+    public AudioClip pt5Sound;             // 패턴 효과음
 
     private void Start()
     {
@@ -91,6 +96,10 @@ public class Pt5AttackRange : MonoBehaviour
 
                 // pt5Particle 생성 후, 2초 후에 파티클을 삭제하도록 코루틴 호출
                 GameObject particle = Instantiate(pt5Particle, transform.position, Quaternion.identity);
+
+                //사운드
+                AudioUtility.CreateSFX(pt5Sound, transform.position, AudioGroups.Skill, 1f, 10f, 30f);
+
                 StartCoroutine(DestroyParticleAfterTime(particle, 4f)); // 4초 후 삭제
 
                 yield return new WaitForSeconds(2f);  // 파티클 생성을 위한 대기 시간

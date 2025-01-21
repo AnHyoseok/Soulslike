@@ -74,7 +74,7 @@ public class Pt2AttackRange : MonoBehaviour
             if (Vector3.Distance(transform.localScale, targetScale) < 0.01f)
             {
                 isGrowing = false; // 성장 종료
-                Debug.Log("Reached target size!");
+                //Debug.Log("Reached target size!");
             }
         }
     }

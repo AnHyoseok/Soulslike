@@ -4932,6 +4932,7 @@ GameObject:
   - component: {fileID: 3354812537251442238}
   - component: {fileID: 3711495157547490076}
   - component: {fileID: 2947388394464044764}
+  - component: {fileID: 6292915313884943843}
   m_Layer: 0
   m_Name: Shockwave
   m_TagString: Untagged
@@ -8598,9 +8599,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
-    type: 0
+    type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
@@ -8781,7 +8782,7 @@ ParticleSystem:
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
@@ -9824,6 +9825,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &6292915313884943843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 638171638348787212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c9b27c6b0a55554183939f45ffe10f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 10
 --- !u!1 &1060227296387777337
 GameObject:
   m_ObjectHideFlags: 0
@@ -29250,6 +29264,7 @@ GameObject:
   - component: {fileID: 7301946722631785748}
   - component: {fileID: 8342365958647714966}
   - component: {fileID: 8597927890957728031}
+  - component: {fileID: 713958395595132157}
   m_Layer: 0
   m_Name: Shockwave
   m_TagString: Untagged
@@ -32916,9 +32931,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
-    type: 0
+    type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
@@ -33099,7 +33114,7 @@ ParticleSystem:
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
@@ -34142,6 +34157,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &713958395595132157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2087025235341753158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c9b27c6b0a55554183939f45ffe10f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 10
 --- !u!1 &2184462893278181212
 GameObject:
   m_ObjectHideFlags: 0
@@ -87947,6 +87975,7 @@ GameObject:
   - component: {fileID: 6099983570990616214}
   - component: {fileID: 3625031226133395774}
   - component: {fileID: 5358414638453352346}
+  - component: {fileID: 4065696813935072408}
   m_Layer: 0
   m_Name: Shockwave
   m_TagString: Untagged
@@ -91613,9 +91642,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
-    type: 0
+    type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
@@ -91796,7 +91825,7 @@ ParticleSystem:
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
-    collisionMessages: 0
+    collisionMessages: 1
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
@@ -92839,6 +92868,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &4065696813935072408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5759033233338776931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c9b27c6b0a55554183939f45ffe10f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 10
 --- !u!1 &6879729585761682417
 GameObject:
   m_ObjectHideFlags: 0
@@ -97671,7 +97713,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6099121188217253727}
-  - component: {fileID: 4269626203437709980}
   m_Layer: 0
   m_Name: pt3Particle
   m_TagString: Untagged
@@ -97697,19 +97738,6 @@ Transform:
   - {fileID: 832434394974812413}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4269626203437709980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7794261509388954904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c9b27c6b0a55554183939f45ffe10f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damageAmount: 10
 --- !u!1 &7918124250741995673
 GameObject:
   m_ObjectHideFlags: 0

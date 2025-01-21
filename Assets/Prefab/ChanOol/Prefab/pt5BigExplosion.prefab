@@ -29311,6 +29311,7 @@ GameObject:
   - component: {fileID: 6225871067313520564}
   - component: {fileID: 4857637871991441568}
   - component: {fileID: -4975919409229042136}
+  - component: {fileID: -8757479007320743407}
   m_Layer: 0
   m_Name: pt5BigExplosion
   m_TagString: Untagged
@@ -34257,6 +34258,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageAmount: 10
+--- !u!114 &-8757479007320743407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6317669067203160972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01cddf978a2295f4db2dc5eb9e85ba68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7695267531355465142
 GameObject:
   m_ObjectHideFlags: 0

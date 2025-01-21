@@ -8810,7 +8810,7 @@ ParticleSystem:
         m_RotationOrder: 4
     minKillSpeed: 0
     maxKillSpeed: 10000
-    radiusScale: 1
+    radiusScale: 3.5
     collidesWith:
       serializedVersion: 2
       m_Bits: 64
@@ -8821,7 +8821,7 @@ ParticleSystem:
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
-    enabled: 1
+    enabled: 0
     serializedVersion: 2
     inside: 1
     outside: 0

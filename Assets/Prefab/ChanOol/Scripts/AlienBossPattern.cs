@@ -1,5 +1,9 @@
 using System.Collections;
+using BS.Player;
+using BS.Utility;
 using UnityEngine;
+using UnityEngine.Audio;
+using static BS.Utility.AudioUtility;
 
 public class AlienBossPattern : MonoBehaviour
 {
@@ -8,24 +12,29 @@ public class AlienBossPattern : MonoBehaviour
     public GameObject pt1Particle;         // 발사체 프리팹
     public Transform pt1SpawnPoint;        // 발사체 생성 위치
     public GameObject pt1AttackRange;      // 공격범위 프리팹
+    public AudioClip pt1Sound;             // 패턴 효과음
 
     public GameObject pt2Particle;         // 발사체 프리팹
     public Transform pt2SpawnPoint;        // 발사체 생성 위치
     public GameObject pt2AttackRange;      // 공격범위 프리팹
+    public AudioClip pt2Sound;             // 패턴 효과음
 
     public GameObject pt3Particle;         // 이펙트 프리팹
     public Transform pt3SpawnPoint;        // 이펙트 생성 위치
     public GameObject pt3AttackRange;      // 공격범위 프리팹
+    public AudioClip pt3Sound;             // 패턴 효과음
 
     public GameObject pt4Particle;         // 이펙트 프리팹
     public Transform pt4SpawnPoint;        // 이펙트 생성 위치
     public GameObject pt4AttackRange;      // 공격범위 프리팹
+    public AudioClip pt4Sound;             // 패턴 효과음
 
     public GameObject pt5Particle;         // 이펙트 프리팹
     public Transform pt5SpawnPoint;        // 이펙트 생성 위치
     public GameObject pt5AttackRange;      // 공격범위 프리팹
     public float pt5radius = 5f;           // 공격범위 반지름
     public int pt5spawnCount = 5;          // 공격 횟수
+    //public AudioClip pt5Sound;             // 패턴 효과음
 
     public GameObject alien;               // 보스
     public GameObject player;              // 플레이어
@@ -36,13 +45,22 @@ public class AlienBossPattern : MonoBehaviour
     private bool canRangedAttack = true;
     private int randomNumber;
 
+    private int previousPattern;           // 같은 패턴 방지용
+
+    private AudioSource audioSource;
+
+    //public AlienSound alienSound;
+    //public AudioUtility audioUtility;     // 오디오
+
     int[] patternNumbers = new int[] { 1, 2, 3, 4 };
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         randomNumber = Random.Range(1, 5);  // 1 ~ 4중 랜덤한 숫자
-        Debug.Log($"랜덤넘버 : {randomNumber}");
+        previousPattern = 0;
+        Debug.Log($"첫 패턴 : {randomNumber}");
     }
 
     // Update is called once per frame
@@ -51,51 +69,80 @@ public class AlienBossPattern : MonoBehaviour
         // 플레이어와 거리재기
         distance = Vector3.Distance(alien.transform.position, player.transform.position);
 
+        // 플레이어와의 거리가 8 미만일때
+        if (distance < 8 && canMeleeAttack)
+        {
+            canMeleeAttack = false;
+            StartCoroutine(Pattern4());
+            //Debug.Log($"근접공격 : {canMeleeAttack}");
+        }
+
         if (canAttack)
         {
-            // 플레이어와의 거리가 8 미만일때
-            if (distance < 8 && canMeleeAttack)
-            {
-                canAttack = false;
-                canMeleeAttack = false;
-                StartCoroutine(Pattern4());
-                Debug.Log($"근접공격 : {canMeleeAttack}");
-            }
-            else if (randomNumber == 1 && canRangedAttack)
+            
+            if (randomNumber == 1 && canRangedAttack)
             {
                 canAttack = false;                  // 매 프레임마다 실행되는거 막기용 bool형 변수
                 canRangedAttack = false;            // 매 프레임마다 실행되는거 막기용 bool형 변수
                 StartCoroutine(Pattern1());
-                randomNumber = Random.Range(1, 5);  // 다음패턴 재설정
-                Debug.Log($"랜덤넘버 : {randomNumber}");
-                Debug.Log($"원거리공격 : {canRangedAttack}");
+
+                // 다음 패턴 재설정
+                do
+                {
+                    randomNumber = Random.Range(1, 5);
+                } while (randomNumber == previousPattern);
+
+                previousPattern = randomNumber; // 이전 패턴 업데이트
+                Debug.Log($"다음패턴 : {randomNumber}");
+                //Debug.Log($"원거리공격 : {canRangedAttack}");
             }
             else if (randomNumber == 2 && canRangedAttack)
             {
                 canAttack = false;
                 canRangedAttack = false;
                 StartCoroutine(Pattern2());
-                randomNumber = Random.Range(1, 5);  // 다음패턴 재설정
-                Debug.Log($"랜덤넘버 : {randomNumber}");
-                Debug.Log($"원거리공격 : {canRangedAttack}");
+
+                // 다음 패턴 재설정
+                do
+                {
+                    randomNumber = Random.Range(1, 5);
+                } while (randomNumber == previousPattern);
+
+                previousPattern = randomNumber; // 이전 패턴 업데이트
+                Debug.Log($"다음패턴 : {randomNumber}");
+                //Debug.Log($"원거리공격 : {canRangedAttack}");
             }
             else if (randomNumber == 3 && canRangedAttack)
             {
                 canAttack = false;
                 canRangedAttack = false;
                 StartCoroutine(Pattern3());
-                randomNumber = Random.Range(1, 5);  // 다음패턴 재설정
-                Debug.Log($"랜덤넘버 : {randomNumber}");
-                Debug.Log($"원거리공격 : {canRangedAttack}");
+
+                // 다음 패턴 재설정
+                do
+                {
+                    randomNumber = Random.Range(1, 5);
+                } while (randomNumber == previousPattern);
+
+                previousPattern = randomNumber; // 이전 패턴 업데이트
+                Debug.Log($"다음패턴 : {randomNumber}");
+                //Debug.Log($"원거리공격 : {canRangedAttack}");
             }
             else if (randomNumber == 4 && canRangedAttack)
             {
                 canAttack = false;
                 canRangedAttack = false;
                 StartCoroutine(Pattern5());
-                randomNumber = Random.Range(1, 5);  // 다음패턴 재설정
-                Debug.Log($"랜덤넘버 : {randomNumber}");
-                Debug.Log($"원거리공격 : {canRangedAttack}");
+
+                // 다음 패턴 재설정
+                do
+                {
+                    randomNumber = Random.Range(1, 5);
+                } while (randomNumber == previousPattern);
+
+                previousPattern = randomNumber; // 이전 패턴 업데이트
+                Debug.Log($"다음패턴 : {randomNumber}");
+                //Debug.Log($"원거리공격 : {canRangedAttack}");
             }
         }
         
@@ -141,6 +188,11 @@ public class AlienBossPattern : MonoBehaviour
 
         animator.SetInteger("Pattern", 1); // 애니메이터 "Pattern" 값을 1로 설정
 
+        // 사운드
+        // AudioUtility.CreateSFX(alienSound.alienSound1, transform.position, AudioGroups.SKILL, 1f, 1f, 15f);
+        audioSource.resource = pt1Sound;
+        audioSource.Play();
+
         StartCoroutine(PatternReset(0.5f)); // 일정시간 후 "Pattern" 값을 0으로 초기화
 
         // pt1Particle도 플레이어를 바라보게 하고, 같은 방향으로 회전
@@ -167,6 +219,15 @@ public class AlienBossPattern : MonoBehaviour
         yield return new WaitForSeconds(1.1f);
 
         animator.SetInteger("Pattern", 0); // 애니메이터 "Pattern" 값을 0으로 초기화
+
+        // 사운드
+        //alienSound.audioSource.PlayOneShot(alienSound.alienSound1);
+        //alienSound.audioSource.clip = alienSound.alienSound2;
+        //alienSound.audioSource.Play();
+        //audioSource.resource = pt2Sound;
+        //audioSource.Play();
+        AudioUtility.CreateSFX(pt2Sound, player.transform.position, AudioGroups.Skill, 0f);
+
 
         Instantiate(pt2Particle, pt2SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
 
@@ -223,6 +284,9 @@ public class AlienBossPattern : MonoBehaviour
             // pt3Projectile 생성
             GameObject spawnedObject = Instantiate(pt3Particle, spawnPosition, Quaternion.Euler(0f, 0f, 0f));
 
+            //사운드
+            AudioUtility.CreateSFX(pt3Sound, player.transform.position, AudioGroups.Skill, 0f);
+
             // 딜레이
             yield return new WaitForSeconds(0.3f);
 
@@ -240,6 +304,9 @@ public class AlienBossPattern : MonoBehaviour
 
         animator.SetInteger("Pattern", 4); // "Pattern" 값을 4로 설정
 
+        //사운드
+        AudioUtility.CreateSFX(pt4Sound, player.transform.position, AudioGroups.Skill, 0f);
+
         yield return new WaitForSeconds(0.2f);
 
         Instantiate(pt4Particle, pt4SpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
@@ -250,7 +317,6 @@ public class AlienBossPattern : MonoBehaviour
 
         yield return new WaitForSeconds(5.0f); // 다음 패턴을 위한 대기시간
 
-        canAttack = true;
         canMeleeAttack = true;
     }
 

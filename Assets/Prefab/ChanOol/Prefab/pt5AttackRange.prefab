@@ -130,3 +130,4 @@ MonoBehaviour:
   startAlpha: 0.8
   targetAlpha: 0
   fadeSpeed: 0.5
+  pt5Sound: {fileID: 8300000, guid: f93587356c26d9043857cdd6c3f6764e, type: 3}
