@@ -13,7 +13,6 @@ namespace BS.Demon
         [HideInInspector]public DemonNextPhase demon;
         public GameObject Warningeffect;
         public GameObject[] effect;
-        public GameObject parent;
         public DemonAudioManager audioManager;
 
         //패턴 1
@@ -82,7 +81,6 @@ namespace BS.Demon
             {
                 StartCoroutine(AttackRangeSpawn(index));
                 GameObject game = Instantiate(ball[0].gameObject, patternOnePoints[index].position, Quaternion.identity);
-                game.transform.parent = parent.transform;
                 game.GetComponent<BallRise>().StartRise();
                 demon.lastAttackTime[0] = Time.time;
             }
@@ -100,23 +98,24 @@ namespace BS.Demon
         public void AttackBall()
         {
             StartCoroutine(AttackRangeBall());
+        }
+        IEnumerator AttackRangeBall()
+        {
+            GameObject Range = Instantiate(attackRangePrefab[0], rangeTransform.position, Quaternion.identity);
+            Range.GetComponent<DemonAttackRange>().StartGrowing(attackRangeScale[1], rangeSize[1]);
+            Destroy(Range, 1.5f);
+            yield return new WaitForSeconds(1.5f);
             GameObject attackball = Instantiate(ballInstantiate, ballTransfrom.position, Quaternion.identity);
             GameObject effgo = Instantiate(effect[1], attackball.transform.position, Quaternion.identity);
-            attackball.transform.parent = parent.transform;
-            effgo.transform.parent = parent.transform;
+            yield return new WaitForSeconds(0.5f);
+
+            AudioUtility.CreateSFX(audioManager.sounds[1].audioClip, transform.position, audioManager.sounds[1].group);
             if (effgo != null && attackball != null)
             {
                 Destroy(attackball, 1f);
                 Destroy(effgo, 2f);
             }
             demon.lastAttackTime[1] = Time.time;
-        }
-        IEnumerator AttackRangeBall()
-        {
-            GameObject Range = Instantiate(attackRangePrefab[0], rangeTransform.position, Quaternion.identity);
-            Range.GetComponent<DemonAttackRange>().StartGrowing(attackRangeScale[1], rangeSize[1]);
-            Destroy(Range, 1f);
-            yield return new WaitForSeconds(1f);
         }
         #endregion
         //패턴 3
@@ -147,6 +146,7 @@ namespace BS.Demon
                     transform.LookAt(player.position);
                     // 텔레포트 효과 생성
                     GameObject effectgo = Instantiate(effect[2], transform.position, Quaternion.identity);
+                    AudioUtility.CreateSFX(audioManager.sounds[2].audioClip, transform.position, audioManager.sounds[2].group);
                     Destroy(effectgo, 1f);
                 }
             }
@@ -157,7 +157,7 @@ namespace BS.Demon
         }
         IEnumerator SoundShoot()
         {
-            AudioUtility.CreateSFX(audioManager.sounds[3].audioClip, transform.position, audioManager.sounds[1].group);
+            AudioUtility.CreateSFX(audioManager.sounds[3].audioClip, transform.position, audioManager.sounds[3].group);
             yield return new WaitForSeconds(2.5f);
             demon.lastAttackTime[2] = Time.time;
         }
@@ -174,6 +174,7 @@ namespace BS.Demon
         IEnumerator WarningWindow()
         {
             Warningeffect.SetActive(true);
+            AudioUtility.CreateSFX(audioManager.sounds[6].audioClip, transform.position, audioManager.sounds[6].group);
             yield return new WaitForSeconds(1);
             Warningeffect.SetActive(false);
         }

@@ -1,3 +1,5 @@
+using BS.Audio;
+using BS.Utility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -52,7 +54,6 @@ namespace BS.Demon
 
                     // 지정된 위치에 오브젝트 생성
                     GameObject spawnedBall = Instantiate(pattern.ball[1].gameObject, transform.position, Quaternion.identity);
-                    spawnedBall.transform.parent = spawnedBall.GetComponent<BallRise>().pattern.parent.transform;
                     spawnedBall.GetComponent<BallRise>().StartRise();
                 }
                 yield return new WaitForSeconds(spawnTime);
@@ -64,12 +65,11 @@ namespace BS.Demon
         {
             GameObject attackball = Instantiate(pattern.ballInstantiate, pattern.ballTransfrom.position, Quaternion.identity);
             GameObject effgo = Instantiate(effect[1], attackball.transform.position, Quaternion.identity);
-            attackball.transform.parent = pattern.parent.transform;
-            effgo.transform.parent = pattern.parent.transform;
             Destroy(attackball, 1f);
             Destroy(effgo, 1f);
             Vector3 Explosionpos = new Vector3(effgo.transform.position.x, attackball.transform.position.y + -1.9f, effgo.transform.position.z);
             GameObject Explosion = Instantiate(effect[2], Explosionpos, Quaternion.identity);
+            AudioUtility.CreateSFX(pattern.audioManager.sounds[1].audioClip, transform.position, pattern.audioManager.sounds[1].group);
             GameObject dot = Instantiate(effectdot, Explosionpos, effectdot.transform.rotation);
             Destroy(Explosion, 1f);
             StartCoroutine(EffectDot(dot));
@@ -122,6 +122,7 @@ namespace BS.Demon
                     transform.LookAt(pattern.player.position);
                     // 텔레포트 효과 생성
                     GameObject effectgo = Instantiate(effect[3], transform.position, Quaternion.identity);
+                    AudioUtility.CreateSFX(pattern.audioManager.sounds[2].audioClip, transform.position, pattern.audioManager.sounds[2].group);
                     GameObject trigger = Instantiate(effect[4], transform.position, Quaternion.identity);
                     Destroy(effectgo, 1f);
                     pattern.demon.lastPesosTime[2] = Time.time;
