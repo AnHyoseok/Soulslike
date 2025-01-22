@@ -11,9 +11,9 @@ namespace BS.Title
         public TextMeshProUGUI keyText;
         public TextMeshProUGUI stageText;
         public GameObject canvas;
-        //»ı¼ºµÇ´Â Enemy º¯¼ö
+        //ìƒì„±ë˜ëŠ” Enemy ë³€ìˆ˜
         public GameObject Enemy;
-        //»ı¼ºµÇ´Â Enemy
+        //ìƒì„±ë˜ëŠ” Enemy
         [SerializeField]protected GameObject InstEnemy;
         [HideInInspector]public bool isEnemy = false;
         public string stageName;
@@ -31,6 +31,7 @@ namespace BS.Title
             {
                 keyText.text = "[ " + keyCode.ToString() +" ]";
                 TriggerKeyDown();
+                canvas.SetActive(true);
             }
         }
         private void OnTriggerExit(Collider other)
@@ -41,10 +42,9 @@ namespace BS.Title
                 stageText.text = "";
                 keyText.text = "";
                 Debug.Log("OnTriggerExit");
-                if(canvas)
-                {
-                    canvas.SetActive(false);
-                }
+
+                canvas.SetActive(false);
+
             }
         }
     }
