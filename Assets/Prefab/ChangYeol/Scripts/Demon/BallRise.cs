@@ -10,6 +10,7 @@ namespace BS.Demon
         #region Variables
         [SerializeField]private GameObject effgo;
         [SerializeField]private GameObject phasePattern;
+        [SerializeField]private DemonAudioManager audioManager;
         #endregion
         public override void TargetRise()
         {
@@ -28,7 +29,7 @@ namespace BS.Demon
             {
                 GameObject effcetgo = Instantiate(phasePattern, transform.position, Quaternion.identity);
                 yield return new WaitForSeconds(0.5f);
-                AudioUtility.CreateSFX(pattern.audioManager.sounds[3].audioClip, transform.position,pattern.audioManager.sounds[1].group);
+                AudioUtility.CreateSFX(audioManager.sounds[4].audioClip, transform.position,audioManager.sounds[4].group);
                 Destroy(effcetgo, 3.5f);
                 yield return new WaitForSeconds(3.5f);
                 // 폭발 효과 (선택 사항)
@@ -36,8 +37,8 @@ namespace BS.Demon
                 // 대상 제거
                 if(!effcetgo)
                 {
-                    AudioUtility.CreateSFX(pattern.audioManager.sounds[5].audioClip, transform.position, pattern.audioManager.sounds[5].group);
                     Destroy(effectInstance, 0.7f);
+                    AudioUtility.CreateSFX(audioManager.sounds[3].audioClip, transform.position, audioManager.sounds[3].group);
                     Destroy(target);
                 }
             }
@@ -48,7 +49,7 @@ namespace BS.Demon
             {
                 GameObject effcetgo = Instantiate(effgo, transform.position, Quaternion.identity);
                 yield return new WaitForSeconds(0.2f);
-                AudioUtility.CreateSFX(pattern.audioManager.sounds[1].audioClip, transform.position, pattern.audioManager.sounds[1].group);
+                AudioUtility.CreateSFX(audioManager.sounds[0].audioClip, target.transform.position, audioManager.sounds[0].group);
                 Destroy(effcetgo, 1.5f);
                 Destroy(target);
             }

@@ -62498,7 +62498,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 2.9142857
+  - time: 0.51428574
     functionName: ShootAttack
     data: 
     objectReferenceParameter: {fileID: 0}

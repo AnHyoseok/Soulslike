@@ -51,6 +51,7 @@ namespace BS.UI
         {
             isDungeonActive = true;
             elapsedTime = 0f; // 경과 시간 초기화
+            timerText.gameObject.SetActive(true);
             newRecordUI.SetActive(false);
         }
 

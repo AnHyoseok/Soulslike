@@ -48,8 +48,10 @@ MonoBehaviour:
   targetHeight: 2.5
   riseSpeed: 10
   pattern: {fileID: 5196229966916800988, guid: 8ff18eeb3eeacb54aa2bfef06a282531, type: 3}
+  twoPhase: {fileID: 0}
   effgo: {fileID: 8844613807067360556, guid: 6fcc3728934590d43ac7afbe5db12b4a, type: 3}
   phasePattern: {fileID: 0}
+  audioManager: {fileID: 6607739929025124342, guid: 94d8a3da0a62944429517f569f349c86, type: 3}
 --- !u!1 &6603378961253747614
 GameObject:
   m_ObjectHideFlags: 0

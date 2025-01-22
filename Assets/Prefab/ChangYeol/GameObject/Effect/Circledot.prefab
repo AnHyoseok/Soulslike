@@ -19485,6 +19485,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxDamage: 1
   minDamage: 2
+  audioManager: {fileID: 6607739929025124342, guid: 94d8a3da0a62944429517f569f349c86, type: 3}
 --- !u!199 &3929304650305160165
 ParticleSystemRenderer:
   serializedVersion: 6

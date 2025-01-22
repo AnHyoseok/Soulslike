@@ -1,4 +1,6 @@
+using BS.Audio;
 using BS.Player;
+using BS.Utility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +15,8 @@ namespace BS.Particle
         // 패턴별 데미지
         public int maxDamage = 1;
         public int minDamage = 2;
+
+        [SerializeField]private DemonAudioManager audioManager;
         #endregion
         void Start()
         {
@@ -31,6 +35,7 @@ namespace BS.Particle
                 PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
                 if (playerHealth != null)
                 {
+                    AudioUtility.CreateSFX(audioManager.sounds[6].audioClip, transform.position, audioManager.sounds[6].group);
                     int damage = Random.Range(minDamage, maxDamage);
                     Debug.Log($"{damage}만큼 데미지 입음");
                     playerHealth.TakeDamage(damage, false);

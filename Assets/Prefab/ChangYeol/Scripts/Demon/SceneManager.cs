@@ -1,6 +1,7 @@
 using BS.Managers;
 using BS.Player;
 using BS.PlayerInput;
+using BS.State;
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
@@ -45,10 +46,8 @@ namespace BS.Demon
             }
             if (pattern.demon.hasRecovered && isPhase == false)
             {
-                
                 StartCoroutine (PhaseDemon());
-                isPhase = true;
-                pattern.demon.animator.SetBool("Isphase", isPhase);
+                
             }
         }
         IEnumerator OpeningDemon()
@@ -91,10 +90,13 @@ namespace BS.Demon
         IEnumerator PhaseDemon()
         {
             drectingCamera.SetActive(true);
-            Debug.Log("dd");
             yield return new WaitForSeconds(0.5f);
             pattern.demon.enabled = false;
             player.enabled = false;
+            PlayerStateMachine playerState = player.GetComponent<PlayerStateMachine>();
+            playerState.ChangeState(playerState.IdleState);
+            PlayerInputActions actions = player.GetComponent<PlayerInputActions>();
+            actions.UnInputActions();
             toggleRenderer.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", true);
             yield return new WaitForSeconds(2f);
             angryEffect.SetActive(true);
@@ -102,11 +104,15 @@ namespace BS.Demon
             yield return new WaitForSeconds(2f);
             //TODO : 카메라 흔들리면서 시작
             toggleRenderer.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", false);
+            isPhase = true;
             yield return new WaitForSeconds(0.5f);
             drectingCamera.SetActive(false);
             pattern.demon.enabled = true;
             pattern.demon.ChangeState(DEMON.Idle);
             player.enabled = true;
+            actions.OnInputActions();
+            yield return new WaitForSeconds(0.5f);
+            pattern.demon.animator.SetBool("IsPhase", isPhase);
             yield return null;
         }
     }
