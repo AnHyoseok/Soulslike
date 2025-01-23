@@ -69,6 +69,7 @@ namespace BS.UI
             buttonText[1].text = buttonName[1];
             buttons[0].onClick.AddListener(CompleteContinue);
             buttons[1].onClick.AddListener(CompleteRetry);
+
             newRecordUI.SetActive(true);
 
             if (elapsedTime < bestTime) // 신기록 달성 여부 확인
@@ -108,6 +109,7 @@ namespace BS.UI
             bosstext.color = Color.red;
             recordText.text = "";
             newRecordText.text = "";
+            isTime[3] = true;
             buttonText[0].text = buttonName[2];
             buttonText[1].text = buttonName[3];
             buttons[0].onClick.AddListener(DefeatContinue);
@@ -152,7 +154,7 @@ namespace BS.UI
         private IEnumerator AnimateClearTime(float targetTime)
         {
             float currentTime = 0f;
-            float animationDuration = 2f; // 애니메이션 지속 시간
+            float animationDuration = 4f; // 애니메이션 지속 시간
             float elapsed = 0f;
 
             while (elapsed < animationDuration)

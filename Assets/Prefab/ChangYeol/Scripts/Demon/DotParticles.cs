@@ -26,15 +26,19 @@ namespace BS.Particle
         void OnParticleCollision(GameObject other)
         {
             Debug.Log(other.name);
-            // 자식 객체에서 PlayerHealth 컴포넌트 찾기
-            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
+            PlayerController player = other.GetComponent<PlayerController>();
+            if (player != null)
             {
-                AudioUtility.CreateSFX(audioManager.sounds[6].audioClip, playerHealth.transform.position, audioManager.sounds[6].group);
-                int damage = Random.Range(minDamage, maxDamage);
-                Debug.Log($"{damage}만큼 데미지 입음");
-                playerHealth.TakeDamage(damage, false);
-                Debug.Log($"hp={playerHealth.CurrentHealth}");
+                // 자식 객체에서 PlayerHealth 컴포넌트 찾기
+                PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
+                if (playerHealth != null)
+                {
+                    AudioUtility.CreateSFX(audioManager.sounds[6].audioClip, playerHealth.transform.position, audioManager.sounds[6].group);
+                    int damage = Random.Range(minDamage, maxDamage);
+                    Debug.Log($"{damage}만큼 데미지 입음");
+                    playerHealth.TakeDamage(damage, false);
+                    Debug.Log($"hp={playerHealth.CurrentHealth}");
+                }
             }
         }
     }

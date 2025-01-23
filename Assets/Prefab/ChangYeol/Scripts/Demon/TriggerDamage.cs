@@ -21,11 +21,10 @@ namespace BS.Demon
         #endregion
         private void Start()
         {
-            StartCoroutine(TriggerOn());
-        }
-        private void Update()
-        {
-            
+            if (triggerCollider)
+            {
+                StartCoroutine(TriggerOn());
+            }
         }
         void OnTriggerEnter(Collider other)
         {
@@ -42,22 +41,20 @@ namespace BS.Demon
                     isstuning = true;
                 }
             }
-            if(triggerCollider != null)
-            {
-                StopCoroutine(TriggerOn());
-            }
         }
         private void OnTriggerStay(Collider other)
         {
             PlayerController playerController = other.GetComponent<PlayerController>();
             if(playerController != null)
             {
-                Debug.Log($"{effectpos}");
                 // 자식 객체에서 PlayerHealth 컴포넌트를 찾음
                 PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
                 if (playerHealth != null && !damagedObjects.Contains(other.gameObject))
                 {
-                    StartCoroutine(PlayerStun(playerHealth, Stuntime));
+                    if(isstuning)
+                    {
+                        StartCoroutine(PlayerStun(playerController,playerHealth, Stuntime));
+                    }
                 }
             }
         }
@@ -78,9 +75,9 @@ namespace BS.Demon
                 triggerCollider.enabled = false;
             }
         }
-        IEnumerator PlayerStun(PlayerHealth player, float Time)
+        IEnumerator PlayerStun(PlayerController controller, PlayerHealth player, float Time)
         {
-            PlayerStateMachine playerState = GameObject.Find("PlayerController ").GetComponent<PlayerStateMachine>();
+            PlayerStateMachine playerState = controller.GetComponent<PlayerStateMachine>();
             PlayerInputActions inputActions = playerState.GetComponent<PlayerInputActions>();
             inputActions.MousePositionInput(player.transform.position);
             inputActions.UnInputActions();

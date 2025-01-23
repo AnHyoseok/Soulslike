@@ -55,7 +55,7 @@ namespace BS.Demon
             {
                 if(pattern.demon.currentHealth > 0)
                 {
-                    pattern.demon.TakeDamage(5);
+                    pattern.demon.TakeDamage(20);
                 }
             }
             if (pattern.demon.hasRecovered && isPhase == false)
@@ -116,11 +116,10 @@ namespace BS.Demon
             toggleRenderer.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", true);
             yield return new WaitForSeconds(2f);
             angryEffect.SetActive(true);
-            isheal =true;
-            if (isheal)
+            if (!isheal)
             {
                 GameObject heal = Instantiate(pattern.effect[3], pattern.gameObject.transform.position, Quaternion.identity);
-                isheal = false;
+                isheal = true;
                 Destroy(heal,0.5f);
                 yield return new WaitForSeconds(2f);
             }

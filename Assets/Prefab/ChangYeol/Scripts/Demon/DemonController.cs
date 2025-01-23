@@ -1,3 +1,4 @@
+using BS.PlayerInput;
 using BS.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,6 +44,7 @@ namespace BS.Demon
         public DungeonClearTime clearTime;
         private bool istimer = false;
         public SceneManager sceneManager;
+        public AudioSource source;
         #endregion
         private void Start()
         {
@@ -217,17 +219,18 @@ namespace BS.Demon
         }
         public void TakeDamage(float damage)
         {
-            if (sceneManager.isPhase) return;
+            if (sceneManager.drectingCamera.activeSelf) return;
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // 체력 범위 제한
             Debug.Log($"currentHealth : {currentHealth}");
             ChangeFloatState(DEMON.GetDamaged,damage);
             if (currentHealth <= 0)
             {
-                isDie = true;
-                ChangeBoolState(DEMON.Die, isDie);
-                Destroy(gameObject, 5f);
-                clearTime.CompleteDungeon();
+                if (!isDie)
+                {
+                    
+                    PrepareClear();
+                }
             }
         }
         void UpdateHealthBar()
@@ -247,6 +250,23 @@ namespace BS.Demon
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // 체력 범위 제한
             hasRecovered = true; // 회복 플래그 활성화
             animator.SetBool("IsRecovered", hasRecovered);
+        }
+        void PrepareClear()
+        {
+            isDie = true;
+            sceneManager.drectingCamera.SetActive(true);
+            ChangeBoolState(DEMON.Die, isDie);
+            PlayerInputActions inputActions = pattern.player.GetComponent<PlayerInputActions>();
+            inputActions.UnInputActions();
+            source.PlayOneShot(pattern.audioManager.sounds[7].audioClip);
+            Invoke("Clear",5f);
+        }
+        void Clear()
+        {
+            Destroy(this.gameObject);
+            source.clip = pattern.audioManager.sounds[7].audioClip;
+            source.Play();
+            clearTime.CompleteDungeon();
         }
     }
 }

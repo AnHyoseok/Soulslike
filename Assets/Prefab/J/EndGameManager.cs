@@ -4,6 +4,7 @@ using BS.UI;
 using BS.Audio;
 using UnityEngine.Audio;
 using BS.PlayerInput;
+using BS.Demon;
 
 namespace BS.Utility
 {
@@ -11,7 +12,7 @@ namespace BS.Utility
     {
         #region Variables
         private PlayerHealth playerHealth;
-        private BossHealth bossHealth;
+        private DemonController bossHealth;
         private DungeonClearTime dungeEndGame;
         public GameObject player;
         public GameObject boss;
@@ -28,7 +29,7 @@ namespace BS.Utility
         private void Start()
         {
             dungeEndGame = FindFirstObjectByType<DungeonClearTime>();
-            bossHealth = FindFirstObjectByType<BossHealth>();
+            bossHealth = FindFirstObjectByType<DemonController>();
             playerHealth = FindFirstObjectByType<PlayerHealth>();
             playerInputActions = player.GetComponent<PlayerInputActions>();
         }
@@ -71,8 +72,8 @@ namespace BS.Utility
 
         private void Clear()
         {
-            //Destroy(boss);
-         
+            Destroy(boss);
+
             audioSource.clip = titleBgm;
             audioSource.Play();
             dungeEndGame.CompleteDungeon();
@@ -80,7 +81,7 @@ namespace BS.Utility
 
         private void Defeat()
         {
-            //Destroy(boss); 
+            Destroy(boss); 
             Debug.Log("패배");
             audioSource.clip = titleBgm;
             audioSource.Play();
