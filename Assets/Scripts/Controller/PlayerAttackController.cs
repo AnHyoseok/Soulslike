@@ -72,7 +72,6 @@ namespace BS.Player
         {
             if (m_Input.LeftClick && ps.isAttackable)
             {
-                GetMousePosition();
                 RotatePlayer();
                 if (psm.animator.GetBool("IsAttacking") == false)
                 {

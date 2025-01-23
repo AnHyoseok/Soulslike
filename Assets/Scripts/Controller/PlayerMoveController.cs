@@ -9,17 +9,18 @@ namespace BS.Player
     {
         // Dash 관련 변수
         [Header("Dash Settings")]
-        public float dashDuration = 0.2f;                   // 대쉬 지속 시간
+        public float dashDuration = 0.5f;                   // 대쉬 지속 시간
         public float dashCoolTime = 3f;                     // 대쉬 쿨타임
         public float dashDistance = 5f;                     // 대쉬 거리
         public float invincibilityDuration = 0.5f;          // 무적 지속 시간
 
+        private Vector3 moveTargetPos;
         private static readonly string IS_MOVING = "IsMoving";
         private static readonly string IS_RUNNING = "IsRun";
         private static readonly string IS_WALKING = "IsWalking";
         private static readonly string IS_SPRINTING = "IsSprinting";
         private static readonly string IS_ATTACKING = "IsAttacking";
-        private static readonly string IS_DASH = "IsDash";
+        private static readonly string IS_DASH = "IsDashIng";
         private static readonly string DO_RUN = "DoRun";
         private static readonly string DO_WALK = "DoWalk";
         private static readonly string DO_SPRINT = "DoSprint";
@@ -47,9 +48,9 @@ namespace BS.Player
         // Target Position 설정
         private void SetTargetPosition()
         {
-            if (m_Input.RightClick && ps.isMovable)
+            if (m_Input.RightClick && ps.isMovable && psm.animator.GetBool(IS_DASH) == false)
             {
-                GetMousePosition();
+                moveTargetPos = GetMousePosition();
                 RotatePlayer();
 
                 if (!psm.animator.GetBool(IS_MOVING))
@@ -66,11 +67,11 @@ namespace BS.Player
         private void MoveToTargetPos()
         {
             if (psm.animator.GetBool(IS_MOVING) && !ps.isBlockingAnim && !ps.isUppercuting &&
-                !ps.isBackHandSwinging && !ps.isChargingPunching && !psm.animator.GetBool(IS_ATTACKING))
+                !ps.isBackHandSwinging && !ps.isChargingPunching && !psm.animator.GetBool(IS_ATTACKING) && psm.animator.GetBool(IS_DASH) == false)
             {
-                transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, moveTargetPos, ps.inGameMoveSpeed * Time.deltaTime);
 
-                if (Vector3.Distance(transform.position, ps.targetPosition) < 0.01f)
+                if (Vector3.Distance(transform.position, moveTargetPos) < 0.01f)
                 {
                     StopMovement();
                 }
@@ -79,7 +80,6 @@ namespace BS.Player
 
         private void StopMovement()
         {
-            ps.isMoving = false; // 목표 지점 도달 시 이동 멈춤
             psm.animator.ResetTrigger(DO_RUN);
             psm.animator.ResetTrigger(DO_WALK);
             psm.animator.ResetTrigger(DO_SPRINT);
@@ -148,43 +148,59 @@ namespace BS.Player
         // 대쉬
         private void DoDash()
         {
-            Debug.Log("대쉬 작업중");
-            return;
-
-            if (!ps.isDashing && ps.currentDashCoolTime <= 0f && !ps.isBlockingAnim && ps.isDashable)
+            if (psm.animator.GetBool(IS_DASH) == false && !ps.isBlockingAnim && ps.isDashable)
             {
-                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-                RaycastHit[] hits = Physics.RaycastAll(ray);
-
-                foreach (RaycastHit hit in hits)
-                {
-                    if (hit.transform.gameObject.CompareTag("Ground"))
-                    {
-                        StartDash(hit.point);
-                        break;
-                    }
-                }
+                StartDash(GetMousePosition());
             }
         }
 
+        //public enum MovingState
+        //{
+        //    None,
+        //    Run,
+        //    Sprint,
+        //    Walk,
+        //}
+        //MovingState currMovingState;
+        //MovingState prevMovingState;
+
         private void StartDash(Vector3 targetPoint)
         {
-            ps.isDashing = true;
+            psm.animator.SetBool(IS_DASH, true);
             ps.isInvincible = true;
 
             Vector3 dashDirection = (targetPoint - transform.position).normalized;
             Vector3 dashTarget = transform.position + dashDirection * dashDistance;
+            moveTargetPos = dashTarget;
+            RotatePlayer();
 
-            psm.prevState = psm.GetCurrentState();
-            psm.ChangeState(psm.SprintState);
-            ResetActionFlags();
-
-            psm.animator.SetBool(IS_DASH, true);
-            ps.targetPosition = dashTarget;
+            // TODO :: Sprint 모션으로 대쉬를 하고싶은데
+            //StopMovement();
+            //psm.prevState = psm.GetCurrentState();
+            //psm.animator.SetTrigger(DO_DASH);
+            //psm.ChangeState(psm.SprintState);
+            //ResetActionFlags();
+            //if (psm.animator.GetBool(IS_RUNNING) == true)
+            //{
+            //    psm.animator.SetBool(IS_RUNNING, true);
+            //}
+            //else if (psm.animator.GetBool(IS_SPRINTING) == true)
+            //{
+            //    psm.animator.SetBool(IS_SPRINTING, true);
+            //}
+            //else if (psm.animator.GetBool(IS_WALKING) == true)
+            //{
+            //    psm.animator.SetBool(IS_WALKING, true);
+            //}
+            //else
+            //{
+            //
+            //}
 
             transform.DOMove(dashTarget, dashDuration)
-                .SetEase(Ease.OutQuad)
-                .OnComplete(EndDash);
+            .SetEase(Ease.OutQuad)
+            .OnComplete(EndDash)
+            .SetLink(gameObject);
 
             Invoke(nameof(DisableInvincibility), invincibilityDuration);
         }
@@ -198,14 +214,12 @@ namespace BS.Player
 
         private void EndDash()
         {
-            psm.ChangeState(psm.prevState);
             psm.animator.SetBool(IS_DASH, false);
         }
 
         private void DisableInvincibility()
         {
             ps.isInvincible = false;
-            ps.isDashing = false;
         }
         #endregion
     }

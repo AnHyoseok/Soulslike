@@ -31,8 +31,7 @@ namespace BS.Player
         //public bool isDashable { get; set; } = true;            // 대쉬 가능 여부
         //public bool isDashing { get; set; }                     // 대쉬 진행 여부
         //public bool isInvincible { get; set; }                  // 무적 여부
-        //public float currentDashCoolTime = 0f;                  // BD 대쉬 쿨타임
-        //
+
         //// Block
         //public bool isBlockable { get; set; } = true;           // 블락 가능 여부
         //public bool isBlocking { get; set; }                    // 블락 진행 여부
@@ -79,8 +78,7 @@ namespace BS.Player
         public bool isDashable = true;           // 대쉬 가능 여부
         public bool isDashing = false;                   // 대쉬 진행 여부
         public bool isInvincible = false;                // 무적 여부
-        public float currentDashCoolTime = 0f;                  // BD 대쉬 쿨타임
-
+        
         // Block
         public bool isBlockable = true;          // 블락 가능 여부
         public bool isBlocking = false;                    // 블락 진행 여부

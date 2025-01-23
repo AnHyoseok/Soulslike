@@ -60,7 +60,7 @@ namespace BS.Player
                 mainCamera = Camera.main;
 
             targetPosition = transform.position;
-            ps.targetPosition = transform.position;
+            //ps.targetPosition = transform.position;
             ps.inGameMoveSpeed = moveSpeed;
         }
 
@@ -75,7 +75,7 @@ namespace BS.Player
         }
 
         // Mouse 위치를 화면 좌표에서 월드 좌표로 변환
-        protected virtual void GetMousePosition()
+        protected virtual Vector3 GetMousePosition()
         {
             m_inputVector2 = m_Input.MousePosition;
 
@@ -86,13 +86,15 @@ namespace BS.Player
             {
                 if (hit.transform.gameObject.CompareTag("Ground"))
                 {
-                    ps.targetPosition = hit.point;
-                    //targetPosition = hit.point; // 클릭한 위치를 목표 지점으로 설정
+                    //TODO :: ps에서 정의해야할까? 반환해주면 안되나? 변경 검토
                     gizmoPosition = hit.point; // Gizmo 위치 저장
+                    return hit.point;
+                    //ps.targetPosition = hit.point;
+                    //break;
 
-                    break;
                 }
             }
+            return Vector3.zero;
         }
 
         // Player 회전
@@ -102,7 +104,7 @@ namespace BS.Player
             if (targetPosition != null && ps.isMoving && !ps.isBlockingAnim && !ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching)
             {
                 // 목표 방향 계산
-                Vector3 direction = ps.targetPosition - transform.position;
+                Vector3 direction = GetMousePosition() - transform.position;
 
                 // 방향이 존재하면 회전
                 if (direction != Vector3.zero)
@@ -133,7 +135,7 @@ namespace BS.Player
             {
                 transform.DOKill(complete: false); // 트랜스폼과 관련된 모든 트윈 제거 (완료 콜백은 실행되지 않음)
                 // 목표 회전값 계산
-                Vector3 direction = (ps.targetPosition - transform.position).normalized;
+                Vector3 direction = (GetMousePosition() - transform.position).normalized;
                 direction = new Vector3(direction.x, 0, direction.z);
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
 
