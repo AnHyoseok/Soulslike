@@ -137,7 +137,7 @@ namespace BS.Player
                 direction = new Vector3(direction.x, 0, direction.z);
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
 
-                transform.DORotateQuaternion(targetRotation, rotationDuration);
+                transform.DORotateQuaternion(targetRotation, rotationDuration).SetLink(gameObject);
             }
         }
 

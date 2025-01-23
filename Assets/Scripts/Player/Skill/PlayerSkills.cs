@@ -44,9 +44,19 @@ namespace BS.Player
             psm = PlayerStateMachine.Instance;
             animator = GetComponent<Animator>();
             // 스킬 구조체에 맞게 스킬을 추가
-            PlayerSkillController.skillList.Add("Q", new Skill("Uppercut", uppercutCoolTime, DoUppercut, uppercutDamage));
-            PlayerSkillController.skillList.Add("W", new Skill("BackHandSwing", backHandSwingCoolTime, DoBackHandSwing, backHandSwingDamage));
-            PlayerSkillController.skillList.Add("E", new Skill("ChargingPunch", chargingPunchCoolTime, DoChargingPunch, chargingPunchDamage));
+
+            if (!PlayerSkillController.skillList.ContainsKey("Q"))
+            {
+                PlayerSkillController.skillList.Add("Q", new Skill("Uppercut", uppercutCoolTime, DoUppercut, uppercutDamage));
+            }
+            if (!PlayerSkillController.skillList.ContainsKey("W"))
+            {
+                PlayerSkillController.skillList.Add("W", new Skill("BackHandSwing", backHandSwingCoolTime, DoBackHandSwing, backHandSwingDamage));
+            }
+            if (!PlayerSkillController.skillList.ContainsKey("E"))
+            {
+                PlayerSkillController.skillList.Add("E", new Skill("ChargingPunch", chargingPunchCoolTime, DoChargingPunch, chargingPunchDamage));
+            }
         }
 
         // Update is called once per frame
@@ -77,7 +87,7 @@ namespace BS.Player
                 }
             }
         }
-        
+
         public void DoUppercut()
         {
             if (psm.animator.GetBool("IsAttacking")) return;

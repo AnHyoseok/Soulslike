@@ -118,6 +118,7 @@ namespace BS.Player
         private void OnSkillInput(InputAction.CallbackContext context)
         {
             if (!ps.canSkill) return;
+            if (psm.animator.GetBool("IsAttacking")) return;
             string key = context.action.name;
             if (skillList.ContainsKey(key))
             {

@@ -62,7 +62,10 @@ namespace BS.Player
 
         private void Awake()
         {
-            PlayerSkillController.skillList.Add("R", new Skill("Block", blockCoolTime, DoBlock));
+            if (!PlayerSkillController.skillList.ContainsKey("R"))
+            {
+                PlayerSkillController.skillList.Add("R", new Skill("Block", blockCoolTime, DoBlock));
+            }
         }
 
         void Start()

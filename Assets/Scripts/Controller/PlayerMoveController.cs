@@ -16,7 +16,10 @@ namespace BS.Player
         protected override void Awake()
         {
             base.Awake();
-            PlayerSkillController.skillList.Add("Space", new Skill("Dash", dashCoolTime, DoDash));
+            if (!PlayerSkillController.skillList.ContainsKey("Space"))
+            {
+                PlayerSkillController.skillList.Add("Space", new Skill("Dash", dashCoolTime, DoDash));
+            }
         }
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         protected override void Start()
