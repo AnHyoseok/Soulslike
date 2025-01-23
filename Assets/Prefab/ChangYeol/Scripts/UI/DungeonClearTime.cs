@@ -103,6 +103,7 @@ namespace BS.UI
         public void DefeatDungeon()
         {
             isDungeonActive = false;
+            newRecordUI.SetActive(true);
             bosstext.text = "Defeat";
             bosstext.color = Color.red;
             recordText.text = "";
