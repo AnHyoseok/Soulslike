@@ -145,7 +145,7 @@ public class AlienBossPattern : MonoBehaviour
                 //Debug.Log($"원거리공격 : {canRangedAttack}");
             }
         }
-        
+        /*
         // 테스트용
         if (Input.GetKeyDown(KeyCode.Q))        // 공격패턴1
         {
@@ -166,7 +166,7 @@ public class AlienBossPattern : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.T))   // 공격패턴5
         {
             StartCoroutine(Pattern5());
-        }
+        }*/
     }
 
     // 공격패턴1 : 부채꼴 공격
