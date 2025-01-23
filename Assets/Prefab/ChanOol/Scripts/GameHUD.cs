@@ -2,9 +2,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using UnityEngine.Rendering.Universal;
 
 public class GameHUD : MonoBehaviour
 {
+    
     public GameObject gameHUD;
     public GameObject pauseCanvas;
     public GameObject soundCanvas;
@@ -20,6 +22,22 @@ public class GameHUD : MonoBehaviour
 
     private bool isPaused = false;
 
+    //렌더러
+     private ToggleRendererFeature toggleRendererFeature;
+
+    private void Awake()
+    {
+        {
+            // ToggleRendererFeature가 연결된 게임 오브젝트를 찾습니다.
+            GameObject obj = GameObject.Find("NameOfObjectWithToggleRendererFeature");
+
+            if (obj != null)
+            {
+                // ToggleRendererFeature 스크립트의 인스턴스를 가져옵니다.
+                toggleRendererFeature = obj.GetComponent<ToggleRendererFeature>();
+            }
+        }
+    }
     void Start()
     {
         // 비활성화된 상태로 시작
@@ -92,6 +110,13 @@ public class GameHUD : MonoBehaviour
     // Restart 버튼 클릭 시 호출되는 함수
     public void OnRestartButtonClick()
     {
+        //렌더러 초기화
+        if (toggleRendererFeature != null)
+        {
+            // SetActiveRendererFeature 메서드를 호출하여 렌더러 기능을 활성화/비활성화합니다.
+            toggleRendererFeature.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", false);
+        }
+
         // DOTween.KillAll(); // 모든 Tween 정리
         Time.timeScale = 1; // 타임스케일 초기화
         string currentSceneName = SceneManager.GetActiveScene().name;
