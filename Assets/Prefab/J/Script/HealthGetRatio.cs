@@ -21,16 +21,21 @@ namespace BS.UI
 
         private void Update()
         {
-            // 컴포넌트가 할당되었는지 확인 후 업데이트
-            if (bossHealth != null && playerHealth != null)
+            if (bossHealth != null)
             {
                 float bossHealthRatio = bossHealth.currentHealth / bossHealth.maxHealth;
-                float playerHealthRatio = playerHealth.CurrentHealth / playerHealth.MaxHealth;
 
                 bosshealthBarImage.fillAmount = bossHealthRatio;
-                playerhealthBarImage.fillAmount = playerHealthRatio;
 
                 bossHealthText.text = $"{bossHealthRatio * 100:F0}%"; // 보스 체력 퍼센트 
+            }
+            // 컴포넌트가 할당되었는지 확인 후 업데이트
+            if (playerHealth != null)
+            {
+                float playerHealthRatio = playerHealth.CurrentHealth / playerHealth.MaxHealth;
+
+                playerhealthBarImage.fillAmount = playerHealthRatio;
+
                 playerHealthText.text = $"{playerHealthRatio * 100}%"; // 플레이어 체력 퍼센트
             }
         }
