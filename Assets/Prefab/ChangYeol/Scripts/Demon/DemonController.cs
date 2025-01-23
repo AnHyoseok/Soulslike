@@ -1,3 +1,4 @@
+using BS.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -32,14 +33,16 @@ namespace BS.Demon
         protected int index;  //demons의 랜덤 값
 
         public float maxHealth = 100f; // 최대 체력
-        [SerializeField] private float currentHealth; // 현재 체력
+        public float currentHealth { get; private set; } // 현재 체력
         public bool hasRecovered = false; // 회복 실행 여부 플래그
         private bool isDie = false;     //죽음 여부및 한 번만 죽이기
         public Image healthBarFill;       // 체력바의 Foreground Image
         public TextMeshProUGUI healthText; // 체력 퍼센트 Text (TextMeshPro 사용)
 
         protected DemonPattern pattern;
+        public DungeonClearTime clearTime;
         private bool istimer = false;
+        public SceneManager sceneManager;
         #endregion
         private void Start()
         {
@@ -214,6 +217,7 @@ namespace BS.Demon
         }
         public void TakeDamage(float damage)
         {
+            if (sceneManager.isPhase) return;
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // 체력 범위 제한
             Debug.Log($"currentHealth : {currentHealth}");
@@ -223,6 +227,7 @@ namespace BS.Demon
                 isDie = true;
                 ChangeBoolState(DEMON.Die, isDie);
                 Destroy(gameObject, 5f);
+                clearTime.CompleteDungeon();
             }
         }
         void UpdateHealthBar()

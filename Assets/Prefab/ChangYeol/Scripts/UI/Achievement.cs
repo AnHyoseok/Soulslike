@@ -1,3 +1,4 @@
+using BS.Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,81 +14,107 @@ namespace BS.UI
         public Sprite[] achievementSprites;
         public Color[] achievementColors;
 
-        private DungeonClearTime dungeon;
+        public DungeonClearTime dungeon;
+        public PlayerHealth health;
+        private float healthPercentage;
         #endregion
         private void Start()
         {
-            dungeon = GetComponent<DungeonClearTime>();
-            achievementCondition[0].gameObject.SetActive(false);
-            achievementCondition[1].gameObject.SetActive(false);
-            achievementCondition[2].gameObject.SetActive(false);
+            AchievementCondition(achievementCondition[0], false);
+            AchievementCondition(achievementCondition[1], false);
+            AchievementCondition(achievementCondition[2], false);
         }
         // Update is called once per frame
         void Update()
         {
             if(dungeon != null)
             {
-                if (dungeon.isAchievement[0])
+                CheckTime();
+                if (health)
                 {
-                    achievementText[0].color = achievementColors[0];
-                    achievementText[1].color = achievementColors[0];
-                    achievementText[2].color = achievementColors[0];
-                    achievementText[0].fontStyle = FontStyles.Normal;
-                    achievementText[1].fontStyle = FontStyles.Normal;
-                    achievementText[2].fontStyle = FontStyles.Normal;
-                    achievementImages[0].sprite = achievementSprites[0];
-                    achievementImages[1].sprite = achievementSprites[0];
-                    achievementImages[2].sprite = achievementSprites[0];
-                    achievementImages[0].color = achievementColors[0];
-                    achievementImages[1].color = achievementColors[0];
-                    achievementImages[2].color = achievementColors[0];
-                }
-                else if (dungeon.isAchievement[1])
-                {
-                    achievementText[0].color = achievementColors[1];
-                    achievementText[1].color = achievementColors[0];
-                    achievementText[2].color = achievementColors[0];
-                    achievementText[0].fontStyle = FontStyles.Strikethrough;
-                    achievementText[1].fontStyle = FontStyles.Normal;
-                    achievementText[2].fontStyle = FontStyles.Normal;
-                    achievementImages[0].sprite = achievementSprites[1];
-                    achievementImages[1].sprite = achievementSprites[0];
-                    achievementImages[2].sprite = achievementSprites[0];
-                    achievementImages[0].color = achievementColors[1];
-                    achievementImages[1].color = achievementColors[0];
-                    achievementImages[2].color = achievementColors[0];
-                }
-                else if (dungeon.isAchievement[2])
-                {
-                    achievementText[0].color = achievementColors[1];
-                    achievementText[1].color = achievementColors[1];
-                    achievementText[2].color = achievementColors[0];
-                    achievementText[0].fontStyle = FontStyles.Strikethrough;
-                    achievementText[1].fontStyle = FontStyles.Strikethrough;
-                    achievementText[2].fontStyle = FontStyles.Normal;
-                    achievementImages[0].sprite = achievementSprites[1];
-                    achievementImages[1].sprite = achievementSprites[1];
-                    achievementImages[2].sprite = achievementSprites[0];
-                    achievementImages[0].color = achievementColors[1];
-                    achievementImages[1].color = achievementColors[1];
-                    achievementImages[2].color = achievementColors[0];
-                }
-                else if (dungeon.isAchievement[3])
-                {
-                    achievementText[0].color = achievementColors[1];
-                    achievementText[1].color = achievementColors[1];
-                    achievementText[2].color = achievementColors[1];
-                    achievementText[0].fontStyle = FontStyles.Strikethrough;
-                    achievementText[1].fontStyle = FontStyles.Strikethrough;
-                    achievementText[2].fontStyle = FontStyles.Strikethrough;
-                    achievementImages[0].sprite = achievementSprites[1];
-                    achievementImages[1].sprite = achievementSprites[1];
-                    achievementImages[2].sprite = achievementSprites[1];
-                    achievementImages[0].color = achievementColors[1];
-                    achievementImages[1].color = achievementColors[1];
-                    achievementImages[2].color = achievementColors[1];
+                    CheckHealth();
                 }
             }
         }
+        void CheckAchievement(Color color, FontStyles styles, Sprite sprite, int index)
+        {
+            //텍스트 색, 폰트스타일, 스프라이트, 이미지 색
+            achievementText[index].color = color;
+            achievementText[index].fontStyle = styles;
+            achievementImages[index].sprite = sprite;
+            achievementImages[index].color = color;
+        }
+        void AchievementCondition(TextMeshProUGUI Condition, bool isCondition, string text = "")
+        {
+            //true이면 text 출력 false이면 ""출력
+            text = isCondition ? $"({text})" : "";
+            Condition.gameObject.SetActive(isCondition);
+            Condition.text = text;
+        }
+        #region CheckAchievement
+        void CheckHealth()
+        {
+            healthPercentage = (health.CurrentHealth / health.MaxHealth) * 100f;
+
+            if (healthPercentage >= 100f)
+            {
+                dungeon.isHealth[0] = true;
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 3);
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 4);
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 5);
+            }
+            else if (healthPercentage >= 70f)
+            {
+                dungeon.isHealth[1] = true;
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 3);
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 4);
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 5);
+            }
+            else if (healthPercentage >= 30f)
+            {
+                dungeon.isHealth[2] = true;
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 3);
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 4);
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 5);
+            }
+            else
+            {
+                dungeon.isHealth[3] = true;
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 3);
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 4);
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 5);
+            }
+            AchievementCondition(achievementCondition[3], true, healthPercentage.ToString() + "/" + 100);
+            AchievementCondition(achievementCondition[4], true, healthPercentage.ToString() + "/" + 70);
+            AchievementCondition(achievementCondition[5], true, healthPercentage.ToString() + "/" + 30);
+        }
+        void CheckTime()
+        {
+            if (dungeon.isTime[0])
+            {
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 0);
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 1);
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 2);
+            }
+            else if (dungeon.isTime[1])
+            {
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 0);
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 1);
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 2);
+            }
+            else if (dungeon.isTime[2])
+            {
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 0);
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 1);
+                CheckAchievement(achievementColors[0], FontStyles.Normal, achievementSprites[0], 2);
+            }
+            else if (dungeon.isTime[3])
+            {
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 0);
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 1);
+                CheckAchievement(achievementColors[1], FontStyles.Strikethrough, achievementSprites[1], 2);
+            }
+        }
+        #endregion
     }
 }

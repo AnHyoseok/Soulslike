@@ -2,6 +2,7 @@ using BS.Managers;
 using BS.Player;
 using BS.PlayerInput;
 using BS.State;
+using BS.UI;
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
@@ -21,11 +22,16 @@ namespace BS.Demon
         public GameObject presentEffect;
         public PlayerController player;
 
-        private bool isPhase = false;
+        [HideInInspector]public bool isPhase = false;
         private ToggleRendererFeature toggleRenderer;
         public GameObject canvas;
         private CameraManager manager;
         [SerializeField] private GameObject angryEffect;
+
+        private bool isheal;
+        public LayerMask Playermask;
+        public LayerMask mask;
+        private bool ischting = true;
         #endregion
 
         private void Start()
@@ -35,14 +41,22 @@ namespace BS.Demon
             manager = main.GetComponent<CameraManager>();
             manager.enabled = false;
             isPhase = false;
+            isheal= false;
             StartCoroutine(OpeningDemon());
         }
         void Update()
         {
-            WarningCanvas.transform.LookAt(WarningCanvas.transform.position + main.transform.rotation * Vector3.forward, main.transform.rotation * Vector3.up);
-            if (Input.GetKeyDown(KeyCode.V))
+            if (WarningCanvas)
             {
-                pattern.demon.TakeDamage(5);
+                WarningCanvas.transform.LookAt(WarningCanvas.transform.position + main.transform.rotation * Vector3.forward, main.transform.rotation * Vector3.up);
+
+            }
+            if (Input.GetKeyDown(KeyCode.V) && ischting)
+            {
+                if(pattern.demon.currentHealth > 0)
+                {
+                    pattern.demon.TakeDamage(5);
+                }
             }
             if (pattern.demon.hasRecovered && isPhase == false)
             {
@@ -85,11 +99,13 @@ namespace BS.Demon
             player.enabled = true;
             actions.OnInputActions();
             manager.enabled = true;
+            pattern.demon.clearTime.StartDungeon();
             yield return null;
         }
         IEnumerator PhaseDemon()
         {
             drectingCamera.SetActive(true);
+            main.cullingMask = Playermask;
             yield return new WaitForSeconds(0.5f);
             pattern.demon.enabled = false;
             player.enabled = false;
@@ -100,8 +116,14 @@ namespace BS.Demon
             toggleRenderer.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", true);
             yield return new WaitForSeconds(2f);
             angryEffect.SetActive(true);
-            GameObject heal = Instantiate(pattern.effect[3], transform.position, Quaternion.identity);
-            yield return new WaitForSeconds(2f);
+            isheal =true;
+            if (isheal)
+            {
+                GameObject heal = Instantiate(pattern.effect[3], pattern.gameObject.transform.position, Quaternion.identity);
+                isheal = false;
+                Destroy(heal,0.5f);
+                yield return new WaitForSeconds(2f);
+            }
             //TODO : 카메라 흔들리면서 시작
             toggleRenderer.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", false);
             isPhase = true;
@@ -110,6 +132,7 @@ namespace BS.Demon
             pattern.demon.enabled = true;
             pattern.demon.ChangeState(DEMON.Idle);
             player.enabled = true;
+            main.cullingMask = mask;
             actions.OnInputActions();
             yield return new WaitForSeconds(0.5f);
             pattern.demon.animator.SetBool("IsPhase", isPhase);

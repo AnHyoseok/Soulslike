@@ -17,6 +17,7 @@ namespace BS.UI
         public TextMeshProUGUI[] buttonText = new TextMeshProUGUI[2];
         public string[] buttonName = new string[4];
 
+        //시간
         public TextMeshProUGUI timerText;
         public TextMeshProUGUI recordText;
         public TextMeshProUGUI newRecordText;
@@ -24,11 +25,15 @@ namespace BS.UI
 
         private float elapsedTime = 0f;    // 현재 진행 시간
         private bool isDungeonActive = false; // 던전 활성화 여부
-        [HideInInspector]public float bestTime = Mathf.Infinity; // 신기록 시간 (최초엔 무한대)
-
+        private float bestTime = Mathf.Infinity; // 신기록 시간 (최초엔 무한대)
         [SerializeField] private float[] achievementTime;
-        [HideInInspector] public bool[] isAchievement = new bool[4];
+
+        //시간 업적 해금
+        [HideInInspector] public bool[] isTime = new bool[4];
+        //체력 업적 해금
+        [HideInInspector] public bool[] isHealth = new bool[4];
         #endregion
+
         void Update()
         {
             if (isDungeonActive)
@@ -42,7 +47,7 @@ namespace BS.UI
             // 분, 초, 밀리초 계산
             int minutes = Mathf.FloorToInt(elapsedTime / 60);
             int seconds = Mathf.FloorToInt(elapsedTime % 60);
-            int milliseconds = Mathf.FloorToInt((elapsedTime * 1000) % 1000);
+            int milliseconds = Mathf.FloorToInt((elapsedTime * 1000) % 100);
 
             timerText.text = string.Format("{0:00}:{1:00}:{2:00}", minutes, seconds, milliseconds);
         }
@@ -79,19 +84,19 @@ namespace BS.UI
             }
             if (elapsedTime < achievementTime[0])
             {
-                isAchievement[0] = true;
+                isTime[0] = true;
             }
             else if (elapsedTime < achievementTime[1])
             {
-                isAchievement[1] = true;
+                isTime[1] = true;
             }
             else if (elapsedTime < achievementTime[2])
             {
-                isAchievement[2] = true;
+                isTime[2] = true;
             }
             else if (elapsedTime > achievementTime[2])
             {
-                isAchievement[3] = true;
+                isTime[3] = true;
             }
         }
         //던전 클리어 실패시
@@ -138,7 +143,7 @@ namespace BS.UI
         {
             int minutes = Mathf.FloorToInt(time / 60);
             int seconds = Mathf.FloorToInt(time % 60);
-            int milliseconds = Mathf.FloorToInt((time * 1000) % 1000);
+            int milliseconds = Mathf.FloorToInt((time * 1000) % 100);
 
             return string.Format("{0:00}:{1:00}:{2:00}", minutes, seconds, milliseconds);
         }

@@ -16,15 +16,18 @@ namespace BS.Player
         #endregion
         void Update()
         {
-            BossPos();
-            transform.LookAt(boss);
-            if (Vector3.Distance(Player.position, boss.position) <= bossRange)
+            if (boss && Player)
             {
-                directionimage.sprite = ChangeSprite;
-            }
-            else if (Vector3.Distance(Player.position, boss.position) > bossRange)
-            {
-                directionimage.sprite = directionSprite;
+                BossPos();
+                transform.LookAt(boss);
+                if (Vector3.Distance(Player.position, boss.position) <= bossRange)
+                {
+                    directionimage.sprite = ChangeSprite;
+                }
+                else if (Vector3.Distance(Player.position, boss.position) > bossRange)
+                {
+                    directionimage.sprite = directionSprite;
+                }
             }
         }
         void BossPos()

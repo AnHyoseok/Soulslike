@@ -69,7 +69,7 @@ namespace BS.Demon
             Destroy(effgo, 1f);
             Vector3 Explosionpos = new Vector3(effgo.transform.position.x, attackball.transform.position.y + -1.9f, effgo.transform.position.z);
             GameObject Explosion = Instantiate(effect[2], Explosionpos, Quaternion.identity);
-            AudioUtility.CreateSFX(pattern.audioManager.sounds[3].audioClip, transform.position, pattern.audioManager.sounds[3].group);
+            AudioUtility.CreateSFX(pattern.audioManager.sounds[3].audioClip, Explosionpos, pattern.audioManager.sounds[3].group);
             GameObject dot = Instantiate(effectdot, Explosionpos, effectdot.transform.rotation);
             Destroy(Explosion, 1f);
             StartCoroutine(EffectDot(dot));

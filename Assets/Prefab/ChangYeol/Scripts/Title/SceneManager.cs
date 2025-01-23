@@ -42,7 +42,10 @@ namespace BS.Managers
         private void Update()
         {
             //player 위에 있는 캔버스 보이는 방향
-            keyCanvas.transform.LookAt(keyCanvas.transform.position + m_camera.transform.rotation * Vector3.forward,m_camera.transform.rotation * Vector3.up);
+            if(keyCanvas)
+            {
+                keyCanvas.transform.LookAt(keyCanvas.transform.position + m_camera.transform.rotation * Vector3.forward, m_camera.transform.rotation * Vector3.up);
+            }
             if(Input.GetKey(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Escape))
             {
                 ResetPlayer();
