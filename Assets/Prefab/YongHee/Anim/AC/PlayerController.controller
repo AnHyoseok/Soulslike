@@ -196,14 +196,14 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: 6416497933085241266}
-  - {fileID: -6525918772803680162}
   - {fileID: 7591246297686284933}
+  - {fileID: -6525918772803680162}
   - {fileID: 6110678360516300272}
   - {fileID: 5370475805424716054}
   - {fileID: 6962541821863565700}
   - {fileID: -5729409541210715439}
   - {fileID: -553315640806078376}
+  - {fileID: 6416497933085241266}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -381,7 +381,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0
+  m_TransitionDuration: 0.1
   m_TransitionOffset: 0
   m_ExitTime: 0.5
   m_HasExitTime: 0
@@ -776,7 +776,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0
+  m_TransitionDuration: 0.1
   m_TransitionOffset: 0
   m_ExitTime: 0.5588236
   m_HasExitTime: 0
@@ -1609,7 +1609,6 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: -8309364309379051135}
   - {fileID: -4850201125287473120}
   - {fileID: -140754616155314299}
   - {fileID: 5457507551820625229}
@@ -1617,6 +1616,7 @@ AnimatorState:
   - {fileID: 8993596713441878077}
   - {fileID: -5294687756095657178}
   - {fileID: -657139408450761812}
+  - {fileID: -8309364309379051135}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -1905,6 +1905,12 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: IsRun
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   - m_Name: IsWalking
     m_Type: 4
     m_DefaultFloat: 0
@@ -2060,6 +2066,11 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
+  - first: {fileID: 5482312146553769074}
+    second:
+    - {fileID: 9025563785924390853}
+    - {fileID: -7477804563323350639}
+    - {fileID: -1145441506845540734}
   - first: {fileID: -2097551432246478645}
     second:
     - {fileID: -8530034855992293260}
@@ -2069,20 +2080,6 @@ AnimatorStateMachine:
     - {fileID: 4547884040574553491}
     - {fileID: 13056104501201871}
     - {fileID: -6228470485332323967}
-  - first: {fileID: -806623420866820632}
-    second:
-    - {fileID: 6098500696787529688}
-    - {fileID: 5622951693384389020}
-    - {fileID: 3460839317317145795}
-    - {fileID: -148849703447496684}
-    - {fileID: 2119822276905376713}
-    - {fileID: -6425737562767216296}
-    - {fileID: 4068453522891325628}
-  - first: {fileID: 5482312146553769074}
-    second:
-    - {fileID: 9025563785924390853}
-    - {fileID: -7477804563323350639}
-    - {fileID: -1145441506845540734}
   - first: {fileID: 8500516953437836711}
     second:
     - {fileID: 8848995887384145628}
@@ -2093,6 +2090,15 @@ AnimatorStateMachine:
     - {fileID: 2781098105962234283}
     - {fileID: 3240240026593954004}
     - {fileID: -7230258468219567100}
+  - first: {fileID: -806623420866820632}
+    second:
+    - {fileID: 6098500696787529688}
+    - {fileID: 5622951693384389020}
+    - {fileID: 3460839317317145795}
+    - {fileID: -148849703447496684}
+    - {fileID: 2119822276905376713}
+    - {fileID: -6425737562767216296}
+    - {fileID: 4068453522891325628}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 40, y: 20, z: 0}
   m_EntryPosition: {x: 40, y: 110, z: 0}
@@ -2332,7 +2338,6 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: 4764371253575851310}
   - {fileID: -4298415010529689745}
   - {fileID: 2845433552615999461}
   - {fileID: -944888866797873426}
@@ -2340,6 +2345,7 @@ AnimatorState:
   - {fileID: -4212460283999367309}
   - {fileID: 8123722843517452639}
   - {fileID: -885581129697710680}
+  - {fileID: 4764371253575851310}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -2855,7 +2861,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: IsMoving
+    m_ConditionEvent: IsRun
     m_EventTreshold: 0
   - m_ConditionMode: 2
     m_ConditionEvent: IsAttacking

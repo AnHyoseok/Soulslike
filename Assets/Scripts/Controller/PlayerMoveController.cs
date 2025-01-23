@@ -7,11 +7,22 @@ namespace BS.Player
 {
     public class PlayerMoveController : PlayerController
     {
-        // Dash
-        public float dashDuration = 0.2f;                   // 대쉬 시간
-        public float dashCoolTime = 3f;                     // SD 대쉬 쿨타임
+        // Dash 관련 변수
+        [Header("Dash Settings")]
+        public float dashDuration = 0.2f;                   // 대쉬 지속 시간
+        public float dashCoolTime = 3f;                     // 대쉬 쿨타임
         public float dashDistance = 5f;                     // 대쉬 거리
-        public float invincibilityDuration = 0.5f;          // 무적 시간
+        public float invincibilityDuration = 0.5f;          // 무적 지속 시간
+
+        private static readonly string IS_MOVING = "IsMoving";
+        private static readonly string IS_RUNNING = "IsRun";
+        private static readonly string IS_WALKING = "IsWalking";
+        private static readonly string IS_SPRINTING = "IsSprinting";
+        private static readonly string IS_ATTACKING = "IsAttacking";
+        private static readonly string IS_DASH = "IsDash";
+        private static readonly string DO_RUN = "DoRun";
+        private static readonly string DO_WALK = "DoWalk";
+        private static readonly string DO_SPRINT = "DoSprint";
 
         protected override void Awake()
         {
@@ -21,7 +32,7 @@ namespace BS.Player
                 PlayerSkillController.skillList.Add("Space", new Skill("Dash", dashCoolTime, DoDash));
             }
         }
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
+
         protected override void Start()
         {
             base.Start();
@@ -40,161 +51,158 @@ namespace BS.Player
             {
                 GetMousePosition();
                 RotatePlayer();
-                if(psm.animator.GetBool("IsMoving") == false)
+
+                if (!psm.animator.GetBool(IS_MOVING))
                 {
-                    SetMoveSpeed(1);
-                    psm.animator.SetTrigger("DoRun");
-                    psm.animator.SetBool("IsMoving", true);
+                    psm.animator.SetBool(IS_MOVING, true);
+                    psm.animator.SetTrigger(DO_RUN);
+                    psm.animator.SetBool(IS_RUNNING, true);
                 }
             }
             SetMoveState();
         }
 
-        // TODO :: DOTween 적용해보자
-        // TODO :: 방향키를 사용한 이동도 구현해보자
         // Player 이동
         private void MoveToTargetPos()
         {
-            // TODO :: 이동이 불가능한 상태 분기처리 리턴
-            //if (ps.isAttack) return;
-            //if (ps.isBlockingAnim) return;
-            //if (psm.animator.GetBool("IsAttacking")) return;
-            if ((psm.animator.GetBool("IsMoving") == true 
-                //|| psm.animator.GetBool("IsWalking") == true || psm.animator.GetBool("IsSprinting") == true
-                )
-                && !ps.isBlockingAnim 
-                && !ps.isUppercuting 
-                && !ps.isBackHandSwinging 
-                && !ps.isChargingPunching
-                && psm.animator.GetBool("IsAttacking") == false
-                )
-            {   
+            if (psm.animator.GetBool(IS_MOVING) && !ps.isBlockingAnim && !ps.isUppercuting &&
+                !ps.isBackHandSwinging && !ps.isChargingPunching && !psm.animator.GetBool(IS_ATTACKING))
+            {
                 transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);
-                
+
                 if (Vector3.Distance(transform.position, ps.targetPosition) < 0.01f)
                 {
-                    ps.isMoving = false; // 목표 지점 도달 시 이동 멈춤
-                    psm.animator.ResetTrigger("DoRun");
-                    psm.animator.ResetTrigger("DoWalk");
-                    psm.animator.ResetTrigger("DoSprint");
-                    psm.animator.SetBool("IsMoving", false);
-                    psm.animator.SetBool("IsWalking", false);
-                    psm.animator.SetBool("IsSprinting", false);
-                    //psm.ChangeState(psm.IdleState);
+                    StopMovement();
                 }
             }
         }
 
-        // Player 상태 변경
-        void SetMoveState()
+        private void StopMovement()
         {
-            
-            if (m_Input.C)
+            ps.isMoving = false; // 목표 지점 도달 시 이동 멈춤
+            psm.animator.ResetTrigger(DO_RUN);
+            psm.animator.ResetTrigger(DO_WALK);
+            psm.animator.ResetTrigger(DO_SPRINT);
+            psm.animator.SetBool(IS_MOVING, false);
+            psm.animator.SetBool(IS_RUNNING, false);
+            psm.animator.SetBool(IS_WALKING, false);
+            psm.animator.SetBool(IS_SPRINTING, false);
+        }
+
+        // Player 상태 변경
+        private void SetMoveState()
+        {
+            if (m_Input.C && !psm.animator.GetBool(IS_WALKING) && psm.animator.GetBool(IS_MOVING))
             {
-                Debug.Log("걷기 작업중");
-                return;
-                Debug.Log("Test1");
-                SetMoveSpeed(0.5f);
-                psm.animator.SetTrigger("DoWalk");
-                psm.animator.SetBool("IsWalking", true);
-                //psm.ChangeState(psm.WalkState);
+                ChangeMoveState(0.5f, DO_WALK, IS_WALKING);
             }
-            else
+            else if (m_Input.Shift && !psm.animator.GetBool(IS_SPRINTING) && psm.animator.GetBool(IS_MOVING))
             {
-                SetMoveSpeed(1);
-                //psm.animator.ResetTrigger("DoWalk");
-                //psm.animator.SetBool("IsWalking", true);
+                if (!(m_Input.C && m_Input.Shift))
+                {
+                    ChangeMoveState(2f, DO_SPRINT, IS_SPRINTING);
+                }
+            }
+            else if (!m_Input.C && !m_Input.Shift)
+            {
+                ResetToRunState();
+            }
+        }
+
+        private void ChangeMoveState(float speedMultiplier, string trigger, string stateBool)
+        {
+            SetMoveSpeed(speedMultiplier);
+            psm.animator.SetTrigger(trigger);
+            psm.animator.SetBool(stateBool, true);
+            psm.animator.SetBool(IS_WALKING, stateBool == IS_WALKING);
+            psm.animator.SetBool(IS_RUNNING, stateBool == IS_RUNNING);
+            psm.animator.SetBool(IS_SPRINTING, stateBool == IS_SPRINTING);
+        }
+
+        private void ResetToRunState()
+        {
+            SetMoveSpeed(1f);
+
+            if (psm.animator.GetBool(IS_WALKING))
+            {
+                psm.animator.SetBool(IS_WALKING, false);
+                psm.animator.SetTrigger(DO_RUN);
+                psm.animator.SetBool(IS_RUNNING, true);
             }
 
-            if (m_Input.Shift)
+            if (psm.animator.GetBool(IS_SPRINTING))
             {
-                Debug.Log("뛰기 작업중");
-                return;
-                SetMoveSpeed(2);
-                psm.animator.SetTrigger("DoSprint");
-                psm.animator.SetBool("IsSprinting", true);
-                //psm.ChangeState(psm.SprintState);
-            }
-            else
-            {
-                SetMoveSpeed(1);
-                //psm.animator.ResetTrigger("DoSprint");
-                //psm.animator.SetBool("IsSprinting", true);
+                psm.animator.SetBool(IS_SPRINTING, false);
+                psm.animator.SetTrigger(DO_RUN);
+                psm.animator.SetBool(IS_RUNNING, true);
             }
         }
 
         // Player 속도 변경
-        void SetMoveSpeed(float rate)
+        private void SetMoveSpeed(float rate)
         {
             ps.inGameMoveSpeed = moveSpeed * rate;
         }
 
         #region Dash
         // 대쉬
-        void DoDash()
+        private void DoDash()
         {
             Debug.Log("대쉬 작업중");
             return;
+
             if (!ps.isDashing && ps.currentDashCoolTime <= 0f && !ps.isBlockingAnim && ps.isDashable)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit[] hits = Physics.RaycastAll(ray);
+
                 foreach (RaycastHit hit in hits)
                 {
                     if (hit.transform.gameObject.CompareTag("Ground"))
                     {
-                        ps.isDashing = true;
-                        ps.isInvincible = true;
-
-                        Vector3 dashDirection = (hit.point - transform.position).normalized;
-                        Vector3 dashTarget = transform.position + dashDirection * dashDistance;
-                        if (psm.GetCurrentState() is SprintState)
-                        {
-                            psm.prevState = psm.SprintState;
-                        }
-                        psm.ChangeState(psm.SprintState);
-                        ps.isUppercuting = false;
-                        ps.isBackHandSwinging = false;
-                        ps.isChargingPunching = false;
-                        psm.animator.SetBool("IsDash", true);
-                        ps.targetPosition = dashTarget;
-                        //RotatePlayer();
-
-                        transform.DOMove(dashTarget, dashDuration)
-                            .SetEase(Ease.OutQuad)
-                            .OnComplete(() => { EndDash(); });
-
-                        Invoke(nameof(DisableInvincibility), invincibilityDuration);
-                        //StartCoroutine(CoDashCooldown());
+                        StartDash(hit.point);
+                        break;
                     }
                 }
             }
         }
 
-        // 대쉬 끝
-        void EndDash()
+        private void StartDash(Vector3 targetPoint)
         {
-            if (psm.GetPrevState() is RunState)
-            {
-                psm.ChangeState(psm.RunState);
-            }
-            else if (psm.GetPrevState() is IdleState)
-            {
-                psm.ChangeState(psm.IdleState);
-            }
-            else if (psm.GetPrevState() is WalkState)
-            {
-                psm.ChangeState(psm.WalkState);
-            }
-            else if (psm.GetPrevState() is SprintState)
-            {
-                psm.ChangeState(psm.SprintState);
-            }
-            psm.animator.SetBool("IsDash", false);
+            ps.isDashing = true;
+            ps.isInvincible = true;
+
+            Vector3 dashDirection = (targetPoint - transform.position).normalized;
+            Vector3 dashTarget = transform.position + dashDirection * dashDistance;
+
+            psm.prevState = psm.GetCurrentState();
+            psm.ChangeState(psm.SprintState);
+            ResetActionFlags();
+
+            psm.animator.SetBool(IS_DASH, true);
+            ps.targetPosition = dashTarget;
+
+            transform.DOMove(dashTarget, dashDuration)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(EndDash);
+
+            Invoke(nameof(DisableInvincibility), invincibilityDuration);
         }
 
-        // 대쉬 끝 무적해제 => TODO :: 피격면역으로 바꿀수있으면 바꾸자
-        void DisableInvincibility()
+        private void ResetActionFlags()
+        {
+            ps.isUppercuting = false;
+            ps.isBackHandSwinging = false;
+            ps.isChargingPunching = false;
+        }
+
+        private void EndDash()
+        {
+            psm.ChangeState(psm.prevState);
+            psm.animator.SetBool(IS_DASH, false);
+        }
+
+        private void DisableInvincibility()
         {
             ps.isInvincible = false;
             ps.isDashing = false;
