@@ -1,34 +1,37 @@
 using BS.Utility;
 using System.Collections;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace BS.vampire
 {
     public class PattonSummon : MonoBehaviour
     {
-
         public AudioClip shildSummonSound;
         public AudioClip shildBreakSound;
-
         public GameObject batPrefab;
         public GameObject summonEffect;
         public GameObject shildEffect;
         public Transform[] summonLocations; // 소환 위치
         public Transform effectLocation; // 소환이펙트 위치
-        public Transform shildLocation; // 쉴드  위치
+        public Transform shildLocation; // 쉴드 위치
         public float summonInterval = 5f; // 소환 간격 
 
-        private GameObject currentShild; //현재 쉴드 상태
-       public VamprieState vamprieState;
+        private GameObject currentShild; // 현재 쉴드 상태
+        public BossHealth boss;
+
         void Start()
         {
-            if (vamprieState == null)
+            if (boss == null)
             {
-                vamprieState = FindAnyObjectByType<VamprieState>();
+                boss = FindAnyObjectByType<BossHealth>();
             }
+            Summon();
             StartCoroutine(SummonBat());
+        }
+
+        void Update()
+        {
+            CheckShieldStatus();
         }
 
         IEnumerator SummonBat()
@@ -45,12 +48,10 @@ namespace BS.vampire
             bool Summoned = false;
             foreach (Transform location in summonLocations)
             {
-                // 현재 위치에 Bat 확인
                 if (location.childCount == 0)
                 {
                     GameObject bat = Instantiate(batPrefab, location.position, location.rotation, location);
                     Summoned = true;
-
                 }
             }
             if (Summoned)
@@ -59,11 +60,22 @@ namespace BS.vampire
                 effectGo.transform.parent = effectLocation.transform;
                 Destroy(effectGo, 3f);
             }
-            shild(Summoned);
-
         }
 
-        //소환 몹 존재시 쉴드 생성 없을시 쉴드 파괴
+        void CheckShieldStatus()
+        {
+            bool batExist = false;
+            foreach (Transform location in summonLocations)
+            {
+                if (location.childCount > 0)
+                {
+                    batExist = true;
+                    break;
+                }
+            }
+            shild(batExist);
+        }
+
         void shild(bool batExist)
         {
             if (batExist)
@@ -73,35 +85,19 @@ namespace BS.vampire
                     AudioUtility.CreateSFX(shildSummonSound, transform.position, AudioUtility.AudioGroups.Sound);
                     currentShild = Instantiate(shildEffect, shildLocation.position, shildLocation.rotation);
                     currentShild.transform.parent = shildLocation.transform;
-                    //보스 무적 온
-                    vamprieState.SetInvincible(true);   
+                    boss.SetInvincible(true);
                 }
             }
             else
             {
-                bool allEmpty = true;
-                foreach (Transform location in summonLocations)
-                {
-                    if (location.childCount > 0)
-                    {
-                        allEmpty = false; break;
-                    }
-                }
-                if (allEmpty && currentShild != null)
+                if (currentShild != null)
                 {
                     AudioUtility.CreateSFX(shildBreakSound, transform.position, AudioUtility.AudioGroups.Sound);
                     Destroy(currentShild);
                     currentShild = null;
-                    //보스 무적 해제
-                    vamprieState.SetInvincible(false);
-
+                    boss.SetInvincible(false);
                 }
             }
-
         }
-
-
     }
-
-
 }

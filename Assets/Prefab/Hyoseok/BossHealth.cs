@@ -5,7 +5,7 @@ using System.Collections;
 public class BossHealth : MonoBehaviour,IDamageable
 {
     public float maxHealth = 100000; // 보스 최대 체력
-    private float currentHealth;
+    public float currentHealth;
 
     private bool isInvincible = false; //무적여부
 
@@ -30,8 +30,8 @@ public class BossHealth : MonoBehaviour,IDamageable
     // 대미지 처리
     public void TakeDamage(float damage)
     {
-        //if (!isInvincible)
-        //{
+        if (!isInvincible)
+        {
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // 체력을 0 이상, maxHealth 이하로 유지
             Debug.Log($"Boss took {damage} damage. Current health: {currentHealth}");
@@ -42,7 +42,7 @@ public class BossHealth : MonoBehaviour,IDamageable
             {
                 Die();
             }
-        //}
+        }
     }
 
     // 체력 변경 알림

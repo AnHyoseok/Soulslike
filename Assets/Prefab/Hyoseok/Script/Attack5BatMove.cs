@@ -8,7 +8,7 @@ namespace BS.vampire
         #region Variables
         public float moveDistance = 10f;
         public float duration = 2f;
-        public bool moveInZAxis = true; // true¿Ã∏È z√‡, false¿Ã∏È x√‡
+        public bool moveInZAxis = true; // trueÏù¥Î©¥ zÏ∂ï, falseÏù¥Î©¥ xÏ∂ï
         private Vector3 endPosition;
         #endregion
 
@@ -28,7 +28,7 @@ namespace BS.vampire
 
         void MoveObject()
         {
-            transform.DOMove(endPosition, duration).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+            transform.DOMove(endPosition, duration).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear).SetLink(gameObject);
         }
     }
 }

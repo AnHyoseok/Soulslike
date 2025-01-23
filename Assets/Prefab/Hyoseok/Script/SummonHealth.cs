@@ -3,41 +3,41 @@ using UnityEngine.Events;
 
 namespace BS.vampire
 {
-    public class SummonHealth : MonoBehaviour
+    public class SummonHealth : MonoBehaviour,IDamageable
     {
         #region Variables
-        [SerializeField] private float maxHealth = 100f;    //ÃÖ´ë Hp
-        public float CurrentHealth { get; private set; }    //ÇöÀç Hp
-        private bool isDeath = false;                       //Á×À½ Ã¼Å©
+        [SerializeField] private float maxHealth = 100f;    //ìµœëŒ€ Hp
+        public float CurrentHealth { get; private set; }    //í˜„ì¬ Hp
+        private bool isDeath = false;                       //ì£½ìŒ ì²´í¬
 
-        public UnityAction<float, GameObject> OnDamaged;
+        public UnityAction<float> OnDamaged;
         public UnityAction OnDie;
       
 
-        //Ã¼·Â À§Çè °æ°èÀ²
+        //ì²´ë ¥ ìœ„í—˜ ê²½ê³„ìœ¨
         [SerializeField] private float criticalHealRatio = 0.3f;
 
       
         #endregion
 
       
-        //UI HP °ÔÀÌÁö °ª
+        //UI HP ê²Œì´ì§€ ê°’
         public float GetRatio() => CurrentHealth / maxHealth;
-        //À§Çè Ã¼Å©
+        //ìœ„í—˜ ì²´í¬
         public bool IsCritical() => GetRatio() <= criticalHealRatio;
 
 
         private void Start()
         {
-            //ÃÊ±âÈ­
+            //ì´ˆê¸°í™”
             CurrentHealth = maxHealth;
       
         }
 
       
 
-        //damageSource: µ¥¹ÌÁö¸¦ ÁÖ´Â ÁÖÃ¼
-        public void TakeDamage(float damage, GameObject damageSource)
+        //damageSource: ë°ë¯¸ì§€ë¥¼ ì£¼ëŠ” ì£¼ì²´
+        public void TakeDamage(float damage)
         {
            
             float beforeHealth = CurrentHealth;
@@ -45,30 +45,30 @@ namespace BS.vampire
             CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, maxHealth);
             Debug.Log($"{gameObject.name} CurrentHealth: {CurrentHealth}");
 
-            //real Damage ±¸ÇÏ±â
+            //real Damage êµ¬í•˜ê¸°
             float realDamage = beforeHealth - CurrentHealth;
             if (realDamage > 0f)
             {
-                //µ¥¹ÌÁö ±¸Çö                
-                OnDamaged?.Invoke(realDamage, damageSource);
+                //ë°ë¯¸ì§€ êµ¬í˜„                
+                OnDamaged?.Invoke(realDamage);
             }
 
-            //Á×À½ Ã³¸®
+            //ì£½ìŒ ì²˜ë¦¬
             HandleDeath();
         }
 
-        //Á×À½ Ã³¸® °ü¸®
+        //ì£½ìŒ ì²˜ë¦¬ ê´€ë¦¬
         void HandleDeath()
         {
-            //Á×À½ Ã¼Å©
+            //ì£½ìŒ ì²´í¬
             if (isDeath)
                 return;
 
             if (CurrentHealth <= 0f)
             {
                 isDeath = true;
-
-                //Á×À½ ±¸Çö
+                Destroy( gameObject);
+                //ì£½ìŒ êµ¬í˜„
                 OnDie?.Invoke();
             }
         }
