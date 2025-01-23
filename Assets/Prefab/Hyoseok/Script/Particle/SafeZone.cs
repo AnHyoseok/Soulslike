@@ -7,10 +7,7 @@ public class SafeZone : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerController playerController = other.GetComponent<PlayerController>();
-            if (playerController != null)
-            {
-          
+         
                 // 자식 객체에서 PlayerHealth 컴포넌트 찾기
                 PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
                 if (playerHealth != null)
@@ -19,7 +16,7 @@ public class SafeZone : MonoBehaviour
                     Debug.Log("플레이어 무적");
 
                 }
-            }
+            
         }
     }
 
@@ -27,9 +24,7 @@ public class SafeZone : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerController playerController = other.GetComponent<PlayerController>();
-            if (playerController != null)
-            {
+         
 
                 // 자식 객체에서 PlayerHealth 컴포넌트 찾기
                 PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
@@ -39,7 +34,7 @@ public class SafeZone : MonoBehaviour
                     Debug.Log("플레이어 무적해제");
 
                 }
-            }
+            
         }
     }
 }

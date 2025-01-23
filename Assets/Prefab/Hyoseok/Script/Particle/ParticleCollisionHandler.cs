@@ -9,7 +9,7 @@ namespace BS.Particle
     {
         private new ParticleSystem particleSystem;
         private HashSet<GameObject> collidedObjects = new HashSet<GameObject>();
-        // ÆĞÅÏº° µ¥¹ÌÁö
+        // íŒ¨í„´ë³„ ë°ë¯¸ì§€
         public int damageAmount = 10;
 
         void Start()
@@ -20,21 +20,17 @@ namespace BS.Particle
         void OnParticleCollision(GameObject other)
         {
             Debug.Log(other.name);
-            PlayerController playerController = other.GetComponent<PlayerController>();
-            if (playerController != null)
-            {
-                Debug.Log("ÇÃ·¹ÀÌ¾îÃ£À½");
 
-                // ÀÚ½Ä °´Ã¼¿¡¼­ PlayerHealth ÄÄÆ÷³ÍÆ® Ã£±â
-                PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
-                if (playerHealth != null)
-                {
-                    Debug.Log($"{damageAmount}¸¸Å­ µ¥¹ÌÁö ÀÔÀ½");
-                    playerHealth.TakeDamage(damageAmount, false);
-                    Debug.Log($"hp={playerHealth.CurrentHealth}");
-                    
-                }
+            // ìì‹ ê°ì²´ì—ì„œ PlayerHealth ì»´í¬ë„ŒíŠ¸ ì°¾ê¸°
+            PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                Debug.Log($"{damageAmount}ë§Œí¼ ë°ë¯¸ì§€ ì…ìŒ");
+                playerHealth.TakeDamage(damageAmount, false);
+                Debug.Log($"hp={playerHealth.CurrentHealth}");
+
             }
+
         }
 
 

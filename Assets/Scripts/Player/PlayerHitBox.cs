@@ -30,7 +30,7 @@ namespace BS.Player
                 && ps.isChargingPunching
                 )
             {
-                var enemyHealth = collision.gameObject.GetComponent<BossHealthTest>();
+                var enemyHealth = collision.gameObject.GetComponent<IDamageable>();
                 if (enemyHealth != null)
                 {
                     // 이미 대미지를 준 적이라면 중복 대미지 방지
@@ -46,7 +46,7 @@ namespace BS.Player
                         //psk.hitPos = hitPoint;
                         //psk.isHit = true;
                         // 적에게 대미지 입힘
-                        enemyHealth.TakeDamage((int)currentSkillDamage);
+                        enemyHealth.TakeDamage((float)currentSkillDamage);
 
                         // 대미지를 준 적을 기록
                         damagedEnemies.Add(collision.gameObject);
@@ -70,7 +70,7 @@ namespace BS.Player
             // 적 레이어인지 확인
             if (other.gameObject.layer == LayerMask.NameToLayer(enemyLayerName))
             {
-                var enemyHealth = other.gameObject.GetComponent<BossHealthTest>();
+                var enemyHealth = other.gameObject.GetComponent<IDamageable>();
                 if (enemyHealth != null)
                 {
                     // 이미 대미지를 준 적이라면 중복 대미지 방지

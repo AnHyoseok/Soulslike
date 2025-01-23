@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BS.vampire
 {
-    public class BeemCollerRange: MonoBehaviour
+    public class BeemCollerRange : MonoBehaviour
     {
         #region Variables
         private HashSet<GameObject> damagedObjects = new HashSet<GameObject>();
@@ -13,22 +13,17 @@ namespace BS.vampire
         #endregion
         void OnTriggerEnter(Collider other)
         {
-            PlayerController playerController = other.GetComponent<PlayerController>();
-            if (playerController != null)
-            {
-                Debug.Log("플레이어 발견!");
 
-                // 자식 객체에서 PlayerHealth 컴포넌트를 찾음
-                PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
-                if (playerHealth != null && !damagedObjects.Contains(other.gameObject))
-                {
-                    Debug.Log($"{damageAmount}만큼 데미지 입음");
-                    playerHealth.TakeDamage(damageAmount,false);
-                    Debug.Log($"hp={playerHealth.CurrentHealth}");
-                    damagedObjects.Add(other.gameObject);
-                    StartCoroutine(ResetCollision(other.gameObject));
-                }
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null && !damagedObjects.Contains(other.gameObject))
+            {
+                Debug.Log($"{damageAmount}만큼 데미지 입음");
+                playerHealth.TakeDamage(damageAmount, false);
+                Debug.Log($"hp={playerHealth.CurrentHealth}");
+                damagedObjects.Add(other.gameObject);
+                StartCoroutine(ResetCollision(other.gameObject));
             }
+
         }
 
         // 일정 시간 후 충돌 정보 리셋
@@ -38,5 +33,5 @@ namespace BS.vampire
             damagedObjects.Remove(other);
         }
     }
-   
+
 }
