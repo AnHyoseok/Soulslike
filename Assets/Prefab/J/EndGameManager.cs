@@ -3,6 +3,7 @@ using UnityEngine;
 using BS.UI;
 using BS.Audio;
 using UnityEngine.Audio;
+using BS.PlayerInput;
 
 namespace BS.Utility
 {
@@ -14,21 +15,22 @@ namespace BS.Utility
         private DungeonClearTime dungeEndGame;
         public GameObject player;
         public GameObject boss;
-
+        private float actorTime=5f;
         public AudioSource audioSource;
         public AudioClip clearSound;
         public AudioClip defeatSound;
         public AudioClip titleBgm;
+        private PlayerInputActions playerInputActions;
 
-        private bool gameEnded = false; 
+        private bool gameEnded = false;
         #endregion
 
         private void Start()
         {
-            //audioSource = GetComponent<AudioSource>();
             dungeEndGame = FindFirstObjectByType<DungeonClearTime>();
             bossHealth = FindFirstObjectByType<BossHealth>();
             playerHealth = FindFirstObjectByType<PlayerHealth>();
+            playerInputActions = player.GetComponent<PlayerInputActions>();
         }
 
         private void Update()
@@ -43,38 +45,45 @@ namespace BS.Utility
         {
             if (bossHealth.currentHealth <= 0)
             {
-                Clear();
+                PrepareClear();
             }
             else if (playerHealth.CurrentHealth <= 0)
             {
-                Defeat();
+                PrepareDefeat();
             }
+        }
+
+        private void PrepareClear()
+        {
+            gameEnded = true;
+            playerInputActions.enabled = false;
+            audioSource.PlayOneShot(clearSound);
+            Invoke("Clear", actorTime); 
+        }
+
+        private void PrepareDefeat()
+        {
+            gameEnded = true;
+            playerInputActions.enabled = false;
+            audioSource.PlayOneShot(defeatSound); 
+            Invoke("Defeat", actorTime); 
         }
 
         private void Clear()
         {
-            
-            gameEnded = true;
-            Destroy(player);
-            Destroy(boss);
-            Debug.Log("클리어");
-            audioSource.PlayOneShot(clearSound); 
+            //Destroy(boss);
+         
             audioSource.clip = titleBgm;
-            audioSource.PlayDelayed(clearSound.length);
-            // 승리 연출
+            audioSource.Play();
             dungeEndGame.CompleteDungeon();
         }
 
         private void Defeat()
         {
-            gameEnded = true;
-            Destroy(player);
-            Destroy(boss);
+            //Destroy(boss); 
             Debug.Log("패배");
-            audioSource.PlayOneShot(defeatSound); 
             audioSource.clip = titleBgm;
-            audioSource.PlayDelayed(defeatSound.length); 
-            // 패배 연출 
+            audioSource.Play();
             dungeEndGame.DefeatDungeon();
         }
     }
