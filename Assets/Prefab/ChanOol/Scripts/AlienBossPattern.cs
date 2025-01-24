@@ -182,7 +182,7 @@ public class AlienBossPattern : MonoBehaviour
         Quaternion attackRangeRotation = lookRotation * Quaternion.Euler(0f, 67.5f, 180f);  // 기존 회전 값 추가
 
         // pt1AttackRange를 플레이어 방향으로 회전시키고, 기존 회전 값 추가
-        Instantiate(pt1AttackRange, new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z + 5.0f), attackRangeRotation);
+        Instantiate(pt1AttackRange, new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z + -5.0f), attackRangeRotation);
 
         yield return new WaitForSeconds(1.3f);
 
