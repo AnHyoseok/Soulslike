@@ -179,14 +179,14 @@ namespace BS.Demon
                 NextPhase();
                 return;
             }
-            if(Vector3.Distance(transform.position,pattern.player.position) < attackRange)
+            /*if(Vector3.Distance(transform.position,pattern.player.position) < attackRange)
             {
                 ChangeState(DEMON.Attack03);
                 return;
-            }
+            }*/
             index = Random.Range(0, demons.Count);
-            if (Time.time - lastAttackTime[index] >= attackCooldown[index] &&
-                Vector3.Distance(transform.position, pattern.player.position) > attackRange)
+            if (Time.time - lastAttackTime[index] >= attackCooldown[index]/* &&
+                Vector3.Distance(transform.position, pattern.player.position) > attackRange*/)
             {
                 switch (index)
                 {
@@ -228,7 +228,6 @@ namespace BS.Demon
             {
                 if (!isDie)
                 {
-                    
                     PrepareClear();
                 }
             }
@@ -245,8 +244,7 @@ namespace BS.Demon
         private void RecoverHealth()
         {
             // 감소한 체력의 절반만큼 회복
-            float healthToRecover = (maxHealth * 0.5f) * 0.5f;
-            currentHealth += healthToRecover;
+            currentHealth += maxHealth * 0.75f;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // 체력 범위 제한
             hasRecovered = true; // 회복 플래그 활성화
             animator.SetBool("IsRecovered", hasRecovered);

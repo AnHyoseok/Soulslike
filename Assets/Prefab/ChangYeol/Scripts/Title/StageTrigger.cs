@@ -1,4 +1,5 @@
 using BS.Player;
+using BS.PlayerInput;
 using TMPro;
 using UnityEngine;
 
@@ -18,6 +19,7 @@ namespace BS.Title
         [HideInInspector]public bool isEnemy = false;
         public string stageName;
         public KeyCode keyCode = KeyCode.V;
+        public PlayerInputActions inputActions;
         #endregion
         private void Start()
         {

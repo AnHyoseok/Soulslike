@@ -1,3 +1,4 @@
+using BS.Demon;
 using BS.Player;
 using BS.PlayerInput;
 using BS.UI;
@@ -7,24 +8,43 @@ using UnityEngine.Audio;
 public class DemonGameManager : MonoBehaviour
 {
     private PlayerHealth playerHealth;
+    private DemonPattern bossHealth;
     public GameObject player;
     private DungeonClearTime dungeEndGame;
-    /*private void CheckGameEnd()
+    private float actorTime = 5f;
+    private PlayerInputActions playerInputActions;
+
+    private bool gameEnded = false;
+    private void Start()
     {
-        if (bossHealth.currentHealth <= 0)
+        bossHealth = FindFirstObjectByType<DemonPattern>();
+        playerHealth = FindFirstObjectByType<PlayerHealth>();
+        dungeEndGame = FindFirstObjectByType<DungeonClearTime>();
+        playerInputActions = player.GetComponent<PlayerInputActions>();
+    }
+    private void Update()
+    {
+        if (!gameEnded)
         {
-            PrepareClear();
-        }
-        else if (playerHealth.CurrentHealth <= 0)
-        {
-            PrepareDefeat();
+            if (playerHealth.CurrentHealth <= 0)
+            {
+                PrepareDefeat();
+            }
         }
     }
     private void PrepareDefeat()
     {
         gameEnded = true;
-        playerInputActions.enabled = false;
-        audioSource.PlayOneShot(defeatSound);
+        bossHealth.demon.sceneManager.drectingCamera.SetActive(true);
+        bossHealth.demon.animator.SetBool("IsPhase", false);
+        playerInputActions.UnInputActions();
+        bossHealth.demon.source.PlayOneShot(bossHealth.audioManager.sounds[8].audioClip);
         Invoke("Defeat", actorTime);
-    }*/
+    }
+    private void Defeat()
+    {
+        bossHealth.demon.source.clip = bossHealth.audioManager.sounds[8].audioClip;
+        bossHealth.demon.source.Play();
+        dungeEndGame.DefeatDungeon();
+    }
 }

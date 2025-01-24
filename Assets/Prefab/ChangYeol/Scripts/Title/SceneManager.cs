@@ -11,11 +11,12 @@ namespace BS.Managers
         public Camera maincamera;
         public Camera m_camera;
         public GameObject canvas;
+        public GameObject Arrow;
         public GameObject Player;
         public GameObject falsePlayer;
         public GameObject[] particle;
         public GameObject keyCanvas;
-        public Stage[] stage =new Stage[3];
+        public StageTrigger[] stage;
         public Stage enemyStage;
         public Outline[] outline = new Outline[3];
         //시작시 카메라 이동
@@ -38,6 +39,7 @@ namespace BS.Managers
             particle[0].SetActive(true);
             particle[0].transform.position = new Vector3(-5, 1.3f, -6.3f);
             particle[1].SetActive(false);
+            Arrow.SetActive(false);
         }
         private void Update()
         {
@@ -67,6 +69,7 @@ namespace BS.Managers
             {
                 outlines.enabled = true;
             }
+            Arrow.SetActive(true);
         }
         //Quit버튼
         public void Quit()
@@ -89,7 +92,7 @@ namespace BS.Managers
             playerState.ChangeState(playerState.IdleState);
             falsePlayer.SetActive(true);
             Player.SetActive(false);
-            foreach(Stage stages in stage)
+            foreach(StageTrigger stages in stage)
             {
                 stages.keyText.text = "";
                 stages.stageText.text = "";
@@ -111,6 +114,7 @@ namespace BS.Managers
                 Destroy(enemyStage.Enemy);
                 enemyStage.isEnemy = false;
             }
+            Arrow.SetActive(false);
             StartCoroutine(title.ZoomIn());
         }
     }
