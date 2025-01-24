@@ -19,7 +19,7 @@ namespace BS.Utility
         public AudioSource audioSource;
         public AudioClip clearSound;
         public AudioClip defeatSound;
-        public AudioClip titleBgm;
+   
         private PlayerInputActions playerInputActions;
 
         private bool gameEnded = false;
@@ -57,7 +57,9 @@ namespace BS.Utility
         {
             gameEnded = true;
             playerInputActions.enabled = false;
-            audioSource.PlayOneShot(clearSound);
+       
+            audioSource.clip = clearSound;
+            audioSource.Play();
             Invoke("Clear", actorTime); 
         }
 
@@ -65,7 +67,8 @@ namespace BS.Utility
         {
             gameEnded = true;
             playerInputActions.enabled = false;
-            audioSource.PlayOneShot(defeatSound); 
+            audioSource.clip = defeatSound;
+            audioSource.Play();
             Invoke("Defeat", actorTime); 
         }
 
@@ -73,8 +76,7 @@ namespace BS.Utility
         {
             //Destroy(boss);
          
-            audioSource.clip = titleBgm;
-            audioSource.Play();
+        
             dungeEndGame.CompleteDungeon();
         }
 
@@ -82,8 +84,7 @@ namespace BS.Utility
         {
             //Destroy(boss); 
             Debug.Log("패배");
-            audioSource.clip = titleBgm;
-            audioSource.Play();
+        
             dungeEndGame.DefeatDungeon();
         }
     }
