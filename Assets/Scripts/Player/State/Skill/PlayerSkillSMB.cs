@@ -1,16 +1,15 @@
 using BS.Player;
 using BS.PlayerInput;
 using BS.State;
-using System.Collections;
 using UnityEngine;
 
-public class PlayerAttackSMB : StateMachineBehaviour
+public class PlayerSkillSMB : StateMachineBehaviour
 {
     PlayerStateMachine psm;
     PlayerState ps;
     PlayerInputActions m_Input;
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (psm == null) // 초기화되지 않았다면 캐싱
         {
@@ -24,67 +23,18 @@ public class PlayerAttackSMB : StateMachineBehaviour
         {
             m_Input = FindFirstObjectByType<PlayerInputActions>();
         }
-
-        // Combo 공격이 4번째 모션인 경우
-        if (ps.comboAttackIndex == 4)
-        {
-            ps.comboAttackIndex = 1;
-        }
-        // Combo 공격이 1,2,3번째 모션인 경우
-        else
-        {
-            ps.comboAttackIndex++;
-        }
-        animator.ResetTrigger("DoRun");
-        animator.SetBool("IsMoving", false);
     }
 
-    //OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        if (ps != null)
-        {
-            //if (ps.isMoving)
-            //{
-            //    float moveSpeed = 5f;
-            //    if (Input.GetKey(KeyCode.C))
-            //    {
-            //        ps.inGameMoveSpeed = moveSpeed * 0.5f;
-            //        psm.ChangeState(psm.WalkState);
-            //    }
-            //    else if (Input.GetKey(KeyCode.LeftShift))
-            //    {
-            //        ps.inGameMoveSpeed = moveSpeed * 2f;
-            //        psm.ChangeState(psm.SprintState);
-            //    }
-            //    else
-            //    {
-            //        ps.inGameMoveSpeed = moveSpeed * 0.5f;
-            //        psm.ChangeState(psm.RunState);
-            //    }
-            //}
-            if (ps.isBlocking)
-            {
-                psm.ChangeState(psm.BlockState);
-            }
-            else if (ps.isUppercuting)
-            {
-                psm.ChangeState(psm.UppercutState);
-            }
-            else if (ps.isBackHandSwinging)
-            {
-                psm.ChangeState(psm.BackHandSwingState);
-            }
-            else if (ps.isChargingPunching)
-            {
-                psm.ChangeState(psm.ChargingPunchState);
-            }
-        }
-    }
+    // OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
+    //override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    //{
+    //    
+    //}
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
     //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     //{
+    //    
     //}
 
     // OnStateMove is called before OnStateMove is called on any state inside this state machine
@@ -112,7 +62,10 @@ public class PlayerAttackSMB : StateMachineBehaviour
         {
             ps.isMovable = true;
         }
-        animator.SetBool("IsAttacking", false);
+        animator.SetBool("IsUppercuting", false);
+        animator.SetBool("IsChargingPunch", false);
+        animator.SetBool("IsBackHandSwing", false);
+
         if (m_Input.RightClick)
         {
             if (m_Input.C)

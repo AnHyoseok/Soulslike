@@ -64,9 +64,9 @@ public class PlayerBlockSMB : StateMachineBehaviour
         }
         if (m_Input.RightClick)
         {
-            if (Input.GetKey(KeyCode.C))
+            if (m_Input.C)
                 animator.SetTrigger("DoWalk");
-            else if (Input.GetKey(KeyCode.LeftShift))
+            else if (m_Input.Shift)
                 animator.SetTrigger("DoSprint");
             else
                 animator.SetTrigger("DoRun");

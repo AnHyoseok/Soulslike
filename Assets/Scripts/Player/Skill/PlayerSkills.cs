@@ -1,3 +1,4 @@
+using BS.PlayerInput;
 using BS.State;
 using DG.Tweening;
 using System.Collections;
@@ -11,6 +12,8 @@ namespace BS.Player
         // State
         PlayerState ps;
         PlayerStateMachine psm;
+        private Vector2 m_inputVector2;                     // Input Vector2
+        private PlayerInputActions m_Input;                 // PlayerInputActions
 
         // 어퍼컷
         public float uppercutCoolTime = 3f;                         // SD 어퍼컷 쿨타임
@@ -28,7 +31,6 @@ namespace BS.Player
 
         public Camera mainCamera;                                   // Camera 변수
         public float rotationDuration = 0.1f;                       // 회전 지속 시간
-
         public TextMeshProUGUI uppercutCoolTimeText;
         public TextMeshProUGUI backHandSwingCoolTimeText;
         public TextMeshProUGUI chargingPunchCoolTimeText;
@@ -40,6 +42,7 @@ namespace BS.Player
             if (mainCamera == null)
                 mainCamera = Camera.main;
 
+            m_Input = transform.parent.GetComponent<PlayerInputActions>();
             ps = FindFirstObjectByType<PlayerState>();
             psm = PlayerStateMachine.Instance;
             animator = GetComponent<Animator>();
@@ -57,12 +60,6 @@ namespace BS.Player
             {
                 PlayerSkillController.skillList.Add("E", new Skill("ChargingPunch", chargingPunchCoolTime, DoChargingPunch, chargingPunchDamage));
             }
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         // 애니메이션 실행중 호출 Update
@@ -88,75 +85,74 @@ namespace BS.Player
             }
         }
 
+        Vector3 GetMousePosition()
+        {
+            m_inputVector2 = m_Input.MousePosition;
+
+            Ray ray = mainCamera.ScreenPointToRay(m_inputVector2);
+            RaycastHit[] hits = Physics.RaycastAll(ray);
+
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.transform.gameObject.CompareTag("Ground"))
+                {
+                    return hit.point;
+                }
+            }
+            return Vector3.zero;
+        }
+
         public void DoUppercut()
         {
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (!ps.isDashing && psm.animator.GetBool("IsBlocking") == false && !ps.isBackHandSwinging && !ps.isChargingPunching)
+            if (psm.animator.GetBool("IsDashing") == false
+                && psm.animator.GetBool("IsBlocking") == false
+                && psm.animator.GetBool("IsChargingPunch") == false
+                && psm.animator.GetBool("IsBackHandSwing") == false)
             {
-                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-                RaycastHit[] hits = Physics.RaycastAll(ray);
-                foreach (RaycastHit hit in hits)
-                {
-                    if (hit.transform.gameObject.CompareTag("Ground"))
-                    {
-                        ps.canSkill = false;
-                        ps.targetPosition = hit.point;
-                        RotatePlayer();
-
-                        psm.ChangeState(psm.UppercutState);
-                        //StartCoroutine(CoUppercutCooldown());
-                    }
-                }
-                ps.isUppercuting = true;
-                ps.isMoving = false;
+                ps.targetPosition = GetMousePosition();
+                RotatePlayer();
+                psm.animator.SetTrigger("DoUppercut");
+                psm.animator.SetBool("IsUppercuting", true);
+                ps.canSkill = false;
+                psm.animator.SetBool("IsMoving", false);
+                ps.isMovable = false;
             }
         }
 
         public void DoChargingPunch()
         {
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (!ps.isDashing && psm.animator.GetBool("IsBlocking") == false && !ps.isBackHandSwinging && !ps.isUppercuting)
+            if (psm.animator.GetBool("IsDashing") == false
+                && psm.animator.GetBool("IsBlocking") == false
+                && psm.animator.GetBool("IsUppercuting") == false
+                && psm.animator.GetBool("IsBackHandSwing") == false)
             {
-                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-                RaycastHit[] hits = Physics.RaycastAll(ray);
-                foreach (RaycastHit hit in hits)
-                {
-                    if (hit.transform.gameObject.CompareTag("Ground"))
-                    {
-                        ps.canSkill = false;
-                        ps.targetPosition = hit.point;
-                        RotatePlayer();
-
-                        psm.ChangeState(psm.ChargingPunchState);
-                        //StartCoroutine(CoChargingPunchCooldown());
-                    }
-                }
-                ps.isChargingPunching = true;
-                ps.isMoving = false;
+                ps.targetPosition = GetMousePosition();
+                RotatePlayer();
+                psm.animator.SetTrigger("DoChargingPunch");
+                psm.animator.SetBool("IsChargingPunch", true);
+                ps.canSkill = false;
+                psm.animator.SetBool("IsMoving", false);
+                ps.isMovable = false;
             }
         }
 
         public void DoBackHandSwing()
         {
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (!ps.isDashing && psm.animator.GetBool("IsBlocking") == false && !ps.isUppercuting && !ps.isChargingPunching)
+            if (psm.animator.GetBool("IsDashing") == false
+                && psm.animator.GetBool("IsBlocking") == false
+                && psm.animator.GetBool("IsUppercuting") == false
+                && psm.animator.GetBool("IsChargingPunch") == false)
             {
-                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-                RaycastHit[] hits = Physics.RaycastAll(ray);
-                foreach (RaycastHit hit in hits)
-                {
-                    if (hit.transform.gameObject.CompareTag("Ground"))
-                    {
-                        ps.canSkill = false;
-                        ps.targetPosition = hit.point;
-                        RotatePlayer();
-
-                        psm.ChangeState(psm.BackHandSwingState);
-                        //StartCoroutine(CobackHandSwingCooldown());
-                    }
-                }
-                ps.isBackHandSwinging = true;
-                ps.isMoving = false;
+                ps.targetPosition = GetMousePosition();
+                RotatePlayer();
+                psm.animator.SetTrigger("DoBackHandSwing");
+                psm.animator.SetBool("IsBackHandSwing", true);
+                ps.canSkill = false;
+                psm.animator.SetBool("IsMoving", false);
+                ps.isMovable = false;
             }
         }
 
@@ -174,15 +170,13 @@ namespace BS.Player
             transform.parent.transform.DORotateQuaternion(targetRotation, rotationDuration)
                         .SetAutoKill(true)
                         .SetEase(Ease.InOutSine)
-                        .OnComplete(() =>
-                        {
-
-                        });
+                        .OnComplete(() =>{});
         }
         // 어퍼컷이 끝날때 호출
         public void EndUppercut()
         {
-            ps.isUppercuting = false;
+            Debug.Log("END UPPERCUT");
+            psm.animator.SetBool("IsUppercuting", false);
             ps.targetPosition = this.transform.position;
             psm.currentSkillName = "";
             isHit = false;
@@ -191,7 +185,8 @@ namespace BS.Player
         // 백핸드스윙이 끝날때 호출
         public void EndBackHandSwing()
         {
-            ps.isBackHandSwinging = false;
+            Debug.Log("END SWING");
+            psm.animator.SetBool("IsBackHandSwing", false);
             ps.targetPosition = this.transform.position;
             psm.currentSkillName = "";
             isHit = false;
@@ -200,7 +195,8 @@ namespace BS.Player
         // 차징펀지이 끝날때 호출
         public void EndChargingPunch()
         {
-            ps.isChargingPunching = false;
+            Debug.Log("END CHARGING");
+            psm.animator.SetBool("IsChargingPunch", false);
             ps.targetPosition = this.transform.position;
             psm.currentSkillName = "";
             isHit = false;
@@ -210,12 +206,14 @@ namespace BS.Player
         // 다른행동이 불가능 하도록 설정
         public void CannotOtherAct()
         {
+            Debug.Log("CANNOT");
             ps.isDashable = false;
             ps.isBlockable = false;
         }
         // 다른행동이 가능 하도록 설정
         public void CanOtherAct()
         {
+            Debug.Log("CAN");
             ps.isDashable = true;
             ps.isBlockable = true;
         }

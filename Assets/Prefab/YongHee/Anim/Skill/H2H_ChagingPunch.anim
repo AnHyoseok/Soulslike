@@ -69680,7 +69680,7 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 1.9
-    functionName: CannotOtherAct
+    functionName: CanOtherAct
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

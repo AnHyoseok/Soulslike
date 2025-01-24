@@ -19,7 +19,7 @@ namespace BS.Player
         private static readonly string IS_WALKING = "IsWalking";
         private static readonly string IS_SPRINTING = "IsSprinting";
         private static readonly string IS_ATTACKING = "IsAttacking";
-        private static readonly string IS_DASH = "IsDashIng";
+        private static readonly string IS_DASH = "IsDashing";
         private static readonly string DO_RUN = "DoRun";
         private static readonly string DO_WALK = "DoWalk";
         private static readonly string DO_SPRINT = "DoSprint";
@@ -47,7 +47,7 @@ namespace BS.Player
         // Target Position 설정
         private void SetTargetPosition()
         {
-            if (m_Input.RightClick && ps.isMovable 
+            if (m_Input.RightClick && ps.isMovable
                 && psm.animator.GetBool(IS_DASH) == false
                 && psm.animator.GetBool("IsBlocking") == false)
             {
@@ -57,8 +57,21 @@ namespace BS.Player
                 if (!psm.animator.GetBool(IS_MOVING))
                 {
                     psm.animator.SetBool(IS_MOVING, true);
-                    psm.animator.SetTrigger(DO_RUN);
-                    psm.animator.SetBool(IS_RUNNING, true);
+                    if (psm.animator.GetBool(IS_WALKING))
+                    {
+                        psm.animator.SetTrigger(DO_WALK);
+                        psm.animator.SetBool(IS_WALKING, true);
+                    }
+                    else if (psm.animator.GetBool(IS_SPRINTING))
+                    {
+                        psm.animator.SetTrigger(DO_SPRINT);
+                        psm.animator.SetBool(IS_SPRINTING, true);
+                    }
+                    else
+                    {
+                        psm.animator.SetTrigger(DO_RUN);
+                        psm.animator.SetBool(IS_RUNNING, true);
+                    }
                 }
             }
             SetMoveState();

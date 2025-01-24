@@ -86,7 +86,6 @@ namespace BS.Player
             {
                 if (hit.transform.gameObject.CompareTag("Ground"))
                 {
-                    //TODO :: ps에서 정의해야할까? 반환해주면 안되나? 변경 검토
                     gizmoPosition = hit.point; // Gizmo 위치 저장
                     return hit.point;
                     //ps.targetPosition = hit.point;
