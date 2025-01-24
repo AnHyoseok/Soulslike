@@ -14,7 +14,6 @@ namespace BS.Player
         public float dashDistance = 5f;                     // 대쉬 거리
         public float invincibilityDuration = 0.5f;          // 무적 지속 시간
 
-        private Vector3 moveTargetPos;
         private static readonly string IS_MOVING = "IsMoving";
         private static readonly string IS_RUNNING = "IsRun";
         private static readonly string IS_WALKING = "IsWalking";
@@ -48,9 +47,11 @@ namespace BS.Player
         // Target Position 설정
         private void SetTargetPosition()
         {
-            if (m_Input.RightClick && ps.isMovable && psm.animator.GetBool(IS_DASH) == false)
+            if (m_Input.RightClick && ps.isMovable 
+                && psm.animator.GetBool(IS_DASH) == false
+                && psm.animator.GetBool("IsBlocking") == false)
             {
-                moveTargetPos = GetMousePosition();
+                ps.targetPosition = GetMousePosition();
                 RotatePlayer();
 
                 if (!psm.animator.GetBool(IS_MOVING))
@@ -66,12 +67,16 @@ namespace BS.Player
         // Player 이동
         private void MoveToTargetPos()
         {
-            if (psm.animator.GetBool(IS_MOVING) && !ps.isBlockingAnim && !ps.isUppercuting &&
-                !ps.isBackHandSwinging && !ps.isChargingPunching && !psm.animator.GetBool(IS_ATTACKING) && psm.animator.GetBool(IS_DASH) == false)
+            if (psm.animator.GetBool(IS_MOVING)
+                && !ps.isUppercuting &&
+                !ps.isBackHandSwinging && !ps.isChargingPunching
+                && !psm.animator.GetBool(IS_ATTACKING)
+                && psm.animator.GetBool(IS_DASH) == false
+                && psm.animator.GetBool("IsBlocking") == false)
             {
-                transform.position = Vector3.MoveTowards(transform.position, moveTargetPos, ps.inGameMoveSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);
 
-                if (Vector3.Distance(transform.position, moveTargetPos) < 0.01f)
+                if (Vector3.Distance(transform.position, ps.targetPosition) < 0.01f)
                 {
                     StopMovement();
                 }
@@ -148,7 +153,9 @@ namespace BS.Player
         // 대쉬
         private void DoDash()
         {
-            if (psm.animator.GetBool(IS_DASH) == false && !ps.isBlockingAnim && ps.isDashable)
+            if (psm.animator.GetBool(IS_DASH) == false
+                && psm.animator.GetBool("IsBlocking") == false
+                && ps.isDashable)
             {
                 StartDash(GetMousePosition());
             }
@@ -171,7 +178,7 @@ namespace BS.Player
 
             Vector3 dashDirection = (targetPoint - transform.position).normalized;
             Vector3 dashTarget = transform.position + dashDirection * dashDistance;
-            moveTargetPos = dashTarget;
+            ps.targetPosition = dashTarget;
             RotatePlayer();
 
             // TODO :: Sprint 모션으로 대쉬를 하고싶은데

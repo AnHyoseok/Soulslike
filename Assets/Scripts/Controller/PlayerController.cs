@@ -101,7 +101,7 @@ namespace BS.Player
         protected virtual void RotateToTargetPos()
         {
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (targetPosition != null && ps.isMoving && !ps.isBlockingAnim && !ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching)
+            if (targetPosition != null && ps.isMoving && psm.animator.GetBool("IsBlocking") == false && !ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching)
             {
                 // 목표 방향 계산
                 Vector3 direction = GetMousePosition() - transform.position;
@@ -126,7 +126,7 @@ namespace BS.Player
         protected virtual void RotatePlayer()
         {
             //if (psm.animator.GetBool("IsAttacking")) return;
-            if (!ps.isBlockingAnim
+            if (psm.animator.GetBool("IsBlocking") == false
                 && !ps.isUppercuting
                 && !ps.isBackHandSwinging
                 && !ps.isChargingPunching
@@ -165,7 +165,4 @@ namespace BS.Player
         }
     }
 }
-
-// TODO :: 플레이어 바닥을 찍으면 IDLE로 이동하는 버그 FIX
-
 // TODO :: SO를 생성하면서 PlayerState, PlayerHealth 등등 공통적으로 들어가는 것들을 추가시켜주자

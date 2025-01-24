@@ -91,7 +91,7 @@ namespace BS.Player
         public void DoUppercut()
         {
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isBackHandSwinging && !ps.isChargingPunching)
+            if (!ps.isDashing && psm.animator.GetBool("IsBlocking") == false && !ps.isBackHandSwinging && !ps.isChargingPunching)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -115,7 +115,7 @@ namespace BS.Player
         public void DoChargingPunch()
         {
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isBackHandSwinging && !ps.isUppercuting)
+            if (!ps.isDashing && psm.animator.GetBool("IsBlocking") == false && !ps.isBackHandSwinging && !ps.isUppercuting)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit[] hits = Physics.RaycastAll(ray);
@@ -139,7 +139,7 @@ namespace BS.Player
         public void DoBackHandSwing()
         {
             if (psm.animator.GetBool("IsAttacking")) return;
-            if (!ps.isDashing && !ps.isBlockingAnim && !ps.isUppercuting && !ps.isChargingPunching)
+            if (!ps.isDashing && psm.animator.GetBool("IsBlocking") == false && !ps.isUppercuting && !ps.isChargingPunching)
             {
                 Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit[] hits = Physics.RaycastAll(ray);

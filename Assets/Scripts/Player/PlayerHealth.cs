@@ -1,3 +1,4 @@
+using BS.PlayerInput;
 using BS.State;
 using DG.Tweening;
 using System.Collections;
@@ -7,13 +8,17 @@ using UnityEngine.Events;
 
 namespace BS.Player
 {
-    public class PlayerHealth : MonoBehaviour
+    public class PlayerHealth : PlayerController
     {
         #region Variables
-        // Block
-        public float blockCoolTime = 3f;
-        public Camera mainCamera;                           // Camera 변수
-        public TextMeshProUGUI blockCoolTimeText;
+        // 애니메이션 파라미터 이름 상수
+        private static readonly string IS_BLOCKING = "IsBlocking";
+        private static readonly string IS_ATTACKING = "IsAttacking";
+        private static readonly string DO_BLOCK = "DoBlock";
+
+        // 블록 관련 변수
+        public float blockCoolTime = 3f; // 블록 쿨타임 (기본값: 3초)
+        public TextMeshProUGUI blockCoolTimeText; // 블록 쿨타임 텍스트 표시
 
         // 최대 체력
         [SerializeField] private float maxHealth;
@@ -22,6 +27,7 @@ namespace BS.Player
             get { return maxHealth; }
             private set { maxHealth = value; }
         }
+
         // 현재 체력
         [SerializeField] private float currentHealth;
         public float CurrentHealth
@@ -31,14 +37,15 @@ namespace BS.Player
             {
                 currentHealth = value;
 
-                //죽음 처리
+                // 체력이 0 이하가 되면 죽음 처리
                 if (currentHealth <= 0)
                 {
                     IsDeath = true;
                 }
             }
         }
-        // 죽음여부
+
+        // 죽음 여부
         private bool isDeath = false;
         public bool IsDeath
         {
@@ -46,153 +53,132 @@ namespace BS.Player
             private set
             {
                 isDeath = value;
-                //애니메이션
-                //animator.SetBool(AnimationString.IsDeath, value);
+                // 애니메이션 설정
+                // animator.SetBool(AnimationString.IsDeath, value);
             }
         }
 
-        // State
-        PlayerState ps;
-        PlayerStateMachine psm;
-        public float rotationDuration = 0.1f;               // 회전 지속 시간
-        // Action
-        public UnityAction<float> OnDamaged;        // 데미지를 받을 때 호출하는 이벤트
-        public UnityAction OnBlocked;                // 블록 성공할 때 호출하는 이벤트
+        // 이벤트 액션
+        public UnityAction<float> OnDamaged;      // 데미지를 받을 때 호출되는 이벤트
+        public UnityAction OnBlocked;            // 블록 성공 시 호출되는 이벤트
         #endregion
 
-        private void Awake()
+        protected override void Awake()
         {
+            m_Input = transform.parent.GetComponent<PlayerInputActions>();
+
+            // 스킬 목록에 블록 스킬 추가
             if (!PlayerSkillController.skillList.ContainsKey("R"))
             {
                 PlayerSkillController.skillList.Add("R", new Skill("Block", blockCoolTime, DoBlock));
             }
         }
 
-        void Start()
+        private void OnEnable()
         {
-            if (mainCamera == null)
-                mainCamera = Camera.main;
-
-            
-            psm = PlayerStateMachine.Instance;
-            ps = FindFirstObjectByType<PlayerState>();
-            //playerStateMachine.animator = transform.GetChild(0).GetComponent<Animator>();
-            OnDamaged += CalculateDamage;
-            maxHealth = 1000f;
-            currentHealth = MaxHealth;
+            OnDamaged += CalculateDamage; // 데미지 이벤트 구독
         }
 
-        // Update is called once per frame
-        void Update()
+        private void OnDisable()
         {
-
+            OnDamaged -= CalculateDamage; // 데미지 이벤트 구독 해제
         }
+
+        protected override void Start()
+        {
+            base.Start();
+            maxHealth = 1000f; // 초기 최대 체력 설정
+            currentHealth = MaxHealth; // 현재 체력을 최대 체력으로 초기화
+        }
+
+        // 블록 수행 메서드
         public void DoBlock()
         {
             if (!ps.isBlockable) return;
 
-            ps.isBlockingAnim = true;
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit[] hits = Physics.RaycastAll(ray);
-            foreach (RaycastHit hit in hits)
+            if (!psm.animator.GetBool(IS_BLOCKING))
             {
-                if (hit.transform.gameObject.CompareTag("Ground"))
-                {
-                    ps.targetPosition = hit.point;
-                    ps.isUppercuting = false;
-                    ps.isBackHandSwinging = false;
-                    ps.isChargingPunching = false;
-                    psm.animator.SetBool("IsBlocking", true);
-                }
+                ps.isDashable = false; // 대시 불가 설정
+                RotatePlayer(); // 플레이어 회전
+                ps.targetPosition = transform.position; // 블록 중 이동 방지
+                psm.animator.SetBool(IS_BLOCKING, true);
+                psm.animator.SetTrigger(DO_BLOCK);
             }
-            RotatePlayer();
-            Invoke(nameof(SetIsBlockingAnim), 1f);
-            psm.animator.SetTrigger("DoBlock");
-            //StartCoroutine(CoBlockCooldown());
         }
-        void SetIsBlockingAnim()
-        {
-            ps.isBlockingAnim = false;
-        }
+
+        // 블록 시작 처리
         public void OnBlock()
         {
             ps.isBlocking = true;
         }
+
+        // 블록 종료 처리
         public void UnBlock()
         {
             ps.isBlocking = false;
-            psm.animator.SetBool("IsBlocking", false);
         }
 
-        // 최대체력 세팅
+        // 플레이어 회전 처리
+        protected override void RotatePlayer()
+        {
+            if (!ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching && !psm.animator.GetBool(IS_ATTACKING))
+            {
+                transform.parent.DOKill(complete: false); // 트랜스폼 관련 모든 트윈 제거 (완료 콜백 실행 안 함)
+
+                // 목표 회전값 계산
+                Vector3 direction = (GetMousePosition() - transform.parent.position).normalized;
+                direction = new Vector3(direction.x, 0, direction.z);
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+                transform.parent.DORotateQuaternion(targetRotation, rotationDuration).SetLink(gameObject); // 회전 애니메이션 실행
+            }
+        }
+
+        // 최대 체력 설정
         public void SetMaxHealth(float amount)
         {
             maxHealth = amount;
             CurrentHealth = maxHealth;
         }
 
-        // 데미지 받는 함수 (데미지 값, 블락가능여부:기본값은 블락이 가능하도록 설정)
-        // 반환 값은 Block 성공 여부
+        // 데미지 처리 (데미지 값, 블록 가능 여부)
         public bool TakeDamage(float damage, bool isBlockable = true)
         {
-            // 블락 가능한 경우
             if (isBlockable)
             {
-                // 블락 성공
-                if (ps.isBlocking)
+                if (ps.isBlocking) // 블록 성공
                 {
                     OnBlocked?.Invoke();
                     return true;
                 }
-                // 블락 실패
-                else
+                else // 블록 실패
                 {
                     OnDamaged?.Invoke(damage);
                     return false;
                 }
             }
-            // 블락 불가능한 경우
-            else
+            else // 블록 불가 상황
             {
                 OnDamaged?.Invoke(damage);
                 return false;
             }
         }
 
-        // 데미지 계산
+        // 데미지 계산 메서드
         public void CalculateDamage(float damage)
         {
-            // 실질적으로 들어온 데미지 계산 및 유효성 검사
-            float realDamage = Mathf.Min(CurrentHealth, damage);
+            float realDamage = Mathf.Min(CurrentHealth, damage); // 실제 데미지 계산
 
-            // 체력 감소
-            CurrentHealth -= realDamage;
+            CurrentHealth -= realDamage; // 체력 감소
 
-            // 체력이 0 이하라면 사망 처리
-            if (CurrentHealth <= 0f)
+            if (CurrentHealth <= 0f) // 체력이 0 이하일 경우
             {
                 CurrentHealth = 0;
-                //Die();
+                //Die(); // 사망 처리 호출 가능
             }
-            Debug.Log("Player OnDamaged = " + damage);
-            Debug.Log("Player Hp = " + CurrentHealth);
-        }
-        // DoTween 회전 처리
-        void RotatePlayer()
-        {
-            transform.parent.transform.DOKill(complete: false); // 트랜스폼과 관련된 모든 트윈 제거 (완료 콜백은 실행되지 않음)
 
-            // 목표 회전값 계산
-            Vector3 direction = (ps.targetPosition - transform.parent.transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-
-            transform.parent.transform.DORotateQuaternion(targetRotation, rotationDuration)
-                        .SetAutoKill(true)
-                        .SetEase(Ease.InOutSine)
-                        .OnComplete(() =>
-                        {
-                            ps.targetPosition = transform.position;
-                        });
+            Debug.Log($"Player OnDamaged = {damage}");
+            Debug.Log($"Player Hp = {CurrentHealth}");
         }
     }
 }

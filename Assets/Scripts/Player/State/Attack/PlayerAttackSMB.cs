@@ -19,10 +19,12 @@ public class PlayerAttackSMB : StateMachineBehaviour
         if (ps == null) // 초기화되지 않았다면 캐싱
         {
             ps = FindFirstObjectByType<PlayerState>();
-            m_Input = FindFirstObjectByType<PlayerInputActions>();
-            //ps.isAttack = true;
         }
-        //Debug.Log("TEST ENTER");
+        if (m_Input == null)
+        {
+            m_Input = FindFirstObjectByType<PlayerInputActions>();
+        }
+
         // Combo 공격이 4번째 모션인 경우
         if (ps.comboAttackIndex == 4)
         {
@@ -37,7 +39,7 @@ public class PlayerAttackSMB : StateMachineBehaviour
         animator.SetBool("IsMoving", false);
     }
 
-     //OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
+    //OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (ps != null)
@@ -106,21 +108,19 @@ public class PlayerAttackSMB : StateMachineBehaviour
     // OnStateMachineExit is called when exiting a state machine via its Exit Node
     override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
-        if (ps != null) // 초기화되지 않았다면 캐싱
+        if (ps != null)
         {
-            animator.SetBool("IsAttacking", false);
             ps.isMovable = true;
-            //ps.isAttacking = false;
-            if (m_Input.RightClick)
-            {
-                if (Input.GetKey(KeyCode.C))
-                    animator.SetTrigger("DoWalk");
-                else if (Input.GetKey(KeyCode.LeftShift))
-                    animator.SetTrigger("DoSprint");
-                else
-                    animator.SetTrigger("DoRun");
-            }
-            //Debug.Log("TEST Exit");
+        }
+        animator.SetBool("IsAttacking", false);
+        if (m_Input.RightClick)
+        {
+            if (Input.GetKey(KeyCode.C))
+                animator.SetTrigger("DoWalk");
+            else if (Input.GetKey(KeyCode.LeftShift))
+                animator.SetTrigger("DoSprint");
+            else
+                animator.SetTrigger("DoRun");
         }
     }
 }

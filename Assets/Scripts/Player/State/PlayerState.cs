@@ -82,7 +82,6 @@ namespace BS.Player
         // Block
         public bool isBlockable = true;          // 블락 가능 여부
         public bool isBlocking = false;                    // 블락 진행 여부
-        public bool isBlockingAnim = false;               // 블락 애니메이션 진행 여부
         public float currentBlockCoolTime = 0f;                 // BD 블락 쿨타임
 
         // Attack
