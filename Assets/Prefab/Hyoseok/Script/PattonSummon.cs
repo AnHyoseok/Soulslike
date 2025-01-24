@@ -18,6 +18,7 @@ namespace BS.vampire
 
         private GameObject currentShild; // 현재 쉴드 상태
         public VampireHealth boss;
+        public float summonTimeRemaining; //남은 소환시간
 
         void Start()
         {
@@ -38,7 +39,13 @@ namespace BS.vampire
         {
             while (true)
             {
-                yield return new WaitForSeconds(summonInterval);
+
+                summonTimeRemaining = summonInterval;
+                while (summonTimeRemaining > 0)
+                {
+                    summonTimeRemaining -= Time.deltaTime;
+                    yield return null;
+                }
                 Summon();
             }
         }

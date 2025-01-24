@@ -122,7 +122,7 @@ namespace BS.vampire
                 animator = GetComponent<Animator>();
             }
             //Waring();
-            //StartCoroutine(Attack5());
+           // StartCoroutine(Attack4());
 
             NextPatternPlay();
 
@@ -158,7 +158,7 @@ namespace BS.vampire
 
             // 플레이어 바라보며 걷기
             transform.LookAt(player.transform.position);
-            // animator.SetTrigger("Walk");
+            animator.SetTrigger("Walk");
             yield return new WaitForSeconds(0.5f);
             AudioUtility.CreateSFX(shotSound, transform.position, AudioUtility.AudioGroups.Sound);
             Waring();
@@ -189,12 +189,13 @@ namespace BS.vampire
             transform.LookAt(player.transform);
             yield return new WaitForSeconds(1f);
             Waring();
+            animator.SetTrigger("Attack1");
             for (int i = 0; i < attackCount; i++)
             {
                 // 공격 모션 시간
                 GameObject attackObject1 = Instantiate(attackObjectPrefab, attackObjects[0].position, Quaternion.identity);
                 GameObject attackObject2 = Instantiate(attackObjectPrefab, attackObjects[1].position, Quaternion.identity);
-                animator.SetTrigger("Attack1");
+               
 
                 hitPoint = player.transform;
 
@@ -221,9 +222,10 @@ namespace BS.vampire
                     attackObject1.transform.LookAt(player.transform);
                 }).OnComplete(() =>
                 {
+                    AudioUtility.CreateSFX(rushSound, transform.position, AudioUtility.AudioGroups.Sound); AudioUtility.CreateSFX(explosionSound, transform.position, AudioUtility.AudioGroups.Sound);
                    
-                    // 타격 지점에 도달 시 터트리고 제거
-                    GameObject impactEffect = Instantiate(impactEffectPrefab, attackObject1.transform.position, Quaternion.identity);
+                     // 타격 지점에 도달 시 터트리고 제거
+                     GameObject impactEffect = Instantiate(impactEffectPrefab, attackObject1.transform.position, Quaternion.identity);
                     Destroy(attackObject1, 1f);
                     Destroy(impactEffect, 1.5f);
                 });
@@ -337,7 +339,7 @@ namespace BS.vampire
             yield return new WaitForSeconds(5f);
 
             transform.LookAt(player.transform);
-    
+
             for (int j = 0; j < attack4count; j++)
             {
                 Waring();
@@ -372,17 +374,13 @@ namespace BS.vampire
                             summonObject[i].transform.LookAt(playerBody.transform);
 
                             Vector3 eulerAngles = summonObject[i].transform.rotation.eulerAngles;
-
                             eulerAngles.y += Random.Range(-10f, 10f);
-                            //eulerAngles.z += Random.Range(-10f, 10f);
                             summonObject[i].transform.rotation = Quaternion.Euler(eulerAngles);
                         }
                     }
                     elapsedTime += Time.deltaTime;
                     yield return null;
                 }
-
-
 
                 for (int i = 0; i < summonObject.Length; i++)
                 {
@@ -401,16 +399,20 @@ namespace BS.vampire
                 }
 
                 yield return new WaitForSeconds(0.5f);
+
                 // 레이저 발사
                 for (int i = 0; i < summonObject.Length; i++)
                 {
                     AudioUtility.CreateSFX(laserSound, transform.position, AudioUtility.AudioGroups.Sound);
-                    GameObject attackEffect = Instantiate(attack4EffectPrefab, summonObject[i].transform.position, summonObject[i].transform.rotation);
+
+                    // 레이저 발사 위치의 y값을 타겟 위치의 y값과 동일하게 설정
+                    Vector3 laserPosition = new Vector3(summonObject[i].transform.position.x, targetPositions[i].y, summonObject[i].transform.position.z);
+
+                    GameObject attackEffect = Instantiate(attack4EffectPrefab, laserPosition, summonObject[i].transform.rotation);
                     attackEffect.transform.parent = summonObject[i].transform;
                     attackEffect.transform.rotation *= Quaternion.Euler(90f, 0f, 0f);
                     Destroy(attackEffect, 0.5f);
                 }
-
 
                 yield return new WaitForSeconds(1f);
 
@@ -438,9 +440,10 @@ namespace BS.vampire
                 }
             }
             yield return new WaitForSeconds(3f);
-           
+
             yield return null;
         }
+
         //레이저 배트소환
         IEnumerator Attack5()
         {
@@ -558,17 +561,17 @@ namespace BS.vampire
         {
             // 벽 레이어 가져오기
             int wallLayerMask = LayerMask.GetMask("Wall");
-
+            // 공격 이펙트 생성
+            attack7Effect.SetActive(true);
             for (int i = 0; i < 3; i++)
             {
                 Waring();
                 transform.LookAt(player.transform);
-
+       
                 // 공중 날기 - 날기 애니메이션
                 animator.SetBool("IsFlying", true);
 
-                // 공격 이펙트 생성
-                attack7Effect.SetActive(true);
+             
 
                 // Range 활성화
                 Vector3 dashDirection = (player.transform.position - transform.position).normalized;
@@ -619,13 +622,14 @@ namespace BS.vampire
 
                 // 착륙 애니메이션
                 animator.SetBool("IsFlying", false);
-                attack7Effect.SetActive(false);
+               
                 attack7Range.SetActive(false);
 
                 // 돌진 종료 
                 attack7collider.SetActive(false);
                 yield return new WaitForSeconds(0.5f);
             }
+            attack7Effect.SetActive(false);
         }
 
 

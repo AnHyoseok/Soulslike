@@ -4,6 +4,7 @@ using BS.UI;
 using BS.Audio;
 using UnityEngine.Audio;
 using BS.PlayerInput;
+using BS.vampire;
 
 namespace BS.Utility
 {
@@ -15,10 +16,12 @@ namespace BS.Utility
         private DungeonClearTime dungeEndGame;
         public GameObject player;
         public GameObject boss;
-        private float actorTime=5f;
+        public GameObject VampireDummy;
+        [SerializeField] private float actorTime=3f;
         public AudioSource audioSource;
         public AudioClip clearSound;
         public AudioClip defeatSound;
+        public Animator animator;
    
         private PlayerInputActions playerInputActions;
 
@@ -27,6 +30,7 @@ namespace BS.Utility
 
         private void Start()
         {
+            animator= VampireDummy.GetComponent<Animator>();
             dungeEndGame = FindFirstObjectByType<DungeonClearTime>();
             bossHealth = FindFirstObjectByType<VampireHealth>();
             playerHealth = FindFirstObjectByType<PlayerHealth>();
@@ -57,7 +61,10 @@ namespace BS.Utility
         {
             gameEnded = true;
             playerInputActions.enabled = false;
-       
+            VampireDummy.SetActive(true);
+            animator.SetTrigger("Win");
+            boss.GetComponent<VampireController>().enabled = false;
+            boss.GetComponent<PattonSummon>().enabled = false;
             audioSource.clip = clearSound;
             audioSource.Play();
             Invoke("Clear", actorTime); 
@@ -67,6 +74,10 @@ namespace BS.Utility
         {
             gameEnded = true;
             playerInputActions.enabled = false;
+            VampireDummy.SetActive(true);
+            boss.GetComponent<VampireController>().enabled = false;
+            boss.GetComponent<PattonSummon>().enabled = false;
+            animator.SetTrigger("Defeat");
             audioSource.clip = defeatSound;
             audioSource.Play();
             Invoke("Defeat", actorTime); 
@@ -74,7 +85,7 @@ namespace BS.Utility
 
         private void Clear()
         {
-            //Destroy(boss);
+            Destroy(boss);
          
         
             dungeEndGame.CompleteDungeon();
@@ -82,7 +93,7 @@ namespace BS.Utility
 
         private void Defeat()
         {
-            //Destroy(boss); 
+            Destroy(boss); 
             Debug.Log("패배");
         
             dungeEndGame.DefeatDungeon();
