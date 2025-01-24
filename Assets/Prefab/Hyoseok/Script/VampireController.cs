@@ -589,10 +589,10 @@ namespace BS.vampire
 
                 // 벽 감지를 위한 변수 추가
                 bool hitWall = false;
-
+                AudioUtility.CreateSFX(rushSound, transform.position, AudioUtility.AudioGroups.Sound);
                 while (elapsedTime < flyDuration)
                 {
-                    AudioUtility.CreateSFX(rushSound, transform.position, AudioUtility.AudioGroups.Sound);
+              
                     float remainingDistance = Vector3.Distance(transform.position, targetPosition);
 
                     // 벽과의 충돌 감지 (레이어 기반)

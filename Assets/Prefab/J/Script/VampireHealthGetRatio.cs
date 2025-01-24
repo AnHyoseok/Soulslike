@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 namespace BS.UI
 {
-    public class HealthGetRatio : MonoBehaviour
+    public class VampireHealthGetRatio : MonoBehaviour
     {
         #region Variables
-        public BossHealth bossHealth;
+        public VampireHealth bossHealth;
         public PlayerHealth playerHealth;
         public Image bosshealthBarImage;
         public Image playerhealthBarImage;

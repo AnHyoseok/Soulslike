@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 
-public class BossHealth : MonoBehaviour,IDamageable
+public class VampireHealth : MonoBehaviour,IDamageable
 {
     public float maxHealth = 100000; // 보스 최대 체력
     public float currentHealth;

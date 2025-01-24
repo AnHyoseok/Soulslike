@@ -17,13 +17,13 @@ namespace BS.vampire
         public float summonInterval = 5f; // 소환 간격 
 
         private GameObject currentShild; // 현재 쉴드 상태
-        public BossHealth boss;
+        public VampireHealth boss;
 
         void Start()
         {
             if (boss == null)
             {
-                boss = FindAnyObjectByType<BossHealth>();
+                boss = FindAnyObjectByType<VampireHealth>();
             }
             Summon();
             StartCoroutine(SummonBat());
