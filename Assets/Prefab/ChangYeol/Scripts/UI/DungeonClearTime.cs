@@ -1,7 +1,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -118,28 +117,34 @@ namespace BS.UI
         //승리시 버튼 클릭 함수
         public void CompleteContinue()
         {
-            //SceneManager.LoadScene("");
-            buttons[0].onClick.RemoveAllListeners();
-            buttons[1].onClick.RemoveAllListeners();
+            SceneManager.LoadScene("Shelter");
+            //buttons[0].onClick.RemoveAllListeners();
+            //buttons[1].onClick.RemoveAllListeners();
         }
         public void CompleteRetry()
         {
-            //SceneManager.LoadScene("");
-            buttons[0].onClick.RemoveAllListeners();
-            buttons[1].onClick.RemoveAllListeners();
+            string currentSceneName = SceneManager.GetActiveScene().name;
+
+            // 현재 씬 다시 로드
+            SceneManager.LoadScene(currentSceneName);
+            //buttons[0].onClick.RemoveAllListeners();
+            //buttons[1].onClick.RemoveAllListeners();
         }
         //패배시 버튼 클릭 함수
         public void DefeatContinue()
         {
-            //SceneManager.LoadScene("");
-            buttons[0].onClick.RemoveAllListeners();
-            buttons[1].onClick.RemoveAllListeners();
+            SceneManager.LoadScene("Shelter");
+            //buttons[0].onClick.RemoveAllListeners();
+            //buttons[1].onClick.RemoveAllListeners();
         }
         public void DefeatRetry()
         {
-            //SceneManager.LoadScene("");
-            buttons[0].onClick.RemoveAllListeners();
-            buttons[1].onClick.RemoveAllListeners();
+            string currentSceneName = SceneManager.GetActiveScene().name;
+
+            // 현재 씬 다시 로드
+            SceneManager.LoadScene(currentSceneName);
+            //buttons[0].onClick.RemoveAllListeners();
+            //buttons[1].onClick.RemoveAllListeners();
         }
         // 시간 포맷 변환
         private string FormatTime(float time)
