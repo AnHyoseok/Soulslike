@@ -1,3 +1,4 @@
+using BS.Utility;
 using UnityEngine;
 
 namespace BS.Title
@@ -5,7 +6,7 @@ namespace BS.Title
     public class StageGo : StageTrigger
     {
         public GameObject StageCanvas;
-        
+        public AudioClip triggerSound;
 
         protected override void TriggerKeyDown()
         {
@@ -17,6 +18,7 @@ namespace BS.Title
                     StageCanvas.SetActive(!StageCanvas.activeSelf);
                     if(StageCanvas.activeSelf)
                     {
+                        AudioUtility.CreateSFX(triggerSound, transform.position, AudioUtility.AudioGroups.Sound);
                         inputActions.UnInputActions();
                     }
                     else
