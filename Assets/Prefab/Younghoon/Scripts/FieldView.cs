@@ -1,4 +1,5 @@
 using BS.Player;
+using BS.Utility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,6 +43,21 @@ namespace BS.Enemy.Set
 
         private bool isAttacked = false;
 
+        [Header("SFX")]
+        public AudioClip audioClip;
+
+        [Header("AttackDamage")]
+        [SerializeField] private float damage = 50f;
+
+        [Header("WaringSquare")]
+        [SerializeField] private GameObject waringSquarePrefab;
+        private GameObject waringSquare;
+        [SerializeField] private Vector3 waringSquareOffset;
+
+        [Header("Player")]
+        private PlayerController playerController;
+
+
         private void Awake()
         {
             //참조
@@ -56,6 +72,9 @@ namespace BS.Enemy.Set
             //레이어 마스크 설정
             obstacleMask = 1 << LayerMask.NameToLayer(SetProperty.OBSTACLE_LAYER);
             targetMask = 1 << LayerMask.NameToLayer(SetProperty.PLAYER_LAYER);
+
+            //waringSquarePrefab을 생성시켜주기위한 플레이어 참조
+            playerController = FindAnyObjectByType<PlayerController>();
         }
 
         private void OnEnable()
@@ -63,12 +82,22 @@ namespace BS.Enemy.Set
             Debug.Log($"OnEnable{currentViewRange}");
             // 영역 초기화
             isAttacked = false;
+
+            //오브젝트 활성화시 프리팹 생성 및 시간제약
+            waringSquare = Instantiate(waringSquarePrefab, playerController.transform.position + waringSquareOffset, Quaternion.identity);
+            Destroy(waringSquare, 3f);
         }
 
         private void Update()
         {
             //공격했으면(else문 진입시) 코드 실행 방지
             if (isAttacked) return;
+
+            //위험표시 플레이어 위에 표시
+            if (waringSquare != null)
+            {
+                waringSquare.transform.position = playerController.transform.position + waringSquareOffset;
+            }
 
             // 영역이 최대 범위에 도달하지 않았으면 천천히 증가
             if (currentViewRange < maxViewRange)
@@ -79,7 +108,14 @@ namespace BS.Enemy.Set
             else
             {
                 currentViewRange = 0f;
-
+                if (gameObject.name == "RoarHitBox")
+                {
+                    AudioUtility.CreateSFX(audioClip, transform.position, AudioUtility.AudioGroups.Explosion);
+                }
+                else
+                {
+                    AudioUtility.CreateSFX(audioClip, transform.position, AudioUtility.AudioGroups.Skill);
+                }
                 CheckForTargets();
             }
             // 영역 그리기
@@ -174,9 +210,11 @@ namespace BS.Enemy.Set
                     // 장애물이 있는지 확인
                     if (!Physics.Raycast(transform.position + offset, directionToTarget, distanceToTarget, obstacleMask))
                     {
-                        // 장애물이 없으면 타겟에 데미지
-                        Debug.Log($"Target {target.name} hit!");
-                        //DealDamage(target.gameObject);
+                        PlayerHealth playerHealth = target.GetComponentInChildren<PlayerHealth>();
+                        if (playerHealth != null)
+                        {
+                            playerHealth.TakeDamage(damage, false);
+                        }
                         return;
                     }
                 }

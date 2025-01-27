@@ -1,3 +1,5 @@
+using BS.Player;
+using BS.Utility;
 using UnityEngine;
 
 namespace BS.Enemy.Set
@@ -5,25 +7,25 @@ namespace BS.Enemy.Set
     public class GravityPull : MonoBehaviour
     {
         #region Variables
-        public float pullForce = 10f; // ²ø¾î´ç±â´Â ÈûÀÇ Å©±â
-        public float maxDistance; // ÃÖ´ë ²ø¾î´ç±è °Å¸®
+        private float pullForce = 10f; // ëŒì–´ë‹¹ê¸°ëŠ” í˜ì˜ í¬ê¸°
+        private float maxDistance; // ìµœëŒ€ ëŒì–´ë‹¹ê¹€ ê±°ë¦¬
 
         private SphereCollider sphereCollider;
-        private LayerMask playerLayer;  //ÇÃ·¹ÀÌ¾î ·¹ÀÌ¾î ¸¶½ºÅ©¸¦ ÇÒ´çÇÒ º¯¼ö
+        private LayerMask playerLayer;  //í”Œë ˆì´ì–´ ë ˆì´ì–´ ë§ˆìŠ¤í¬ë¥¼ í• ë‹¹í•  ë³€ìˆ˜
         #endregion
 
         private void Start()
         {
             sphereCollider = GetComponent<SphereCollider>();
-            // ·¹ÀÌ¾î¸¶½ºÅ©¸¦ ÀÌ¸§À¸·Î °¡Á®¿Í¼­ ºñÆ® ¿¬»ê: "¿ŞÂÊ ½¬ÇÁÆ®" À» °è»êÇÑ´Ù
-            // 6 -> 0000 0100 0000(Total : 256) ÀÌ·±½ÄÀ¸·Î ·¹ÀÌ¾î¸¶½ºÅ©°¡ ÇÒ´çµÈ°÷À» Ã£¾Æ ¹İÈ¯½ÃÅ´
+            // ë ˆì´ì–´ë§ˆìŠ¤í¬ë¥¼ ì´ë¦„ìœ¼ë¡œ ê°€ì ¸ì™€ì„œ ë¹„íŠ¸ ì—°ì‚°: "ì™¼ìª½ ì‰¬í”„íŠ¸" ì„ ê³„ì‚°í•œë‹¤
+            // 6 -> 0000 0100 0000(Total : 256) ì´ëŸ°ì‹ìœ¼ë¡œ ë ˆì´ì–´ë§ˆìŠ¤í¬ê°€ í• ë‹¹ëœê³³ì„ ì°¾ì•„ ë°˜í™˜ì‹œí‚´
             playerLayer = 1 << LayerMask.NameToLayer(SetProperty.PLAYER_LAYER);
             maxDistance = sphereCollider.radius * Mathf.Max(transform.root.localScale.x, transform.root.localScale.y, transform.root.localScale.z);
         }
 
         private void FixedUpdate()
         {
-            // Physics.OverlapSphere¸¦ »ç¿ëÇØ sphereCollider.radius ³»ÀÇ "Player" ·¹ÀÌ¾î¸¸ °Ë»ö
+            // Physics.OverlapSphereë¥¼ ì‚¬ìš©í•´ sphereCollider.radius ë‚´ì˜ "Player" ë ˆì´ì–´ë§Œ ê²€ìƒ‰
             Collider[] colliders = Physics.OverlapSphere(transform.position, maxDistance, playerLayer);
 
             foreach (Collider collider in colliders)
@@ -31,33 +33,45 @@ namespace BS.Enemy.Set
                 Transform target = collider.transform;
                 if (target != null)
                 {
-                    // ¹æÇâ º¤ÅÍ °è»ê (Áß½ÉÁ¡ - ¿ÀºêÁ§Æ® À§Ä¡)
+                    // ë°©í–¥ ë²¡í„° ê³„ì‚° (ì¤‘ì‹¬ì  - ì˜¤ë¸Œì íŠ¸ ìœ„ì¹˜)
                     Vector3 direction = transform.position - target.position;
 
-                    // y °ªÀ» Á¦¿ÜÇÏ°í x¿Í z °ª¸¸ »ç¿ë
+                    // y ê°’ì„ ì œì™¸í•˜ê³  xì™€ z ê°’ë§Œ ì‚¬ìš©
                     direction.y = 0;
 
-                    // °Å¸® °è»ê (¼öÆò °Å¸®¸¸)
+                    // ê±°ë¦¬ ê³„ì‚° (ìˆ˜í‰ ê±°ë¦¬ë§Œ)
                     float distance = direction.magnitude;
 
-                    // °Å¸®¿¡ µû¶ó Èû °¨¼Ò (¼±Çü °¨¼è)
+                    // ê±°ë¦¬ì— ë”°ë¼ í˜ ê°ì†Œ (ì„ í˜• ê°ì‡ )
                     float speed = Mathf.Lerp(pullForce, 0, distance / maxDistance);
 
-                    // Èû Àû¿ë (x, z Ãà¸¸)
+                    // í˜ ì ìš© (x, z ì¶•ë§Œ)
                     target.position += direction.normalized * speed * Time.deltaTime;
 
-                    //TODO : µ¥¹ÌÁö¸¦ ÀÔÈ÷´Â ÄÚµå¸¦ ±¸ÇöÇÏ±â
+                    //TODO : ë°ë¯¸ì§€ë¥¼ ì…íˆëŠ” ì½”ë“œë¥¼ êµ¬í˜„í•˜ê¸°
+                    PlayerHealth playerHealth = collider.GetComponentInChildren<PlayerHealth>();
+                    if (playerHealth != null)
+                    {
+                        //í”„ë ˆì„ë‹¹ speedì˜ 1/10 ë°ë¯¸ì§€
+                        playerHealth.TakeDamage(speed * 0.1f, false);
+                    }
+                    else
+                    {
+                        Debug.Log("GravityPullì—ì„œ ë°ë¯¸ì§€ë¥¼ ì£¼ì§€ ëª»í•¨");
+                    }
+
+
 
 #if UNITY_EDITOR
-                    Debug.Log($"°Å¸®: {distance}, ´ë»ó: {collider.gameObject.name}");
-                    Debug.Log($"¼Óµµ: {speed}, ¹æÇâ: {direction.normalized}");
+                    Debug.Log($"ê±°ë¦¬: {distance}, ëŒ€ìƒ: {collider.gameObject.name}");
+                    Debug.Log($"ì†ë„: {speed}, ë°©í–¥: {direction.normalized}");
 #endif
 
                 }
             }
         }
 
-        #region Å×½ºÆ® ¹üÀ§È®ÀÎ¿ë ±âÁî¸ğ
+        #region í…ŒìŠ¤íŠ¸ ë²”ìœ„í™•ì¸ìš© ê¸°ì¦ˆëª¨
         //private void OnDrawGizmos()
         //{
         //    Gizmos.color = Color.blue;

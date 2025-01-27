@@ -21,6 +21,7 @@ namespace BS.Utility
             Music,
             Sound,
             Skill,
+            Explosion,
         }
 
         // 특정 위치에서 사운드 효과(AudioClip)를 생성하고 재생합니다.

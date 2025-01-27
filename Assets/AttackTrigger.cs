@@ -24,13 +24,20 @@ namespace BS.Enemy.Set
                 hitCheck = true;
 
                 //TODO : 데미지를 주고 필요시 넉백, 경직 구현
-                //PlayerStats playerStats = other.GetComponent<PlayerStats>();
-                //if (playerStats != null)
-                //{
-                //    playerStats.TakeDamage(damage); // 예시 데미지 값
-                //}
+                PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
+                if (playerHealth != null)
+                {
+                    bool isAttackFailed = playerHealth.TakeDamage(damage);
+                    //TODO : 블락당하면 취할 모션 및 대기시간 + 데미지 증폭여부 연결
+                    //if (isAttackFailed)
+                    //{
 
-
+                    //}
+                }
+                else
+                {
+                    Debug.Log("PlayerHealth를 찾을 수 없습니다");
+                }
             }
         }
     }

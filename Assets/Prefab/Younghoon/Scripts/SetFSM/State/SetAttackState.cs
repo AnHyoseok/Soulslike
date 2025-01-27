@@ -36,7 +36,11 @@ namespace BS.Enemy.Set
             if (!isAttacking)
             {
                 // 거리에 따라 공격 패턴 선택
-                SelectAndPerformAttack(distance);
+                //SelectAndPerformAttack(distance);
+                //PerformMidRangeAttack();
+                //PerformLongRangeAttack();
+                //PerformCloseRangeAttack();
+                PerformSpecialAttack();
             }
 
             // 현재 애니메이션 상태 업데이트
@@ -91,6 +95,8 @@ namespace BS.Enemy.Set
             }
             else
             {
+                property.LastAttackType = null;
+                SelectAndPerformAttack(distance);
                 Debug.LogWarning("No valid attack available.");
             }
         }
