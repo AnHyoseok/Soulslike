@@ -16,6 +16,7 @@ namespace BS.vampire
     public class VampireController : MonoBehaviour
     {
         #region Variables
+
         public Animator animator;
         public GameObject player;   //바닥
         public GameObject playerBody;   //플레이어몸체 
@@ -122,7 +123,7 @@ namespace BS.vampire
                 animator = GetComponent<Animator>();
             }
             //Waring();
-           // StartCoroutine(Attack4());
+            //StartCoroutine(Attack6());
 
             NextPatternPlay();
 

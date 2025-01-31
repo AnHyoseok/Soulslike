@@ -61,6 +61,9 @@ namespace BS.Player
         // 이벤트 액션
         public UnityAction<float> OnDamaged;      // 데미지를 받을 때 호출되는 이벤트
         public UnityAction OnBlocked;            // 블록 성공 시 호출되는 이벤트
+
+        public int potionCount = 3;
+        public float healthHealAmount = 1000f;
         #endregion
 
         protected override void Awake()
@@ -179,6 +182,25 @@ namespace BS.Player
 
             Debug.Log($"Player OnDamaged = {damage}");
             Debug.Log($"Player Hp = {CurrentHealth}");
+        }
+
+        //포션 사용
+        public void UsePotion()
+        {
+            if (potionCount > 0)
+            {
+                CurrentHealth += healthHealAmount;
+                if (CurrentHealth > maxHealth)
+                {
+                    CurrentHealth = maxHealth;
+                }
+                potionCount--;
+                Debug.Log("포션사용");
+            }
+            else
+            {
+                Debug.Log("포션이 없습니다");
+            }
         }
     }
 }

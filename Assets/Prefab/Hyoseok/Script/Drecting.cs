@@ -1,5 +1,6 @@
 using BS.Player;
 using BS.PlayerInput;
+using BS.UI;
 using System.Collections;
 using System.Diagnostics;
 using UnityEngine;
@@ -15,13 +16,14 @@ namespace BS.vampire
         public Animator animator;
         public GameObject presentEffect;
         public GameObject player;
+        private DungeonClearTime dungeEndGame;
         private PlayerInputActions playerInputActions;
         #endregion
 
 
         private void Awake()
         {
-
+            dungeEndGame = FindFirstObjectByType<DungeonClearTime>();
             PattonSummon pattonSummon = boss.GetComponent<PattonSummon>();
             VampireController vampireController = boss.GetComponent<VampireController>();
             pattonSummon.enabled = false;
@@ -77,6 +79,8 @@ namespace BS.vampire
             vampireController.enabled = true;
             playerController.enabled = true;
             playerInputActions.enabled = true;
+            dungeEndGame.StartDungeon();
+            
          yield return null;
         }
     }
