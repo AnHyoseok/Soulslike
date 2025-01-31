@@ -3,6 +3,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using UnityEngine;
 using BS.Utility;
+using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace BS.Achievement
 {
@@ -11,6 +13,14 @@ namespace BS.Achievement
     /// 업적 데이터를 XML 파일로부터 읽어와서 메모리에 로드합니다.
     /// 이 클래스는 ScriptableObject로 작성되어 에디터와 런타임에서 사용 가능합니다.
     /// </summary>
+
+    [System.Serializable]
+    public class stream
+    {
+        public string bossName;
+        public List<AchievementData> list;
+    }
+
     public class AchievementDataPool : ScriptableObject
     {
         #region Variables
@@ -19,6 +29,8 @@ namespace BS.Achievement
         /// XML에서 읽어온 데이터를 이 변수에 할당합니다.
         /// </summary>
         public Achievements Achievements;
+        public List<stream> streams = new List<stream>();
+
 
         /// <summary>
         /// Resources 폴더 내 업적 데이터 파일 경로.
@@ -43,6 +55,8 @@ namespace BS.Achievement
                 return;
             }
 
+            List<string> preBossName = new List<string>();
+
             // XML 데이터를 읽고 역직렬화하여 Achievements 객체에 저장.
             using (XmlTextReader reader = new XmlTextReader(new StringReader(asset.text)))
             {
@@ -51,6 +65,23 @@ namespace BS.Achievement
 
                 // XML 데이터를 Achievements 타입으로 역직렬화.
                 Achievements = (Achievements)xs.Deserialize(reader);
+                Dictionary<string, List<AchievementData>> test = new Dictionary<string, List<AchievementData>>();
+                foreach (var ac in Achievements.achievements)
+                {
+
+                    if (!test.ContainsKey(ac.bossType.ToString()))
+                    {
+                        test[ac.bossType.ToString()] = new List<AchievementData>();
+                    }
+                    test[ac.bossType.ToString()].Add(ac);
+                }
+                foreach (var key in test)
+                {
+                    stream stream = new stream();
+                    stream.bossName = key.Key;
+                    stream.list = key.Value;
+                    streams.Add(stream);
+                }
             }
         }
 

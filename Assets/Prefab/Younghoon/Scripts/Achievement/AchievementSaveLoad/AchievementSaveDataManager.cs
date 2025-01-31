@@ -70,8 +70,18 @@ namespace BS.Achievement
                     AchievementSaveData achievementSaveData = new AchievementSaveData();
                     achievementSaveData.number = i;
                     achievementSaveData.currentAmount = 0;
-                    achievementSaveData.isUnlock = false;
+                    //achievementSaveData.isUnlock = false;
                     achievementSaveData.isClear = false;
+
+                    // 3의 배수(0, 3, 6, ...)인 경우 isUnlock = true
+                    if ((i - startNum) % 3 == 0)
+                    {
+                        achievementSaveData.isUnlock = true;
+                    }
+                    else
+                    {
+                        achievementSaveData.isUnlock = false;
+                    }
 
                     achievementSaveDatas.achievementSaveData.Add(achievementSaveData);
                 }

@@ -1,3 +1,4 @@
+using BS.Achievement;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace BS.UI
         public TextMeshProUGUI bosstext;
         public string bossName;
 
-        public Button[] buttons =new Button[2];
+        public Button[] buttons = new Button[2];
         public TextMeshProUGUI[] buttonText = new TextMeshProUGUI[2];
         public string[] buttonName = new string[4];
 
@@ -98,6 +99,12 @@ namespace BS.UI
             {
                 isTime[3] = true;
             }
+
+            /************************************************************************************/
+            // TODO : UpdateAchievementData(TimeBased, elapsedTime) 불러오기
+            /************************************************************************************/
+            AchievementManager.Instance.UpdateAchievement(AchievementType.TimeBased, bestTime);
+
         }
         //던전 클리어 실패시
         public void DefeatDungeon()

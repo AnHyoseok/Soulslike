@@ -13,12 +13,28 @@ namespace BS.Achievement
         public AchievementType achievementType;     //업적의종류
         public float goalAmount;                    //목표
         public float currentAmount;                 //달성량
+        public bool nextStep;                 //달성량
 
         //타임타입 변수를 활용이 가능한가?
         //public Time clearTime
         //public Time currentTime
 
-        public bool IsCleared => (currentAmount >= goalAmount);
+        //public bool IsCleared => (currentAmount >= goalAmount);
+        public bool IsCleared(AchievementType type)
+        {
+            switch (type)
+            {
+                case AchievementType.HealthBased:
+                    return currentAmount >= goalAmount;
+                case AchievementType.KillCount:
+                    return currentAmount >= goalAmount;
+                case AchievementType.TimeBased:
+                    return currentAmount <= goalAmount;
+                default:
+                    Debug.LogWarning("Type 에러");
+                    return false;
+            }
+        }
 
         public AchievementGoal(AchievementData achievementData)
         {
@@ -27,7 +43,7 @@ namespace BS.Achievement
 
             switch (achievementType)
             {
-                case (AchievementType.HealthBased):
+                case AchievementType.HealthBased:
                     goalAmount = achievementData.requiredHealth;
                     break;
                 case AchievementType.KillCount:

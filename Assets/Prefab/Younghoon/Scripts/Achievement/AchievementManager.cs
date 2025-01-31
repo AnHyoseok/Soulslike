@@ -9,11 +9,16 @@ namespace BS.Achievement
     public class AchievementManager : Singleton<AchievementManager>
     {
         #region Variables
-        public List<AchievementObject> achievementsGoalCondition;
+        public List<AchievementObject> achievementsGoalCondition = new List<AchievementObject>();
         public List<AchievementData> realAchievements = new List<AchievementData>();
         public AchievementSaveDatas achievementSaveDatas;
 
         private AchievementSaveDataManager achievementSaveDataManager;  // 데이터 매니저 참조
+
+        #region Test용 변수(추후 삭제 필)
+        public float time = 0.0f;
+        #endregion
+
         #endregion
 
         private void Start()
@@ -32,9 +37,35 @@ namespace BS.Achievement
                     .achievements
                     .Where(achievement => achievement != null && achievement.bossType.ToString() == SceneManager.GetActiveScene().name)
                     .ToList();
-            achievementsGoalCondition = new List<AchievementObject>();
 
             LoadAchievementData();
+
+            for (int i = 0; i < realAchievements.Count; i++)
+            {
+                achievementsGoalCondition.Add(new AchievementObject(realAchievements[i]));
+                achievementsGoalCondition[i].isUnlock = achievementSaveDatas.achievementSaveData[i].isUnlock;
+                achievementsGoalCondition[i].isClear = achievementSaveDatas.achievementSaveData[i].isClear;
+                achievementsGoalCondition[i].achievementGoal.currentAmount = achievementSaveDatas.achievementSaveData[i].currentAmount;
+                achievementsGoalCondition[i].achievementGoal.nextStep = realAchievements[i].next > 0;
+            }
+        }
+
+        private void Update()
+        {
+            time += Time.deltaTime;
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                UpdateAchievement(AchievementType.KillCount, 1);
+            }
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                UpdateAchievement(AchievementType.TimeBased, time);
+            }
+
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                SaveAchievementData();
+            }
         }
 
         private void LoadAchievementData()
@@ -49,6 +80,68 @@ namespace BS.Achievement
 
         private void SaveAchievementData()
         {
+            for (int i = 0; i < achievementSaveDatas.achievementSaveData.Count; i++)
+            {
+                achievementSaveDatas.achievementSaveData[i].isUnlock = achievementsGoalCondition[i].isUnlock;
+                achievementSaveDatas.achievementSaveData[i].isClear = achievementsGoalCondition[i].isClear;
+                achievementSaveDatas.achievementSaveData[i].currentAmount = achievementsGoalCondition[i].achievementGoal.currentAmount;
+            }
+            achievementSaveDataManager.SaveData(achievementSaveDatas);
+        }
+
+        public void UpdateAchievement(AchievementType type, float amount)
+        {
+            //var achievementsGoal = achievementsGoalCondition.Find(d=>d.achievementType == type);
+            List<AchievementObject> list = new List<AchievementObject>();
+            foreach (var achievementsGoal in achievementsGoalCondition)
+            {
+                if (type == achievementsGoal.achievementType)
+                {
+                    list.Add(achievementsGoal);
+                }
+            }
+            Debug.Log(list.Count);
+            switch (type)
+            {
+                case AchievementType.HealthBased:
+                    //TODO
+                    break;
+                case AchievementType.KillCount:
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        list[i].BossKill();
+                        if (list[i].achievementGoal.IsCleared(type))
+                        {
+                            list[i].isClear = true;
+                            Debug.Log($"i = {i}");
+                            if (list.Count > i + 1)
+                            {
+                                list[i + 1].isUnlock = true;
+                            }
+                        }
+                    }
+                    break;
+                case AchievementType.TimeBased:
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        list[i].ClearTime(amount);
+                        if (list[i].achievementGoal.IsCleared(type))
+                        {
+                            list[i].isClear = true;
+                            if (list.Count > i + 1)
+                            {
+                                list[i + 1].isUnlock = true;
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    Debug.LogWarning($"{type}이 잘못되었습니다.");
+                    break;
+
+            }
+
+
 
         }
     }

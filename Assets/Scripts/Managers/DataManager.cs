@@ -1,6 +1,7 @@
 using UnityEngine;
 using BS.Achievement;
 using NUnit.Framework.Interfaces;
+using System.Collections.Generic;
 
 namespace BS.Utility
 {
@@ -8,6 +9,7 @@ namespace BS.Utility
     {
         private static AchievementDataPool achievementDataPool;
 
+        public List<stream> stream;
 
         void Start()
         {
@@ -16,6 +18,8 @@ namespace BS.Utility
             {
                 achievementDataPool = ScriptableObject.CreateInstance<AchievementDataPool>();
                 achievementDataPool.LoadData();
+                Debug.LogWarning("ee" + achievementDataPool.streams.Count);
+                stream = achievementDataPool.streams;
             }
         }
 

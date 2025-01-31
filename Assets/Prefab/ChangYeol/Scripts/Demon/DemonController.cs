@@ -253,6 +253,11 @@ namespace BS.Demon
         void PrepareClear()
         {
             isDie = true;
+
+            /************************************************************************************/
+            // TODO : UpdateAchievementData(KillCount, 1) 불러오기
+            /************************************************************************************/
+
             sceneManager.drectingCamera.SetActive(true);
             ChangeBoolState(DEMON.Die, isDie);
             PlayerInputActions inputActions = pattern.player.GetComponent<PlayerInputActions>();

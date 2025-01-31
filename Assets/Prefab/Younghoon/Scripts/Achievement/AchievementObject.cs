@@ -28,54 +28,27 @@ namespace BS.Achievement
             achievementGoal = new AchievementGoal(achievementData);
         }
 
-        public void BossKill(BossType bossType)
+        public void BossKill()
         {
             if (achievementGoal.achievementType == AchievementType.KillCount)
             {
-                if (bossType == achievementGoal.bossType)
-                {
-                    achievementGoal.currentAmount++;
-                }
-#if UNITY_EDITOR
-                else
-                {
-                    Debug.LogError($"AchievementObject.cs / BossKill() 문제 - 변수로 받은 보스 {bossType} 지금 읽히고 있는 보스 {achievementGoal.bossType}");
-                }
-#endif
+                achievementGoal.currentAmount++;
             }
         }
 
-        public void SpeedRun(BossType bossType, float accumulatedTime)
+        public void ClearTime(float accumulatedTime)
         {
             if (achievementGoal.achievementType == AchievementType.TimeBased)
             {
-                if (bossType == achievementGoal.bossType)
-                {
-                    achievementGoal.currentAmount = accumulatedTime;
-                }
-#if UNITY_EDITOR
-                else
-                {
-                    Debug.LogError($"AchievementObject.cs / EnemyKill() 문제 - 변수로 받은 보스 {bossType} 지금 읽히고 있는 보스 {achievementGoal.bossType}");
-                }
-#endif
+                achievementGoal.currentAmount = accumulatedTime;
             }
         }
 
-        public void DamageCheck(BossType bossType, float damage)
+        public void DamageCheck(float damage)
         {
-            if (achievementGoal.achievementType == AchievementType.TimeBased)
+            if (achievementGoal.achievementType == AchievementType.HealthBased)
             {
-                if (bossType == achievementGoal.bossType)
-                {
-                    achievementGoal.currentAmount = damage;
-                }
-#if UNITY_EDITOR
-                else
-                {
-                    Debug.LogError($"AchievementObject.cs / EnemyKill() 문제 - 변수로 받은 보스 {bossType} 지금 읽히고 있는 보스 {achievementGoal.bossType}");
-                }
-#endif
+                achievementGoal.currentAmount = damage;
             }
         }
 
