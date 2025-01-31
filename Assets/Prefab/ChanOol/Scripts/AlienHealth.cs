@@ -6,7 +6,7 @@ public class AlienHealth : MonoBehaviour, IDamageable
 {
     public float maxHealth = 1000; // 보스 최대 체력
     public float currentHealth;
-
+    private Animator animator;
     private bool isInvincible = false; //무적여부
 
 
@@ -23,6 +23,7 @@ public class AlienHealth : MonoBehaviour, IDamageable
     private void Start()
     {
         currentHealth = maxHealth;
+        animator = GetComponent<Animator>();
         NotifyHealthChanged();
     }
 
@@ -54,8 +55,9 @@ public class AlienHealth : MonoBehaviour, IDamageable
     private void Die()
     {
         Debug.Log("Boss defeated!");
+        animator.SetInteger("Pattern",6);
         // 보스 사망 로직 추가 (예: 애니메이션, 제거)
-        Destroy(gameObject); // 보스 오브젝트 제거
+        Destroy(gameObject,5f); // 보스 오브젝트 제거
 
     }
  

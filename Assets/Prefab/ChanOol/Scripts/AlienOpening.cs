@@ -1,10 +1,12 @@
 using System.Collections;
+using BS.UI;
 using UnityEngine;
 
 public class AlienOpening : MonoBehaviour
 {
     public Animator animator;
     public AudioSource audioSource;
+    public DungeonClearTime clearTime;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,5 +32,7 @@ public class AlienOpening : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         animator.SetInteger("Pattern", 0);
+
+        clearTime.StartDungeon();
     }
 }

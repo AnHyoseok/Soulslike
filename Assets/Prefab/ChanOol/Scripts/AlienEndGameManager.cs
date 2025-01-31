@@ -58,6 +58,8 @@ namespace BS.Utility
             gameEnded = true;
             playerInputActions.enabled = false;
             audioSource.PlayOneShot(clearSound);
+            audioSource.clip = clearSound;
+            audioSource.Play();
             Invoke("Clear", actorTime);
         }
 
@@ -66,6 +68,8 @@ namespace BS.Utility
             gameEnded = true;
             playerInputActions.enabled = false;
             audioSource.PlayOneShot(defeatSound);
+            audioSource.clip = defeatSound;
+            audioSource.Play();
             Invoke("Defeat", actorTime);
         }
 

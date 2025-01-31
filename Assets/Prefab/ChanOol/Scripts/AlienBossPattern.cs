@@ -263,7 +263,7 @@ public class AlienBossPattern : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             // 현재 위치에서 x축으로 -20 * i 만큼 이동
-            Vector3 spawnPosition = pt3SpawnPoint.position + new Vector3(10f * i, 0f, 0f);
+            Vector3 spawnPosition = pt3SpawnPoint.position + new Vector3(-10f * i, 0f, 0f);
 
             // pt3AttackRange 생성
             Instantiate(pt3AttackRange, spawnPosition, Quaternion.Euler(0f, 0f, 0f));
@@ -279,7 +279,7 @@ public class AlienBossPattern : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             // 현재 위치에서 x축으로 -20 * i 만큼 이동
-            Vector3 spawnPosition = pt3SpawnPoint.position + new Vector3(10f * i, 0f, 0f);
+            Vector3 spawnPosition = pt3SpawnPoint.position + new Vector3(-10f * i, 0f, 0f);
 
             // pt3Projectile 생성
             GameObject spawnedObject = Instantiate(pt3Particle, spawnPosition, Quaternion.Euler(0f, 0f, 0f));
@@ -298,7 +298,7 @@ public class AlienBossPattern : MonoBehaviour
     public IEnumerator Pattern4()
     {
         // 공격범위 표시
-        Instantiate(pt4AttackRange, new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z + 2.0f), Quaternion.Euler(0f, 0f, 0f));
+        Instantiate(pt4AttackRange, new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z + -2.0f), Quaternion.Euler(0f, 180f, 0f));
 
         yield return new WaitForSeconds(1.5f);
 
