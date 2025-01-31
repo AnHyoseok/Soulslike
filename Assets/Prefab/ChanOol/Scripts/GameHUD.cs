@@ -143,6 +143,12 @@ public class GameHUD : MonoBehaviour
     public void OnQuitToShelterButtonClick()
     {
         // 타임스케일 초기화 후 Shelter 씬 로드
+        //렌더러 초기화
+        if (toggleRendererFeature != null)
+        {
+            // SetActiveRendererFeature 메서드를 호출하여 렌더러 기능을 활성화/비활성화합니다.
+            toggleRendererFeature.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", false);
+        }
         Time.timeScale = 1;
         SceneManager.LoadScene("Shelter");
     }

@@ -65,3 +65,4 @@ public class ToggleRendererFeature : MonoBehaviour
         SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", false);
     }
 }
+

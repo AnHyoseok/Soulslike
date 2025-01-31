@@ -7,16 +7,16 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/Shelter.unity
-    guid: 4b817069421933544a1081719ca8cfd1
+    guid: 349a971fd472d1f4f8a5b6de7e9a356f
   - enabled: 1
     path: Assets/Scenes/Demon.unity
     guid: ccc1332bf14e4a742a8e013e6f04eb24
   - enabled: 1
-    path: Assets/Scenes/Vamprie.unity
-    guid: 642bab17f363abb48af8d64523d6e9b4
-  - enabled: 1
     path: Assets/Scenes/Alien.unity
     guid: 36b15c52656f4134e8641c23f192a7bb
+  - enabled: 1
+    path: Assets/Prefab/Hyoseok/Vamprie.unity
+    guid: 29f38d585bb30544b9e526546bc39b55
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

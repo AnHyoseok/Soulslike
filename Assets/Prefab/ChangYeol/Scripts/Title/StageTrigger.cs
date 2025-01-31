@@ -8,34 +8,44 @@ namespace BS.Title
     public abstract class StageTrigger : MonoBehaviour
     {
         protected abstract void TriggerKeyDown();
-        #region Vaiables
+        #region Variables
         public TextMeshProUGUI keyText;
         public TextMeshProUGUI stageText;
         public GameObject canvas;
-        //생성되는 Enemy 변수
         public GameObject Enemy;
-        //생성되는 Enemy
-        [SerializeField]protected GameObject InstEnemy;
-        [HideInInspector]public bool isEnemy = false;
+        [SerializeField] protected GameObject InstEnemy;
+        [HideInInspector] public bool isEnemy = false;
         public string stageName;
         public KeyCode keyCode = KeyCode.V;
         public PlayerInputActions inputActions;
         #endregion
+        private bool isPlayerInside = false;
+
         private void Start()
         {
             keyText.text = "";
             stageText.text = "";
         }
+
+        private void Update()
+        {
+            if (isPlayerInside)
+            {
+                TriggerKeyDown();
+            }
+        }
+
         private void OnTriggerStay(Collider other)
         {
             PlayerController player = other.GetComponent<PlayerController>();
             if (player != null)
             {
-                keyText.text = "[ " + keyCode.ToString() +" ]";
-                TriggerKeyDown();
+                keyText.text = "[ " + keyCode.ToString() + " ]";
                 canvas.SetActive(true);
+                isPlayerInside = true;
             }
         }
+
         private void OnTriggerExit(Collider other)
         {
             PlayerController player = other.GetComponent<PlayerController>();
@@ -43,10 +53,8 @@ namespace BS.Title
             {
                 stageText.text = "";
                 keyText.text = "";
-                Debug.Log("OnTriggerExit");
-
                 canvas.SetActive(false);
-
+                isPlayerInside = false;
             }
         }
     }

@@ -4874,7 +4874,6 @@ MonoBehaviour:
   isInvincible: 0
   isBlockable: 1
   isBlocking: 0
-  isBlockingAnim: 0
   currentBlockCoolTime: 0
   isAttackable: 1
   isAttacking: 0
@@ -4926,12 +4925,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ab184edc8f71304fb5984d410eb97c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetPosition: {x: 0, y: 0, z: 0}
+  moveSpeed: 5
+  lerpSpeed: 10
+  rotationDuration: 0.1
   blockCoolTime: 3
-  mainCamera: {fileID: 0}
   blockCoolTimeText: {fileID: 0}
   maxHealth: 999999
   currentHealth: 0
-  rotationDuration: 0.1
 --- !u!136 &266065525
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -43473,6 +43474,7 @@ MonoBehaviour:
   keyCode: 118
   inputActions: {fileID: 740085428}
   StageCanvas: {fileID: 3208710276063403634}
+  triggerSound: {fileID: 8300000, guid: e74337baafda7b643b6256c02e0f68f6, type: 3}
 --- !u!1001 &2083651074
 PrefabInstance:
   m_ObjectHideFlags: 0

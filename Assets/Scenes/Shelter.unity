@@ -4874,7 +4874,6 @@ MonoBehaviour:
   isInvincible: 0
   isBlockable: 1
   isBlocking: 0
-  isBlockingAnim: 0
   currentBlockCoolTime: 0
   isAttackable: 1
   isAttacking: 0
@@ -4926,12 +4925,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ab184edc8f71304fb5984d410eb97c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetPosition: {x: 0, y: 0, z: 0}
+  moveSpeed: 5
+  lerpSpeed: 10
+  rotationDuration: 0.1
   blockCoolTime: 3
-  mainCamera: {fileID: 0}
   blockCoolTimeText: {fileID: 0}
   maxHealth: 999999
   currentHealth: 0
-  rotationDuration: 0.1
 --- !u!136 &266065525
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -6512,6 +6513,7 @@ GameObject:
   - component: {fileID: 354359352}
   - component: {fileID: 354359351}
   - component: {fileID: 354359353}
+  - component: {fileID: 354359354}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -6583,6 +6585,21 @@ MonoBehaviour:
   sceneName2: Alien
   sceneName3: Set
   sceneName4: Vamprie
+--- !u!114 &354359354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354359350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb526d73d5ed5ce428553304f5aac457, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timer: 10
+  renderName: FullScreenOpening
+  metName: 
 --- !u!1 &361688431
 GameObject:
   m_ObjectHideFlags: 0
