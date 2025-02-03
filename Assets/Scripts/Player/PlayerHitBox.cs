@@ -60,10 +60,10 @@ namespace BS.Player
 
         private void OnTriggerEnter(Collider other)
         {
-            if (psm.animator.GetBool("IsAttacking") == false 
-                && !ps.isUppercuting 
-                && !ps.isBackHandSwinging 
-                && !ps.isChargingPunching )
+            if (psm.animator.GetBool("IsAttacking") == false
+                && psm.animator.GetBool("IsBackHandSwing") == false
+                && psm.animator.GetBool("IsUppercuting") == false
+                && psm.animator.GetBool("IsChargingPunch") == false)
             {
                 return;
             }
@@ -81,7 +81,7 @@ namespace BS.Player
                     float currentSkillDamage = GetCurrentSkillDamage();
                     if (currentSkillDamage > 0)
                     {
-                        if (ps.isChargingPunching)
+                        if (psm.animator.GetBool("IsChargingPunch") == true)
                         {
                             Vector3 hitPoint = other.ClosestPoint(transform.position);
                             hitPoint.y = 0;

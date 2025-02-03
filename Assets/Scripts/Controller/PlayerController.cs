@@ -71,7 +71,7 @@ namespace BS.Player
         }
         protected virtual void FixedUpdate()
         {
-            SetPlayerYPos();
+            //SetPlayerYPos();
         }
 
         // Mouse 위치를 화면 좌표에서 월드 좌표로 변환

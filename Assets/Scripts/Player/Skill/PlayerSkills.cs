@@ -175,7 +175,6 @@ namespace BS.Player
         // 어퍼컷이 끝날때 호출
         public void EndUppercut()
         {
-            Debug.Log("END UPPERCUT");
             psm.animator.SetBool("IsUppercuting", false);
             ps.targetPosition = this.transform.position;
             psm.currentSkillName = "";
@@ -185,7 +184,6 @@ namespace BS.Player
         // 백핸드스윙이 끝날때 호출
         public void EndBackHandSwing()
         {
-            Debug.Log("END SWING");
             psm.animator.SetBool("IsBackHandSwing", false);
             ps.targetPosition = this.transform.position;
             psm.currentSkillName = "";
@@ -195,7 +193,6 @@ namespace BS.Player
         // 차징펀지이 끝날때 호출
         public void EndChargingPunch()
         {
-            Debug.Log("END CHARGING");
             psm.animator.SetBool("IsChargingPunch", false);
             ps.targetPosition = this.transform.position;
             psm.currentSkillName = "";
@@ -206,14 +203,12 @@ namespace BS.Player
         // 다른행동이 불가능 하도록 설정
         public void CannotOtherAct()
         {
-            Debug.Log("CANNOT");
             ps.isDashable = false;
             ps.isBlockable = false;
         }
         // 다른행동이 가능 하도록 설정
         public void CanOtherAct()
         {
-            Debug.Log("CAN");
             ps.isDashable = true;
             ps.isBlockable = true;
         }
