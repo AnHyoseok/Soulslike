@@ -4933,6 +4933,8 @@ MonoBehaviour:
   blockCoolTimeText: {fileID: 0}
   maxHealth: 999999
   currentHealth: 0
+  potionCount: 3
+  healthHealAmount: 1000
 --- !u!136 &266065525
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -650,7 +650,7 @@ namespace BS.vampire
 
 
             // 패턴을 순환 (1~6)
-            nextPattern = (nextPattern % 6) + 1;
+            nextPattern = (nextPattern % 9) + 1;
 
             // 플레이어를 바라보게 설정
             transform.LookAt(player.transform);
@@ -663,22 +663,25 @@ namespace BS.vampire
         {
             Debug.Log($"{pattern}번 패턴 실행");
 
-            // 패턴에 따라 추가 행동 실행
-            if (pattern == 1 || pattern == 2 || pattern == 5)
-                yield return StartCoroutine(RandomTeleport());
+            //// 패턴에 따라 추가 행동 실행
+            //if (pattern == 1 || pattern == 2 || pattern == 5)
+            //    yield return StartCoroutine(RandomTeleport());
 
-            if (pattern == 3 || pattern == 5)
-                yield return StartCoroutine(Attack7()); // 돌진 공격 실행
+            //if (pattern == 3 || pattern == 5)
+            //    yield return StartCoroutine(Attack7()); // 돌진 공격 실행
 
             // 패턴 실행
             switch (pattern)
             {
-                case 1: yield return StartCoroutine(Attack1()); break;
-                case 2: yield return StartCoroutine(Attack2()); break;
-                case 3: yield return StartCoroutine(Attack3()); break;
-                case 4: yield return StartCoroutine(Attack5()); break;
-                case 5: yield return StartCoroutine(Attack4()); break;
-                case 6: yield return StartCoroutine(Attack6()); break;
+                case 1: yield return StartCoroutine(RandomTeleport()); break;
+                case 2: yield return StartCoroutine(Attack1()); break;
+                case 3: yield return StartCoroutine(Attack7()); break;
+                case 4: yield return StartCoroutine(Attack2()); break;
+                case 5: yield return StartCoroutine(Attack3()); break;
+                case 6: yield return StartCoroutine(Attack4()); break;
+                case 7: yield return StartCoroutine(Attack5()); break;
+                case 8: yield return StartCoroutine(Attack1()); break;
+                case 9: yield return StartCoroutine(Attack6()); break;
             }
             NextPatternPlay();
         }
