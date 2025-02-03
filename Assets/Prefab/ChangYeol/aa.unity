@@ -153,6 +153,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a6b50a31808b6541b638a89d21f4324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetPosition: {x: 0, y: 0, z: 0}
+  moveSpeed: 5
+  lerpSpeed: 10
+  rotationDuration: 0.3
+  UppercutCoolTimeImage: {fileID: 0}
+  UppercutCoolTimeText: {fileID: 0}
+  backHandSwingCoolTimeImage: {fileID: 0}
+  backHandSwingCoolTimeText: {fileID: 0}
+  chargingPunchCoolTimeImage: {fileID: 0}
+  chargingPunchCoolTimeText: {fileID: 0}
+  blockCoolTimeImage: {fileID: 0}
+  blockCoolTimeText: {fileID: 0}
+  dashCoolTimeImage: {fileID: 0}
+  dashCoolTimeText: {fileID: 0}
 --- !u!114 &20924390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,16 +180,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetPosition: {x: 0, y: 0, z: 0}
+  isMovable: 1
   isMoving: 0
   inGameMoveSpeed: 0
+  isSprintable: 1
   isSprinting: 0
+  isWalkable: 1
   isWalking: 0
+  isDashable: 1
   isDashing: 0
-  currentDashCoolTime: 0
   isInvincible: 0
-  isBlockingAnim: 0
+  isBlockable: 1
   isBlocking: 0
   currentBlockCoolTime: 0
+  isAttackable: 1
+  isAttacking: 0
+  comboAttackIndex: 1
+  isUppercutable: 1
+  isUppercuting: 0
+  currentUppercutCoolTime: 0
+  isChargingPunchable: 1
+  isChargingPunching: 0
+  currentChargingPunchCoolTime: 0
+  isBackHandSwingable: 1
+  isBackHandSwinging: 0
+  currentBackHandSwingCoolTime: 0
+  canSkill: 1
 --- !u!114 &20924391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,6 +218,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d2518cbccf1b54cade8ba3385233b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentSkillName: 
+  prevTransform: {fileID: 0}
   animator: {fileID: 930651404}
 --- !u!114 &20924392
 MonoBehaviour:
@@ -201,16 +233,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c88e0b880d8f884e804a03099d729bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 1272735700}
-  rayColor: {r: 1, g: 0, b: 0, a: 1}
-  rayDuration: 1
+  targetPosition: {x: 0, y: 0, z: 0}
   moveSpeed: 5
+  lerpSpeed: 10
   rotationDuration: 0.5
-  dashDuration: 0.2
-  dashCoolTime: 3
-  dashDistance: 5
-  invincibilityDuration: 0.5
-  dashCoolTimeText: {fileID: 0}
 --- !u!54 &20924393
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2330,8 +2356,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ab184edc8f71304fb5984d410eb97c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetPosition: {x: 0, y: 0, z: 0}
+  moveSpeed: 5
+  lerpSpeed: 10
+  rotationDuration: 0.3
   blockCoolTime: 3
   blockCoolTimeText: {fileID: 0}
+  maxHealth: 0
+  currentHealth: 0
 --- !u!4 &930651406
 Transform:
   m_ObjectHideFlags: 0

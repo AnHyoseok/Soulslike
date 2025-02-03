@@ -1,4 +1,5 @@
 using BS.Audio;
+using BS.Demon;
 using BS.Player;
 using BS.Utility;
 using System.Collections;
@@ -25,7 +26,7 @@ namespace BS.Particle
 
         void OnParticleCollision(GameObject other)
         {
-            Debug.Log(other.name);
+            if (DemonController.isDie) return;
             PlayerController player = other.GetComponent<PlayerController>();
             if (player != null)
             {

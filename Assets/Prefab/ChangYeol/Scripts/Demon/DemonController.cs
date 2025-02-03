@@ -1,3 +1,4 @@
+using BS.Achievement;
 using BS.PlayerInput;
 using BS.UI;
 using System.Collections;
@@ -36,7 +37,7 @@ namespace BS.Demon
         public float maxHealth = 100f; // 최대 체력
         public float currentHealth { get; private set; } // 현재 체력
         public bool hasRecovered = false; // 회복 실행 여부 플래그
-        private bool isDie = false;     //죽음 여부및 한 번만 죽이기
+        public static bool isDie = false;     //죽음 여부및 한 번만 죽이기
         public Image healthBarFill;       // 체력바의 Foreground Image
         public TextMeshProUGUI healthText; // 체력 퍼센트 Text (TextMeshPro 사용)
 
@@ -53,7 +54,10 @@ namespace BS.Demon
             animator = GetComponent<Animator>();
             pattern = GetComponent<DemonPattern>();
             currentHealth = maxHealth; // 초기 체력 설정
+            isDie = false;
+            istimer = false;
             hasRecovered = false;
+            currentState = DEMON.Idle;
         }
 
         private void Update()
@@ -256,6 +260,7 @@ namespace BS.Demon
 
             /************************************************************************************/
             // TODO : UpdateAchievementData(KillCount, 1) 불러오기
+            AchievementManager.Instance.UpdateAchievement(AchievementType.KillCount, 1);
             /************************************************************************************/
 
             sceneManager.drectingCamera.SetActive(true);
