@@ -34929,21 +34929,6 @@ Transform:
   - {fileID: 909155002349826018}
   m_Father: {fileID: 4981448176356795963}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4633613592051808479
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8024299816395254260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3d2518cbccf1b54cade8ba3385233b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentSkillName: 
-  prevTransform: {fileID: 0}
-  animator: {fileID: 7804626067575112123}
 --- !u!1001 &4633940542198617174
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36717,7 +36702,6 @@ MonoBehaviour:
   comboableTime: 0
   _comboableTime: 1
   lastAttackTime: 0
-  animator: {fileID: 7804626067575112123}
 --- !u!4 &5048799247454282045
 Transform:
   m_ObjectHideFlags: 0
@@ -48600,7 +48584,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2374139103230729463}
-  - component: {fileID: 4633613592051808479}
   - component: {fileID: 7600136613192515981}
   - component: {fileID: 5041325067527584168}
   - component: {fileID: 4950323838685310328}
@@ -51038,8 +51021,8 @@ MonoBehaviour:
   inGameMoveSpeed: 0
   isSprintable: 1
   isSprinting: 0
-  isWalkable: 1
-  isWalking: 0
+  isWalkable: 0
+  isWalking: 1
   isDashable: 1
   isDashing: 0
   isInvincible: 0
@@ -51058,6 +51041,8 @@ MonoBehaviour:
   isBackHandSwingable: 1
   isBackHandSwinging: 0
   currentBackHandSwingCoolTime: 0
+  currentSkillName: 
+  prevTransform: {fileID: 0}
   canSkill: 1
 --- !u!1001 &8574186409727647661
 PrefabInstance:

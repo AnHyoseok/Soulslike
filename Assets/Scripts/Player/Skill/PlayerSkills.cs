@@ -1,7 +1,5 @@
 using BS.PlayerInput;
-using BS.State;
 using DG.Tweening;
-using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -11,7 +9,6 @@ namespace BS.Player
     {
         // State
         PlayerState ps;
-        PlayerStateMachine psm;
         private Vector2 m_inputVector2;                     // Input Vector2
         private PlayerInputActions m_Input;                 // PlayerInputActions
 
@@ -35,7 +32,7 @@ namespace BS.Player
         public TextMeshProUGUI backHandSwingCoolTimeText;
         public TextMeshProUGUI chargingPunchCoolTimeText;
         Animator animator;
-        public bool isHit = false;
+        //public bool isHit = false;
         public Vector3 hitPos;
         void Awake()
         {
@@ -44,7 +41,6 @@ namespace BS.Player
 
             m_Input = transform.parent.GetComponent<PlayerInputActions>();
             ps = FindFirstObjectByType<PlayerState>();
-            psm = PlayerStateMachine.Instance;
             animator = GetComponent<Animator>();
             // 스킬 구조체에 맞게 스킬을 추가
 
@@ -69,11 +65,11 @@ namespace BS.Player
             if (animator)
             //&& characterTransform)
             {
-                if (isHit)
+                if (ps.isHit)
                 {
                     // 루트 모션을 무시하고 충돌 지점에서 고정
                     animator.applyRootMotion = false; // 루트 모션 비활성화
-                    Vector3 temp = (hitPos - psm.prevTransform.position).normalized;
+                    Vector3 temp = (hitPos - ps.prevTransform.position).normalized;
                     transform.parent.position = hitPos - temp;
                 }
                 else
@@ -104,54 +100,54 @@ namespace BS.Player
 
         public void DoUppercut()
         {
-            if (psm.animator.GetBool("IsAttacking")) return;
-            if (psm.animator.GetBool("IsDashing") == false
-                && psm.animator.GetBool("IsBlocking") == false
-                && psm.animator.GetBool("IsChargingPunch") == false
-                && psm.animator.GetBool("IsBackHandSwing") == false)
+            if (animator.GetBool("IsAttacking")) return;
+            if (animator.GetBool("IsDashing") == false
+                && animator.GetBool("IsBlocking") == false
+                && animator.GetBool("IsChargingPunch") == false
+                && animator.GetBool("IsBackHandSwing") == false)
             {
                 ps.targetPosition = GetMousePosition();
                 RotatePlayer();
-                psm.animator.SetTrigger("DoUppercut");
-                psm.animator.SetBool("IsUppercuting", true);
+                animator.SetTrigger("DoUppercut");
+                animator.SetBool("IsUppercuting", true);
                 ps.canSkill = false;
-                psm.animator.SetBool("IsMoving", false);
+                animator.SetBool("IsMoving", false);
                 ps.isMovable = false;
             }
         }
 
         public void DoChargingPunch()
         {
-            if (psm.animator.GetBool("IsAttacking")) return;
-            if (psm.animator.GetBool("IsDashing") == false
-                && psm.animator.GetBool("IsBlocking") == false
-                && psm.animator.GetBool("IsUppercuting") == false
-                && psm.animator.GetBool("IsBackHandSwing") == false)
+            if (animator.GetBool("IsAttacking")) return;
+            if (animator.GetBool("IsDashing") == false
+                && animator.GetBool("IsBlocking") == false
+                && animator.GetBool("IsUppercuting") == false
+                && animator.GetBool("IsBackHandSwing") == false)
             {
                 ps.targetPosition = GetMousePosition();
                 RotatePlayer();
-                psm.animator.SetTrigger("DoChargingPunch");
-                psm.animator.SetBool("IsChargingPunch", true);
+                animator.SetTrigger("DoChargingPunch");
+                animator.SetBool("IsChargingPunch", true);
                 ps.canSkill = false;
-                psm.animator.SetBool("IsMoving", false);
+                animator.SetBool("IsMoving", false);
                 ps.isMovable = false;
             }
         }
 
         public void DoBackHandSwing()
         {
-            if (psm.animator.GetBool("IsAttacking")) return;
-            if (psm.animator.GetBool("IsDashing") == false
-                && psm.animator.GetBool("IsBlocking") == false
-                && psm.animator.GetBool("IsUppercuting") == false
-                && psm.animator.GetBool("IsChargingPunch") == false)
+            if (animator.GetBool("IsAttacking")) return;
+            if (animator.GetBool("IsDashing") == false
+                && animator.GetBool("IsBlocking") == false
+                && animator.GetBool("IsUppercuting") == false
+                && animator.GetBool("IsChargingPunch") == false)
             {
                 ps.targetPosition = GetMousePosition();
                 RotatePlayer();
-                psm.animator.SetTrigger("DoBackHandSwing");
-                psm.animator.SetBool("IsBackHandSwing", true);
+                animator.SetTrigger("DoBackHandSwing");
+                animator.SetBool("IsBackHandSwing", true);
                 ps.canSkill = false;
-                psm.animator.SetBool("IsMoving", false);
+                animator.SetBool("IsMoving", false);
                 ps.isMovable = false;
             }
         }
@@ -171,33 +167,6 @@ namespace BS.Player
                         .SetAutoKill(true)
                         .SetEase(Ease.InOutSine)
                         .OnComplete(() =>{});
-        }
-        // 어퍼컷이 끝날때 호출
-        public void EndUppercut()
-        {
-            psm.animator.SetBool("IsUppercuting", false);
-            ps.targetPosition = this.transform.position;
-            psm.currentSkillName = "";
-            isHit = false;
-            ps.canSkill = true;
-        }
-        // 백핸드스윙이 끝날때 호출
-        public void EndBackHandSwing()
-        {
-            psm.animator.SetBool("IsBackHandSwing", false);
-            ps.targetPosition = this.transform.position;
-            psm.currentSkillName = "";
-            isHit = false;
-            ps.canSkill = true;
-        }
-        // 차징펀지이 끝날때 호출
-        public void EndChargingPunch()
-        {
-            psm.animator.SetBool("IsChargingPunch", false);
-            ps.targetPosition = this.transform.position;
-            psm.currentSkillName = "";
-            isHit = false;
-            ps.canSkill = true;
         }
 
         // 다른행동이 불가능 하도록 설정

@@ -1,12 +1,8 @@
 using BS.Managers;
 using BS.Player;
 using BS.PlayerInput;
-using BS.State;
-using BS.UI;
-using DG.Tweening;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 
 namespace BS.Demon
@@ -109,8 +105,8 @@ namespace BS.Demon
             yield return new WaitForSeconds(0.5f);
             pattern.demon.enabled = false;
             player.enabled = false;
-            PlayerStateMachine playerState = player.GetComponent<PlayerStateMachine>();
-            playerState.ChangeState(playerState.IdleState);
+            //PlayerStateMachine playerState = player.GetComponent<PlayerStateMachine>();
+            //playerState.ChangeState(playerState.IdleState);
             PlayerInputActions actions = player.GetComponent<PlayerInputActions>();
             actions.UnInputActions();
             toggleRenderer.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", true);

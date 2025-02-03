@@ -1,4 +1,3 @@
-using BS.State;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -10,16 +9,16 @@ namespace BS.Player
         public string enemyLayerName = "Enemy"; // 적의 레이어 이름
         public GameObject controller;
         private PlayerState ps;
-        private PlayerStateMachine psm;
         private PlayerSkills psk;
+        private Animator animator;
 
         private HashSet<GameObject> damagedEnemies = new HashSet<GameObject>(); // 이미 대미지를 준 적을 추적
 
         private void Start()
         {
             ps = controller.transform.GetChild(0).GetComponent<PlayerState>();
-            psm = PlayerStateMachine.Instance;
             psk = controller.transform.GetChild(0).GetComponent<PlayerSkills>();
+            animator = controller.transform.GetChild(0).GetComponent<Animator>();
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -60,10 +59,10 @@ namespace BS.Player
 
         private void OnTriggerEnter(Collider other)
         {
-            if (psm.animator.GetBool("IsAttacking") == false
-                && psm.animator.GetBool("IsBackHandSwing") == false
-                && psm.animator.GetBool("IsUppercuting") == false
-                && psm.animator.GetBool("IsChargingPunch") == false)
+            if (animator.GetBool("IsAttacking") == false
+                && animator.GetBool("IsBackHandSwing") == false
+                && animator.GetBool("IsUppercuting") == false
+                && animator.GetBool("IsChargingPunch") == false)
             {
                 return;
             }
@@ -81,12 +80,12 @@ namespace BS.Player
                     float currentSkillDamage = GetCurrentSkillDamage();
                     if (currentSkillDamage > 0)
                     {
-                        if (psm.animator.GetBool("IsChargingPunch") == true)
+                        if (animator.GetBool("IsChargingPunch") == true)
                         {
                             Vector3 hitPoint = other.ClosestPoint(transform.position);
                             hitPoint.y = 0;
                             psk.hitPos = hitPoint;
-                            psk.isHit = true;
+                            ps.isHit = true;
                         }
                         // 적에게 대미지 입힘
                         enemyHealth.TakeDamage((int)currentSkillDamage);
@@ -105,7 +104,7 @@ namespace BS.Player
         private float GetCurrentSkillDamage()
         {
             // PlayerSkillController의 현재 스킬 확인
-            if (PlayerSkillController.skillList.TryGetValue(psm.currentSkillName, out var skill))
+            if (PlayerSkillController.skillList.TryGetValue(ps.currentSkillName, out var skill))
             {
                 return skill.damage;
             }

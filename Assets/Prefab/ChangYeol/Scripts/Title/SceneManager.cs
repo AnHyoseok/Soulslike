@@ -1,5 +1,4 @@
 using BS.Player;
-using BS.State;
 using BS.Title;
 using UnityEngine;
 
@@ -88,8 +87,8 @@ namespace BS.Managers
             maincamera.gameObject.SetActive(true);
             m_camera.gameObject.SetActive(false);
             canvas.SetActive(true);
-            PlayerStateMachine playerState = Player.GetComponent<PlayerStateMachine>();
-            playerState.ChangeState(playerState.IdleState);
+            //PlayerStateMachine playerState = Player.GetComponent<PlayerStateMachine>();
+            //playerState.ChangeState(playerState.IdleState);
             falsePlayer.SetActive(true);
             Player.SetActive(false);
             foreach(StageTrigger stages in stage)

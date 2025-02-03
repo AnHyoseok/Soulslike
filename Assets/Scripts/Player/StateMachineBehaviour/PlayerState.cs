@@ -1,4 +1,3 @@
-using BS.State;
 using UnityEngine;
 
 namespace BS.Player
@@ -6,8 +5,6 @@ namespace BS.Player
     /// <summary>
     /// Player의 상태
     /// </summary>
-    /// 
-    // TODO :: 싱글톤 버리고 MONO 받고 PlayerController에서 참조해서 사용하자
     public class PlayerState : MonoBehaviour
     {
         #region Variables
@@ -103,9 +100,13 @@ namespace BS.Player
         public bool isBackHandSwingable = true;   // 백핸드스윙 가능 여부
         public bool isBackHandSwinging = false;// 백핸드스윙 진행 여부
         public float currentBackHandSwingCoolTime = 0f;         // BD 백스윙 쿨타임
+        public string currentSkillName;
+        public Transform prevTransform;
 
         // Skill 사용 가능 여부
         public bool canSkill = true;
+        // 타격 여부
+        public bool isHit = false;
         #endregion
         void Awake()
         {

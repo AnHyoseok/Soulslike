@@ -1,6 +1,4 @@
-using BS.State;
 using DG.Tweening;
-using System.Collections;
 using UnityEngine;
 
 namespace BS.Player
@@ -48,29 +46,29 @@ namespace BS.Player
         private void SetTargetPosition()
         {
             if (m_Input.RightClick && ps.isMovable
-                && psm.animator.GetBool(IS_DASH) == false
-                && psm.animator.GetBool("IsBlocking") == false)
+                && animator.GetBool(IS_DASH) == false
+                && animator.GetBool("IsBlocking") == false)
             {
                 ps.targetPosition = GetMousePosition();
                 RotatePlayer();
 
-                if (!psm.animator.GetBool(IS_MOVING))
+                if (!animator.GetBool(IS_MOVING))
                 {
-                    psm.animator.SetBool(IS_MOVING, true);
-                    if (psm.animator.GetBool(IS_WALKING))
+                    animator.SetBool(IS_MOVING, true);
+                    if (animator.GetBool(IS_WALKING))
                     {
-                        psm.animator.SetTrigger(DO_WALK);
-                        psm.animator.SetBool(IS_WALKING, true);
+                        animator.SetTrigger(DO_WALK);
+                        animator.SetBool(IS_WALKING, true);
                     }
-                    else if (psm.animator.GetBool(IS_SPRINTING))
+                    else if (animator.GetBool(IS_SPRINTING))
                     {
-                        psm.animator.SetTrigger(DO_SPRINT);
-                        psm.animator.SetBool(IS_SPRINTING, true);
+                        animator.SetTrigger(DO_SPRINT);
+                        animator.SetBool(IS_SPRINTING, true);
                     }
                     else
                     {
-                        psm.animator.SetTrigger(DO_RUN);
-                        psm.animator.SetBool(IS_RUNNING, true);
+                        animator.SetTrigger(DO_RUN);
+                        animator.SetBool(IS_RUNNING, true);
                     }
                 }
             }
@@ -80,12 +78,12 @@ namespace BS.Player
         // Player 이동
         private void MoveToTargetPos()
         {
-            if (psm.animator.GetBool(IS_MOVING)
+            if (animator.GetBool(IS_MOVING)
                 && !ps.isUppercuting &&
                 !ps.isBackHandSwinging && !ps.isChargingPunching
-                && !psm.animator.GetBool(IS_ATTACKING)
-                && psm.animator.GetBool(IS_DASH) == false
-                && psm.animator.GetBool("IsBlocking") == false)
+                && !animator.GetBool(IS_ATTACKING)
+                && animator.GetBool(IS_DASH) == false
+                && animator.GetBool("IsBlocking") == false)
             {
                 transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);
 
@@ -98,23 +96,23 @@ namespace BS.Player
 
         private void StopMovement()
         {
-            psm.animator.ResetTrigger(DO_RUN);
-            psm.animator.ResetTrigger(DO_WALK);
-            psm.animator.ResetTrigger(DO_SPRINT);
-            psm.animator.SetBool(IS_MOVING, false);
-            psm.animator.SetBool(IS_RUNNING, false);
-            psm.animator.SetBool(IS_WALKING, false);
-            psm.animator.SetBool(IS_SPRINTING, false);
+            animator.ResetTrigger(DO_RUN);
+            animator.ResetTrigger(DO_WALK);
+            animator.ResetTrigger(DO_SPRINT);
+            animator.SetBool(IS_MOVING, false);
+            animator.SetBool(IS_RUNNING, false);
+            animator.SetBool(IS_WALKING, false);
+            animator.SetBool(IS_SPRINTING, false);
         }
 
         // Player 상태 변경
         private void SetMoveState()
         {
-            if (m_Input.C && !psm.animator.GetBool(IS_WALKING) && psm.animator.GetBool(IS_MOVING))
+            if (m_Input.C && !animator.GetBool(IS_WALKING) && animator.GetBool(IS_MOVING))
             {
                 ChangeMoveState(0.5f, DO_WALK, IS_WALKING);
             }
-            else if (m_Input.Shift && !psm.animator.GetBool(IS_SPRINTING) && psm.animator.GetBool(IS_MOVING))
+            else if (m_Input.Shift && !animator.GetBool(IS_SPRINTING) && animator.GetBool(IS_MOVING))
             {
                 if (!(m_Input.C && m_Input.Shift))
                 {
@@ -130,29 +128,29 @@ namespace BS.Player
         private void ChangeMoveState(float speedMultiplier, string trigger, string stateBool)
         {
             SetMoveSpeed(speedMultiplier);
-            psm.animator.SetTrigger(trigger);
-            psm.animator.SetBool(stateBool, true);
-            psm.animator.SetBool(IS_WALKING, stateBool == IS_WALKING);
-            psm.animator.SetBool(IS_RUNNING, stateBool == IS_RUNNING);
-            psm.animator.SetBool(IS_SPRINTING, stateBool == IS_SPRINTING);
+            animator.SetTrigger(trigger);
+            animator.SetBool(stateBool, true);
+            animator.SetBool(IS_WALKING, stateBool == IS_WALKING);
+            animator.SetBool(IS_RUNNING, stateBool == IS_RUNNING);
+            animator.SetBool(IS_SPRINTING, stateBool == IS_SPRINTING);
         }
 
         private void ResetToRunState()
         {
             SetMoveSpeed(1f);
 
-            if (psm.animator.GetBool(IS_WALKING))
+            if (animator.GetBool(IS_WALKING))
             {
-                psm.animator.SetBool(IS_WALKING, false);
-                psm.animator.SetTrigger(DO_RUN);
-                psm.animator.SetBool(IS_RUNNING, true);
+                animator.SetBool(IS_WALKING, false);
+                animator.SetTrigger(DO_RUN);
+                animator.SetBool(IS_RUNNING, true);
             }
 
-            if (psm.animator.GetBool(IS_SPRINTING))
+            if (animator.GetBool(IS_SPRINTING))
             {
-                psm.animator.SetBool(IS_SPRINTING, false);
-                psm.animator.SetTrigger(DO_RUN);
-                psm.animator.SetBool(IS_RUNNING, true);
+                animator.SetBool(IS_SPRINTING, false);
+                animator.SetTrigger(DO_RUN);
+                animator.SetBool(IS_RUNNING, true);
             }
         }
 
@@ -166,8 +164,8 @@ namespace BS.Player
         // 대쉬
         private void DoDash()
         {
-            if (psm.animator.GetBool(IS_DASH) == false
-                && psm.animator.GetBool("IsBlocking") == false
+            if (animator.GetBool(IS_DASH) == false
+                && animator.GetBool("IsBlocking") == false
                 && ps.isDashable)
             {
                 StartDash(GetMousePosition());
@@ -186,7 +184,7 @@ namespace BS.Player
 
         private void StartDash(Vector3 targetPoint)
         {
-            psm.animator.SetBool(IS_DASH, true);
+            animator.SetBool(IS_DASH, true);
             ps.isInvincible = true;
 
             Vector3 dashDirection = (targetPoint - transform.position).normalized;
@@ -197,20 +195,20 @@ namespace BS.Player
             // TODO :: Sprint 모션으로 대쉬를 하고싶은데
             //StopMovement();
             //psm.prevState = psm.GetCurrentState();
-            //psm.animator.SetTrigger(DO_DASH);
+            //animator.SetTrigger(DO_DASH);
             //psm.ChangeState(psm.SprintState);
             //ResetActionFlags();
-            //if (psm.animator.GetBool(IS_RUNNING) == true)
+            //if (animator.GetBool(IS_RUNNING) == true)
             //{
-            //    psm.animator.SetBool(IS_RUNNING, true);
+            //    animator.SetBool(IS_RUNNING, true);
             //}
-            //else if (psm.animator.GetBool(IS_SPRINTING) == true)
+            //else if (animator.GetBool(IS_SPRINTING) == true)
             //{
-            //    psm.animator.SetBool(IS_SPRINTING, true);
+            //    animator.SetBool(IS_SPRINTING, true);
             //}
-            //else if (psm.animator.GetBool(IS_WALKING) == true)
+            //else if (animator.GetBool(IS_WALKING) == true)
             //{
-            //    psm.animator.SetBool(IS_WALKING, true);
+            //    animator.SetBool(IS_WALKING, true);
             //}
             //else
             //{
@@ -234,7 +232,7 @@ namespace BS.Player
 
         private void EndDash()
         {
-            psm.animator.SetBool(IS_DASH, false);
+            animator.SetBool(IS_DASH, false);
         }
 
         private void DisableInvincibility()

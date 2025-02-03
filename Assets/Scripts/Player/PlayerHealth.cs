@@ -1,7 +1,5 @@
 using BS.PlayerInput;
-using BS.State;
 using DG.Tweening;
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -99,13 +97,13 @@ namespace BS.Player
         {
             if (!ps.isBlockable) return;
 
-            if (!psm.animator.GetBool(IS_BLOCKING))
+            if (!animator.GetBool(IS_BLOCKING))
             {
                 ps.isDashable = false; // 대시 불가 설정
                 RotatePlayer(); // 플레이어 회전
                 ps.targetPosition = transform.position; // 블록 중 이동 방지
-                psm.animator.SetBool(IS_BLOCKING, true);
-                psm.animator.SetTrigger(DO_BLOCK);
+                animator.SetBool(IS_BLOCKING, true);
+                animator.SetTrigger(DO_BLOCK);
             }
         }
 
@@ -124,7 +122,7 @@ namespace BS.Player
         // 플레이어 회전 처리
         protected override void RotatePlayer()
         {
-            if (!ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching && !psm.animator.GetBool(IS_ATTACKING))
+            if (!ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching && !animator.GetBool(IS_ATTACKING))
             {
                 transform.parent.DOKill(complete: false); // 트랜스폼 관련 모든 트윈 제거 (완료 콜백 실행 안 함)
 

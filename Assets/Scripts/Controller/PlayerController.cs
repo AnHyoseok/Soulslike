@@ -1,11 +1,6 @@
 using BS.PlayerInput;
-using BS.State;
 using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace BS.Player
 {
@@ -24,8 +19,7 @@ namespace BS.Player
         protected Camera mainCamera;                          // 카메라 참조
         protected PlayerInputActions m_Input;                 // PlayerInputActions
         protected PlayerState ps;
-        protected PlayerStateMachine psm;
-
+        protected Animator animator;
         // Mouse
         protected Vector2 m_inputVector2;                     // Input Vector2
         [SerializeField] protected Vector3 targetPosition;    // 월드 좌표로 변환된 목표 지점
@@ -54,8 +48,7 @@ namespace BS.Player
         protected virtual void Start()
         {
             ps = GetComponentInChildren<PlayerState>();
-            psm = PlayerStateMachine.Instance;
-
+            animator = m_Input.transform.GetChild(0).GetComponent<Animator>();
             if (mainCamera == null)
                 mainCamera = Camera.main;
 
@@ -99,8 +92,8 @@ namespace BS.Player
         // Player 회전
         protected virtual void RotateToTargetPos()
         {
-            if (psm.animator.GetBool("IsAttacking")) return;
-            if (targetPosition != null && ps.isMoving && psm.animator.GetBool("IsBlocking") == false && !ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching)
+            if (animator.GetBool("IsAttacking")) return;
+            if (targetPosition != null && ps.isMoving && animator.GetBool("IsBlocking") == false && !ps.isUppercuting && !ps.isBackHandSwinging && !ps.isChargingPunching)
             {
                 // 목표 방향 계산
                 Vector3 direction = GetMousePosition() - transform.position;
@@ -125,11 +118,11 @@ namespace BS.Player
         protected virtual void RotatePlayer()
         {
             //if (psm.animator.GetBool("IsAttacking")) return;
-            if (psm.animator.GetBool("IsBlocking") == false
+            if (animator.GetBool("IsBlocking") == false
                 && !ps.isUppercuting
                 && !ps.isBackHandSwinging
                 && !ps.isChargingPunching
-                && psm.animator.GetBool("IsAttacking") == false
+                && animator.GetBool("IsAttacking") == false
                 )
             {
                 transform.DOKill(complete: false); // 트랜스폼과 관련된 모든 트윈 제거 (완료 콜백은 실행되지 않음)

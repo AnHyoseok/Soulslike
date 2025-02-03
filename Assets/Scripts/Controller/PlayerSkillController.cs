@@ -117,11 +117,14 @@ namespace BS.Player
         // 스킬 입력 처리
         private void OnSkillInput(InputAction.CallbackContext context)
         {
-            if (!ps.canSkill) return;
-            if (psm.animator.GetBool("IsAttacking")) return;
+            if (animator.GetBool("IsAttacking")) return;
             string key = context.action.name;
             if (skillList.ContainsKey(key))
             {
+                if((key == "Q" || key == "W" || key == "E") && !ps.canSkill)
+                {
+                    return;
+                }
                 ExecuteSkill(key);
             }
         }
@@ -134,8 +137,8 @@ namespace BS.Player
                 if (skillCoolTimeCoroutines[skill.Name] == null) // 아직 쿨타임이 돌고 있지 않으면
                 {
                     skill.Action?.Invoke(); // 스킬 실행
-                    psm.currentSkillName = key;
-                    psm.prevTransform = this.transform;
+                    ps.currentSkillName = key;
+                    ps.prevTransform = this.transform;
                     skillCoolTimeCoroutines[skill.Name] = StartCoroutine(CoolTimeCoroutine(skill.Name, skill.coolTime)); // 쿨타임 코루틴 시작
                 }
                 else

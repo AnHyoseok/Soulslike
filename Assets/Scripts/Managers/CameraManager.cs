@@ -1,4 +1,4 @@
-using BS.State;
+using BS.PlayerInput;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +16,7 @@ namespace BS.Managers
         public Renderer lastRayObj;
         public Vector3 offset = new Vector3(0f, 10f, -10f); // 플레이어와의 거리
         public float followSpeed = 5f; // 카메라 이동 속도
-        private PlayerStateMachine playerStateMachine;
+        private PlayerInputActions playerInputActions;
         RaycastHit hit;
         #endregion
 
@@ -27,10 +27,10 @@ namespace BS.Managers
         {
             if (player == null)
             {
-                playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
-                if (playerStateMachine != null)
+                playerInputActions = FindFirstObjectByType<PlayerInputActions>();
+                if (playerInputActions != null)
                 {
-                    player = playerStateMachine.transform;
+                    player = playerInputActions.transform;
                 }
                 else
                 {

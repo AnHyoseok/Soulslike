@@ -1,6 +1,4 @@
 using BS.Player;
-using BS.PlayerInput;
-using BS.State;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

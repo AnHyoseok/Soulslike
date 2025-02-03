@@ -1,7 +1,4 @@
-using BS.State;
 using UnityEngine;
-using DG.Tweening;
-using TMPro;
 
 namespace BS.Player
 {
@@ -19,7 +16,6 @@ namespace BS.Player
         private bool isMousePressed = false;
         private float timeSinceLastClick = 0f;
         private float clickInterval = 0.12f;                // 클릭 반복 간격
-        public Animator animator;
         #endregion
 
         protected override void Awake()
@@ -73,18 +69,18 @@ namespace BS.Player
             if (m_Input.LeftClick && ps.isAttackable)
             {
                 RotatePlayer();
-                if (psm.animator.GetBool("IsAttacking") == false)
+                if (animator.GetBool("IsAttacking") == false)
                 {
-                    psm.animator.SetBool("IsAttacking", true);
+                    animator.SetBool("IsAttacking", true);
                 }
             }
         }
 
         void ComboAttack()
         {
-            if (psm.animator.GetBool("IsAttacking") == true)
+            if (animator.GetBool("IsAttacking") == true)
             {
-                psm.animator.SetBool("IsMoving", false);
+                animator.SetBool("IsMoving", false);
                 //ps.isMoving = false;
                 ps.isMovable = false;
 
@@ -95,8 +91,8 @@ namespace BS.Player
                 }
 
                 // 공격 Trigger 발동
-                psm.animator.SetInteger("ComboAttack", ps.comboAttackIndex);
-                psm.animator.SetTrigger("DoAttack");
+                animator.SetInteger("ComboAttack", ps.comboAttackIndex);
+                animator.SetTrigger("DoAttack");
                 lastAttackTime = Time.time;
 
                 // combo4까지 모두 끝난 경우
