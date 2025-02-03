@@ -18,7 +18,6 @@ namespace BS.Utility
             {
                 achievementDataPool = ScriptableObject.CreateInstance<AchievementDataPool>();
                 achievementDataPool.LoadData();
-                Debug.LogWarning("ee" + achievementDataPool.streams.Count);
                 stream = achievementDataPool.streams;
             }
         }

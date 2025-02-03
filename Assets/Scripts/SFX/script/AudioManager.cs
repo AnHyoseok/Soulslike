@@ -13,7 +13,7 @@ namespace BS.Audio
         // AudioMixer는 Unity의 오디오 시스템에서 여러 오디오 트랙을 믹싱하고 처리하는 데 사
         public AudioMixer[] AudioMixers;
 
-        public AudioSource audioSource;
+        private AudioSource audioSource;
         [SerializeField] public Slider m_AudioMasterSlider;
         [SerializeField] public Slider m_AudioSoundSlider;
         [SerializeField] public Slider m_AudioMusicSlider;

@@ -32,7 +32,7 @@ namespace BS.Achievement
         {
             if (achievementGoal.achievementType == AchievementType.KillCount)
             {
-                achievementGoal.currentAmount++;
+                achievementGoal.currentAmount = Mathf.Min(++achievementGoal.currentAmount, achievementGoal.goalAmount);
             }
         }
 
@@ -40,7 +40,11 @@ namespace BS.Achievement
         {
             if (achievementGoal.achievementType == AchievementType.TimeBased)
             {
-                achievementGoal.currentAmount = accumulatedTime;
+                // 최초 기록이거나 기존 값보다 작은 경우 갱신
+                if (achievementGoal.currentAmount == 0 || accumulatedTime < achievementGoal.currentAmount)
+                {
+                    achievementGoal.currentAmount = accumulatedTime;
+                }
             }
         }
 

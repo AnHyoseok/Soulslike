@@ -26,13 +26,18 @@ namespace BS.UI
         private float elapsedTime = 0f;    // 현재 진행 시간
         private bool isDungeonActive = false; // 던전 활성화 여부
         private float bestTime = Mathf.Infinity; // 신기록 시간 (최초엔 무한대)
-        [SerializeField] private float[] achievementTime;
-
-        //시간 업적 해금
-        [HideInInspector] public bool[] isTime = new bool[4];
-        //체력 업적 해금
-        [HideInInspector] public bool[] isHealth = new bool[4];
         #endregion
+
+        private void Start()
+        {
+            foreach (var list in AchievementManager.Instance.achievementsGoalCondition)
+            {
+                if (list.achievementType == AchievementType.TimeBased && bestTime > list.achievementGoal.currentAmount)
+                {
+                    bestTime = list.achievementGoal.currentAmount;
+                }
+            }
+        }
 
         void Update()
         {
@@ -71,7 +76,6 @@ namespace BS.UI
             buttons[1].onClick.AddListener(CompleteRetry);
 
             newRecordUI.SetActive(true);
-
             if (elapsedTime < bestTime) // 신기록 달성 여부 확인
             {
                 bestTime = elapsedTime; // 신기록 갱신
@@ -83,28 +87,7 @@ namespace BS.UI
                 StartCoroutine(AnimateClearTime(elapsedTime));
                 newRecordText.text = "";
             }
-            if (elapsedTime < achievementTime[0])
-            {
-                isTime[0] = true;
-            }
-            else if (elapsedTime < achievementTime[1])
-            {
-                isTime[1] = true;
-            }
-            else if (elapsedTime < achievementTime[2])
-            {
-                isTime[2] = true;
-            }
-            else if (elapsedTime > achievementTime[2])
-            {
-                isTime[3] = true;
-            }
-
-            /************************************************************************************/
-            // TODO : UpdateAchievementData(TimeBased, elapsedTime) 불러오기
-            /************************************************************************************/
             AchievementManager.Instance.UpdateAchievement(AchievementType.TimeBased, bestTime);
-
         }
         //던전 클리어 실패시
         public void DefeatDungeon()
@@ -115,7 +98,6 @@ namespace BS.UI
             bosstext.color = Color.red;
             recordText.text = "";
             newRecordText.text = "";
-            isTime[3] = true;
             buttonText[0].text = buttonName[2];
             buttonText[1].text = buttonName[3];
             buttons[0].onClick.AddListener(DefeatContinue);

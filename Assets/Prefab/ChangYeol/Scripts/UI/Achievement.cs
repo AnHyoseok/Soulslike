@@ -24,7 +24,12 @@ namespace BS.Achievement
         private void Start()
         {
             manager = AchievementManager.Instance;
+            if (manager == null)
+            {
+                Debug.LogWarning("manager 오류");
+            }
             CheckAchievement();
+            manager.SaveAchievementData();
             //AchievementCondition(achievementCondition[0], false);
             //AchievementCondition(achievementCondition[1], false);
             //AchievementCondition(achievementCondition[2], false);
@@ -55,9 +60,9 @@ namespace BS.Achievement
 
                     achievement.achievementText.text = manager.realAchievements[i].description;
                     achievement.achievementCondition.color = gameachievement.isUnlock ? gameachievement.isClear ? selectColor : Color.white : Color.white;
-                    achievement.achievementText.color = gameachievement.isUnlock ? gameachievement.isClear ? selectColor : Color.red : Color.white;
+                    achievement.achievementText.color = gameachievement.isUnlock ? gameachievement.isClear ? selectColor : Color.red : Color.gray;
                     achievement.achievementText.fontStyle = gameachievement.isUnlock ? gameachievement.isClear ? FontStyles.Normal : FontStyles.Strikethrough : FontStyles.Normal;
-                    achievement.achievementImage.color = gameachievement.isUnlock ? gameachievement.isClear ? selectColor : Color.red : Color.white;
+                    achievement.achievementImage.color = gameachievement.isUnlock ? gameachievement.isClear ? selectColor : Color.red : Color.gray;
                     achievement.achievementImage.sprite = gameachievement.isUnlock ? gameachievement.isClear ? selectSprite : noneSprite : noneSprite;
                 }
             }

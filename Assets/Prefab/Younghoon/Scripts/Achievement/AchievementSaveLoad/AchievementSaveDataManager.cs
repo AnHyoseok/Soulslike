@@ -54,7 +54,6 @@ namespace BS.Achievement
             // 파일이 존재하지 않으면 초기화된 컨테이너 반환
             if (!File.Exists(savePath))
             {
-                Debug.LogWarning("Save file not found. Returning empty data container.");
                 AchievementSaveDatas achievementSaveDatas = new AchievementSaveDatas();
 
                 List<AchievementData> achievements = DataManager.GetAchievementData()
@@ -64,7 +63,6 @@ namespace BS.Achievement
                     .ToList();
 
                 int startNum = achievements[0].number;
-                Debug.Log(startNum);
                 for (int i = startNum; i < startNum + achievements.Count; i++)
                 {
                     AchievementSaveData achievementSaveData = new AchievementSaveData();
@@ -97,7 +95,7 @@ namespace BS.Achievement
             // JSON 문자열을 객체로 역직렬화
             AchievementSaveDatas dataContainer = JsonUtility.FromJson<AchievementSaveDatas>(json);
 
-            Debug.Log($"Data loaded from {savePath}");
+            //Debug.Log($"Data loaded from {savePath}");
             return dataContainer;
         }
     }

@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7346096967397142379
 RectTransform:
   m_ObjectHideFlags: 0
@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   achievement: {fileID: 2903574145065914430, guid: 6eb76e9a251dcba4886333f9eb333422, type: 3}
-  achievementList: {fileID: 2903574145065914430, guid: 6eb76e9a251dcba4886333f9eb333422, type: 3}
+  achievementList: {fileID: 4860093878601657794}
   selectSprite: {fileID: 21300000, guid: 612e636ebcb7c044ebed381ef21608b5, type: 3}
   noneSprite: {fileID: 21300000, guid: 89c5ea088702fb748a80ef0c7195e288, type: 3}
   selectColor: {r: 0.48235294, g: 1, b: 0.78039217, a: 1}
@@ -414,12 +414,6 @@ MonoBehaviour:
   recordText: {fileID: 267909504388819867}
   newRecordText: {fileID: 6012785032259031009}
   newRecordUI: {fileID: 1355174536291733540}
-  achievementTime:
-  - 150
-  - 240
-  - 360
-  isTime: 00000000
-  isHealth: 00000000
 --- !u!114 &2997356987164351722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -573,7 +567,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uD0C0\uC774\uD2C0\uB85C"
+  m_text: "\uD0C0\uC774\uD2C0"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 331d0ea1a1e03b14896bd6458fbd0334, type: 2}
   m_sharedMaterial: {fileID: 4883999945016819575, guid: 331d0ea1a1e03b14896bd6458fbd0334, type: 2}
