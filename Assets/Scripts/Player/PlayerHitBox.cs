@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using BS.Utility;
+using static BS.Utility.AudioUtility;
 
 namespace BS.Player
 {
@@ -11,8 +13,9 @@ namespace BS.Player
         private PlayerState ps;
         private PlayerSkills psk;
         private Animator animator;
-
         private HashSet<GameObject> damagedEnemies = new HashSet<GameObject>(); // 이미 대미지를 준 적을 추적
+
+        public AudioClip[] hitSounds;
 
         private void Start()
         {
@@ -80,13 +83,15 @@ namespace BS.Player
                     float currentSkillDamage = GetCurrentSkillDamage();
                     if (currentSkillDamage > 0)
                     {
+                        Vector3 hitPoint = other.ClosestPoint(transform.position);
                         if (animator.GetBool("IsChargingPunch") == true)
                         {
-                            Vector3 hitPoint = other.ClosestPoint(transform.position);
                             hitPoint.y = 0;
                             psk.hitPos = hitPoint;
                             ps.isHit = true;
                         }
+                        // SFX
+                        PlayHitSound(hitPoint);
                         // 적에게 대미지 입힘
                         enemyHealth.TakeDamage((int)currentSkillDamage);
 
@@ -99,6 +104,32 @@ namespace BS.Player
                 }
             }
         }
+
+        private void PlayHitSound(Vector3 hitPoint)
+        {
+            Debug.Log("SKILL = " + ps.currentSkillName);
+            AudioClip hitSound = null;
+            if (ps.currentSkillName == "E")
+            {
+                hitSound = hitSounds[5];
+            }
+            else if (ps.currentSkillName == "W")
+            {
+                hitSound = hitSounds[4];
+            }
+            else if (ps.currentSkillName == "Q")
+            {
+                hitSound = hitSounds[6];
+            }
+            else
+            {
+                int randomNumber = Mathf.FloorToInt(Random.value * 4);
+                hitSound = hitSounds[randomNumber];
+            }
+
+            AudioUtility.CreateSFX(hitSound, hitPoint, AudioGroups.Skill);
+        }
+
 
         // 현재 실행 중인 스킬의 대미지를 반환
         private float GetCurrentSkillDamage()

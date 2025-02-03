@@ -121,10 +121,10 @@ namespace BS.Player
             string key = context.action.name;
             if (skillList.ContainsKey(key))
             {
-                if((key == "Q" || key == "W" || key == "E") && !ps.canSkill)
-                {
-                    return;
-                }
+                // qwe 공격 스킬 시전 중 다른 스킬을 불가
+                if ((key == "Q" || key == "W" || key == "E") && !ps.canSkill) { return; }
+                // qwe 공격 스킬 시전 중 다른 행동이 불가되었을 경우
+                if (!ps.isDashable && !ps.isBlockable) return;
                 ExecuteSkill(key);
             }
         }
