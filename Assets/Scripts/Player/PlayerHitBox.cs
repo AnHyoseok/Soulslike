@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using BS.Utility;
 using static BS.Utility.AudioUtility;
+using BS.Managers;
 
 namespace BS.Player
 {
@@ -16,12 +17,14 @@ namespace BS.Player
         private HashSet<GameObject> damagedEnemies = new HashSet<GameObject>(); // 이미 대미지를 준 적을 추적
 
         public AudioClip[] hitSounds;
+        CameraManager cm;
 
         private void Start()
         {
             ps = controller.transform.GetChild(0).GetComponent<PlayerState>();
             psk = controller.transform.GetChild(0).GetComponent<PlayerSkills>();
             animator = controller.transform.GetChild(0).GetComponent<Animator>();
+            cm = Camera.main.GetComponent<CameraManager>();
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -83,6 +86,10 @@ namespace BS.Player
                     float currentSkillDamage = GetCurrentSkillDamage();
                     if (currentSkillDamage > 0)
                     {
+                        if(currentSkillDamage > 60)
+                        {
+                            cm.ShakeCamera(0.3f, 5f);
+                        }
                         Vector3 hitPoint = other.ClosestPoint(transform.position);
                         if (animator.GetBool("IsChargingPunch") == true)
                         {
@@ -107,7 +114,6 @@ namespace BS.Player
 
         private void PlayHitSound(Vector3 hitPoint)
         {
-            Debug.Log("SKILL = " + ps.currentSkillName);
             AudioClip hitSound = null;
             if (ps.currentSkillName == "E")
             {

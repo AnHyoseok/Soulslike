@@ -54,8 +54,12 @@ namespace BS.Player
             private set
             {
                 isDeath = value;
-                // 애니메이션 설정
-                // animator.SetBool(AnimationString.IsDeath, value);
+                if(isDeath == true)
+                {
+                    // 애니메이션 설정
+                    animator.SetTrigger("Death");
+                    m_Input.UnInputActions();
+                }
             }
         }
 
@@ -81,12 +85,14 @@ namespace BS.Player
         private void OnEnable()
         {
             OnDamaged += CalculateDamage; // 데미지 이벤트 구독
+            OnDamaged += PlayHitAnim;
             OnBlocked += PlayBlockSound;
         }
 
         private void OnDisable()
         {
             OnDamaged -= CalculateDamage; // 데미지 이벤트 구독 해제
+            OnDamaged -= PlayHitAnim;
             OnBlocked -= PlayBlockSound;
         }
 
@@ -173,6 +179,11 @@ namespace BS.Player
                 OnDamaged?.Invoke(damage);
                 return false;
             }
+        }
+
+        public void PlayHitAnim(float damage)
+        {
+            animator.SetBool("IsHit", true);
         }
 
         // 데미지 계산 메서드

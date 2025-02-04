@@ -1,4 +1,5 @@
 using BS.PlayerInput;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +19,9 @@ namespace BS.Managers
         public float followSpeed = 5f; // 카메라 이동 속도
         private PlayerInputActions playerInputActions;
         RaycastHit hit;
+
+        private Vector3 shakeOffset = Vector3.zero; // 흔들림 오프셋
+        private bool isShaking = false;
         #endregion
 
         // TODO :: Shader로 가림막의 투명도를 조정해보자
@@ -53,20 +57,16 @@ namespace BS.Managers
             HandleObjectVisibility();
         }
 
-        // 플레이어를 따라다니는 로직
+        // 플레이어를 따라다니는 로직 (흔들림 효과 추가)
         private void FollowPlayer()
         {
-            // 카메라 목표 위치 계산 (플레이어 위치 + 오프셋)
-            Vector3 targetPosition = player.position + offset;
-
-            // 카메라 위치를 목표 위치로 부드럽게 이동
+            Vector3 targetPosition = player.position + offset; // 기본 위치
             mainCamera.transform.position = Vector3.Lerp(
                 mainCamera.transform.position,
-                targetPosition,
+                targetPosition + shakeOffset, // 흔들림 오프셋 추가
                 followSpeed * Time.deltaTime
             );
 
-            // 플레이어를 바라보도록 회전
             mainCamera.transform.LookAt(player);
         }
 
@@ -126,6 +126,35 @@ namespace BS.Managers
             {
                 prevRayObj.Remove(renderer);
             }
+        }
+
+
+        // 카메라 흔들림 효과 (Shake)
+        public void ShakeCamera(float duration, float magnitude)
+        {
+            if (!isShaking)
+                StartCoroutine(Shake(duration, magnitude));
+        }
+
+        private IEnumerator Shake(float duration, float magnitude)
+        {
+            isShaking = true;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                shakeOffset = new Vector3(
+                    Random.Range(-1f, 1f) * magnitude,
+                    Random.Range(-1f, 1f) * magnitude,
+                    Random.Range(-1f, 1f) * magnitude
+                );
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            shakeOffset = Vector3.zero; // 흔들림 종료 후 초기화
+            isShaking = false;
         }
     }
 }
