@@ -10,7 +10,10 @@ public class VampireHealth : MonoBehaviour,IDamageable
     private bool isInvincible = false; //무적여부
 
     public float productionTime=5f;
-    public GameObject clearUI;
+    //public GameObject clearUI;
+
+    
+    
 
     public void SetInvincible(bool invincible)
     {
@@ -59,10 +62,10 @@ public class VampireHealth : MonoBehaviour,IDamageable
         Destroy(gameObject); // 보스 오브젝트 제거
         
     }
-    IEnumerator SetClearUI()
-    {
-        yield return new WaitForSeconds(productionTime);
-        clearUI.SetActive(true);
-    } 
+    //IEnumerator SetClearUI()
+    //{
+    //    yield return new WaitForSeconds(productionTime);
+    //    //clearUI.SetActive(true);
+    //} 
    
 }

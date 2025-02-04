@@ -32,6 +32,11 @@ namespace BS.vampire
 
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                boss.currentHealth -= 200f;
+            }
+            
             CheckShieldStatus();
         }
 

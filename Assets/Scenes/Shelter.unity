@@ -2272,6 +2272,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyLayerName: Enemy
   controller: {fileID: 740085424}
+  hitSounds: []
 --- !u!54 &113704398
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4887,7 +4888,10 @@ MonoBehaviour:
   isBackHandSwingable: 1
   isBackHandSwinging: 0
   currentBackHandSwingCoolTime: 0
+  currentSkillName: 
+  prevTransform: {fileID: 0}
   canSkill: 1
+  isHit: 0
 --- !u!114 &266065523
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4911,7 +4915,6 @@ MonoBehaviour:
   uppercutCoolTimeText: {fileID: 0}
   backHandSwingCoolTimeText: {fileID: 0}
   chargingPunchCoolTimeText: {fileID: 0}
-  isHit: 0
   hitPos: {x: 0, y: 0, z: 0}
 --- !u!114 &266065524
 MonoBehaviour:
@@ -4929,6 +4932,7 @@ MonoBehaviour:
   moveSpeed: 5
   lerpSpeed: 10
   rotationDuration: 0.1
+  blockSound: {fileID: 0}
   blockCoolTime: 3
   blockCoolTimeText: {fileID: 0}
   maxHealth: 999999
@@ -6586,7 +6590,7 @@ MonoBehaviour:
   sceneName1: Demon
   sceneName2: Alien
   sceneName3: Set
-  sceneName4: Vamprie
+  sceneName4: Vampire
 --- !u!114 &354359354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7728,7 +7732,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AudioMixers:
   - {fileID: 24100000, guid: 2e580158176b8db488c749ecd5460e07, type: 2}
-  audioSource: {fileID: 393525655}
   m_AudioMasterSlider: {fileID: 2100495425}
   m_AudioSoundSlider: {fileID: 1093937069}
   m_AudioMusicSlider: {fileID: 231645653}
@@ -19291,7 +19294,6 @@ MonoBehaviour:
   comboableTime: 0
   _comboableTime: 1
   lastAttackTime: 0
-  animator: {fileID: 266065521}
 --- !u!114 &740085431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19330,9 +19332,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d2518cbccf1b54cade8ba3385233b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSkillName: 
-  prevTransform: {fileID: 0}
-  animator: {fileID: 266065521}
 --- !u!4 &740085433
 Transform:
   m_ObjectHideFlags: 0
@@ -26896,6 +26895,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyLayerName: Enemy
   controller: {fileID: 740085424}
+  hitSounds: []
 --- !u!65 &1159761876
 BoxCollider:
   m_ObjectHideFlags: 0

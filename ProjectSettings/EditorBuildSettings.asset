@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Alien.unity
     guid: 36b15c52656f4134e8641c23f192a7bb
   - enabled: 1
-    path: Assets/Prefab/Hyoseok/Vamprie.unity
+    path: Assets/Prefab/Hyoseok/Vamprietest.unity
     guid: 29f38d585bb30544b9e526546bc39b55
   - enabled: 1
     path: Assets/Scenes/Set.unity

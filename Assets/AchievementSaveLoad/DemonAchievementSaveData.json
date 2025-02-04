@@ -2,7 +2,7 @@
     "achievementSaveData": [
         {
             "number": 27,
-            "currentAmount": 5.0,
+            "currentAmount": 1.0,
             "isUnlock": true,
             "isClear": true
         },
@@ -14,7 +14,7 @@
         },
         {
             "number": 29,
-            "currentAmount": 5.0,
+            "currentAmount": 6.0,
             "isUnlock": true,
             "isClear": false
         },
@@ -38,19 +38,19 @@
         },
         {
             "number": 33,
-            "currentAmount": 3.48199462890625,
+            "currentAmount": 0.6137987971305847,
             "isUnlock": true,
             "isClear": true
         },
         {
             "number": 34,
-            "currentAmount": 3.48199462890625,
+            "currentAmount": 0.6137987971305847,
             "isUnlock": true,
             "isClear": true
         },
         {
             "number": 35,
-            "currentAmount": 3.48199462890625,
+            "currentAmount": 0.6137987971305847,
             "isUnlock": true,
             "isClear": true
         }

@@ -39,9 +39,12 @@ namespace BS.vampire
 
         IEnumerator Opening()
         {
-            fadeinout.SetActive(true);
+            GameObject fade = Instantiate(fadeinout,this.gameObject.transform);
+            Destroy(fade,1f );
+         
             yield return new WaitForSeconds(1f);
-            fadeinout.SetActive(false);
+            ///**/
+            //fadeinout.SetActive(false);
 
             PattonSummon pattonSummon = boss.GetComponent<PattonSummon>();
             VampireController vampireController = boss.GetComponent<VampireController>();
