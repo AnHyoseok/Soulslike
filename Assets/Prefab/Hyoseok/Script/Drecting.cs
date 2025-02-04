@@ -10,6 +10,7 @@ namespace BS.vampire
     public class Drecting : MonoBehaviour
     {
         #region Variables
+        public GameObject fadeinout;
         public GameObject drectingCamera;
         public GameObject boss;
         public GameObject bossCanvas;
@@ -38,6 +39,9 @@ namespace BS.vampire
 
         IEnumerator Opening()
         {
+            fadeinout.SetActive(true);
+            yield return new WaitForSeconds(1f);
+            fadeinout.SetActive(false);
 
             PattonSummon pattonSummon = boss.GetComponent<PattonSummon>();
             VampireController vampireController = boss.GetComponent<VampireController>();
