@@ -50,6 +50,11 @@ namespace BS.Managers
         {
             if (player == null)
             {
+                playerInputActions = FindFirstObjectByType<PlayerInputActions>();
+                if (playerInputActions != null)
+                {
+                    player = playerInputActions.transform;
+                }
                 Debug.Log("PLAYER NULL");
                 return;
             }

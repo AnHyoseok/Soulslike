@@ -43,7 +43,7 @@ namespace BS.UI
                 float playerHealthRatio = playerHealth.CurrentHealth / playerHealth.MaxHealth;
 
                 playerhealthBarImage.fillAmount = playerHealthRatio;
-                potionText.text = playerHealth.potionCount.ToString();
+                //potionText.text = playerHealth.potionCount.ToString();
                 playerHealthText.text = $"{playerHealthRatio * 100}%"; // 플레이어 체력 퍼센트
             }
             // 소환 타이머 업데이트

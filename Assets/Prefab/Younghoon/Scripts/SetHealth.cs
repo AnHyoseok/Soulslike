@@ -31,8 +31,6 @@ namespace BS.Enemy.Set
                     return;
 
                 currentHealth = value;
-                bosshealthBarImage.fillAmount = GetRatio();
-                bossHealthText.text = $"{GetRatio() * 100:F0}%";
 
                 if (currentHealth <= 0f)
                 {
@@ -51,7 +49,7 @@ namespace BS.Enemy.Set
         private TextMeshProUGUI bossHealthText;     // 보스 체력 텍스트
 
         //UnityAction
-        public UnityAction OnDamaged;
+        public UnityAction<float> OnDamaged;
         public UnityAction OnDie;
 
         #endregion
@@ -60,7 +58,7 @@ namespace BS.Enemy.Set
         {
             currentHealth = MaxHealth;
 
-            FindAndResetComponents();
+
         }
 
         #region Test용 데미지 주기 삭제 필
@@ -84,39 +82,9 @@ namespace BS.Enemy.Set
             //데미지 계산
             CurrentHealth = Mathf.Clamp(CurrentHealth - damage, 0, MaxHealth);
 
-            OnDamaged?.Invoke();
+            OnDamaged?.Invoke(damage);
         }
 
-        private void FindAndResetComponents()
-        {
-            GameObject bossHealthBar = GameObject.Find("BossHealthBar");
 
-            if (bossHealthBar != null)
-            {
-                // bossHealthBar의 모든 하위 오브젝트에서 컴포넌트를 가진 오브젝트들을 찾음
-                // FirstOrDefault()는 첫 번째로 조건을 만족하는 요소를 반환하고, 없으면 null을 반환
-                bosshealthBarImage = bossHealthBar.GetComponentsInChildren<Image>()
-                    .FirstOrDefault(img => img.gameObject.name == "FillAmount");
-
-                bossHealthText = bossHealthBar.GetComponentsInChildren<TextMeshProUGUI>()
-                    .FirstOrDefault(txt => txt.gameObject.name == "HealthText");
-
-                if (bosshealthBarImage == null)
-                {
-                    Debug.LogError("FillAmount 에러");
-                }
-                if (bossHealthText == null)
-                {
-                    Debug.LogError("HealthText 에러");
-                }
-            }
-            else
-            {
-                Debug.LogWarning("BossHealthBar 오브젝트를 찾을 수 없습니다.");
-            }
-
-
-
-        }
     }
 }

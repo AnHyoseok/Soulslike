@@ -66,7 +66,7 @@ namespace BS.Enemy.Set
             }
         }
 
-        private void TriggerEffect()
+        private void TriggerEffect(float damage)
         {
             lastTimeEffect = Time.time; // 효과 시작 시간 기록
             currentEffectGradient = hitEffectGradient; // 현재 적용 중인 그라디언트 설정

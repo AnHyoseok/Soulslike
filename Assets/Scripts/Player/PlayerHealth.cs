@@ -46,6 +46,8 @@ namespace BS.Player
             }
         }
 
+        public float GetRatio() => CurrentHealth / MaxHealth;
+
         // 죽음 여부
         private bool isDeath = false;
         public bool IsDeath
@@ -54,7 +56,7 @@ namespace BS.Player
             private set
             {
                 isDeath = value;
-                if(isDeath == true)
+                if (isDeath == true)
                 {
                     // 애니메이션 설정
                     animator.SetTrigger("Death");
@@ -65,10 +67,10 @@ namespace BS.Player
 
         // 이벤트 액션
         public UnityAction<float> OnDamaged;      // 데미지를 받을 때 호출되는 이벤트
+        public UnityAction<float> OnHealed;      // 데미지를 받을 때 호출되는 이벤트
         public UnityAction OnBlocked;            // 블록 성공 시 호출되는 이벤트
 
-        public int potionCount = 3;
-        public float healthHealAmount = 1000f;
+
         #endregion
 
         protected override void Awake()
@@ -100,6 +102,7 @@ namespace BS.Player
         {
             base.Start();
             maxHealth = 1000f; // 초기 최대 체력 설정
+            Debug.Log(MaxHealth + "맥스힐스 2번");
             currentHealth = MaxHealth; // 현재 체력을 최대 체력으로 초기화
         }
 
@@ -181,6 +184,12 @@ namespace BS.Player
             }
         }
 
+        public void TakeHeal()
+        {
+            CurrentHealth = maxHealth;
+            OnHealed?.Invoke(maxHealth);
+        }
+
         public void PlayHitAnim(float damage)
         {
             animator.SetBool("IsHit", true);
@@ -201,25 +210,6 @@ namespace BS.Player
 
             Debug.Log($"Player OnDamaged = {damage}");
             Debug.Log($"Player Hp = {CurrentHealth}");
-        }
-
-        //포션 사용
-        public void UsePotion()
-        {
-            if (potionCount > 0)
-            {
-                CurrentHealth += healthHealAmount;
-                if (CurrentHealth > maxHealth)
-                {
-                    CurrentHealth = maxHealth;
-                }
-                potionCount--;
-                Debug.Log("포션사용");
-            }
-            else
-            {
-                Debug.Log("포션이 없습니다");
-            }
         }
     }
 }

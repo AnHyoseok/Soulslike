@@ -9,7 +9,7 @@ namespace BS.Enemy.Set
     {
         #region Variables
         [SerializeField] GameObject player;
-        [SerializeField] Canvas playerCanvas;
+        [SerializeField] GameObject gameHUD;
         [SerializeField] GameObject boss;
         [SerializeField] ParticleSystem chargingParticle;
         [SerializeField] ParticleSystem explosionParticle;
@@ -21,7 +21,7 @@ namespace BS.Enemy.Set
         private void Awake()
         {
             player.SetActive(false);
-            playerCanvas.gameObject.SetActive(false);
+            gameHUD.gameObject.SetActive(false);
             boss.SetActive(false);
             chargingParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             explosionParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -46,7 +46,7 @@ namespace BS.Enemy.Set
             yield return new WaitForSeconds(4.5f);
 
             player.SetActive(true);
-            playerCanvas.gameObject.SetActive(true);
+            gameHUD.gameObject.SetActive(true);
             boss.SetActive(true);
             cutSceneCamera.gameObject.SetActive(false);
 
