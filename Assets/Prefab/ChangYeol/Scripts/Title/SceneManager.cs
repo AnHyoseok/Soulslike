@@ -20,25 +20,35 @@ namespace BS.Managers
         public Outline[] outline = new Outline[3];
         //시작시 카메라 이동
         TitleCamera title;
+        public static bool isStart;
         #endregion
         private void Start()
         {
-            title = maincamera.GetComponent<TitleCamera>();
-            maincamera.fieldOfView = 90;
-            StartCoroutine(title.ZoomIn());
-            falsePlayer.SetActive(true);
-            maincamera.gameObject.SetActive(true);
-            m_camera.gameObject.SetActive(false);
-            canvas.SetActive(true);
-            Player.GetComponent<PlayerController>().enabled = false;
-            foreach (Outline outlines in outline)
+            if (!isStart)
             {
-                outlines.enabled = false;
+                title = maincamera.GetComponent<TitleCamera>();
+                maincamera.fieldOfView = 90;
+                StartCoroutine(title.ZoomIn());
+                falsePlayer.SetActive(true);
+                maincamera.gameObject.SetActive(true);
+                m_camera.gameObject.SetActive(false);
+                canvas.SetActive(true);
+                Player.GetComponent<PlayerController>().enabled = false;
+                foreach (Outline outlines in outline)
+                {
+                    outlines.enabled = false;
+                }
+                particle[0].SetActive(true);
+                particle[0].transform.position = new Vector3(-5, 1.3f, -6.3f);
+                particle[1].SetActive(false);
+                Arrow.SetActive(false);
+                isStart = true;
+                return;
             }
-            particle[0].SetActive(true);
-            particle[0].transform.position = new Vector3(-5, 1.3f, -6.3f);
-            particle[1].SetActive(false);
-            Arrow.SetActive(false);
+            if (isStart)
+            {
+                StartScene();
+            }
         }
         private void Update()
         {

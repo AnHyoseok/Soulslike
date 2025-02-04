@@ -28,6 +28,7 @@ namespace BS.Demon
         public LayerMask Playermask;
         public LayerMask mask;
         private bool ischting = true;
+        public GameObject FadeOut;
         #endregion
 
         private void Start()
@@ -54,6 +55,13 @@ namespace BS.Demon
                     pattern.demon.TakeDamage(20);
                 }
             }
+            if (Input.GetKeyDown(KeyCode.X) && ischting)
+            {
+                if (pattern.demon.currentHealth > 0)
+                {
+                    pattern.demon.TakeDamage(pattern.demon.maxHealth);
+                }
+            }
             if (pattern.demon.hasRecovered && isPhase == false)
             {
                 StartCoroutine (PhaseDemon());
@@ -62,6 +70,9 @@ namespace BS.Demon
         }
         IEnumerator OpeningDemon()
         {
+            FadeOut.SetActive(true);
+            yield return new WaitForSeconds(1);
+            FadeOut.SetActive(false);
             manager.enabled = false;
             pattern.demon.enabled = false;
             player.enabled = false;

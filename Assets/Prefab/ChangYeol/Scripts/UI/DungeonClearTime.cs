@@ -30,6 +30,7 @@ namespace BS.UI
 
         private void Start()
         {
+            timerText.gameObject.SetActive(false);
             foreach (var list in AchievementManager.Instance.achievementsGoalCondition)
             {
                 if (list.achievementType == AchievementType.TimeBased && bestTime > list.achievementGoal.currentAmount)
