@@ -10,6 +10,13 @@ namespace BS.Enemy.Set
         private SetProperty property;
         private Transform player;
 
+        //세트 체력 참조 변수
+        private SetHealth setHealth;
+        //죽음체크
+        private bool isDead = false;
+
+        private AttackTrigger closedAttack;
+
         [SerializeField] private float rotationSpeed = 2f;
         [SerializeField] private float attackCooldown = 3f;
 
@@ -25,6 +32,8 @@ namespace BS.Enemy.Set
 
         private void Update()
         {
+            if (isDead) return; // 사망 후에는 상태 변경 방지
+
             RotateToPlayerIfNotAttacking();
             currentState?.Update();
         }
@@ -45,7 +54,10 @@ namespace BS.Enemy.Set
 
             var agent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
-
+            setHealth = GetComponent<SetHealth>();
+            closedAttack = GetComponentInChildren<AttackTrigger>(true);
+            setHealth.OnDie += HandleDeath;
+            closedAttack.OnBlocked += FaintingState;
             property = new SetProperty(this, animator, agent, player);
         }
 
@@ -63,7 +75,7 @@ namespace BS.Enemy.Set
 
         private void RotateToPlayerIfNotAttacking()
         {
-            if (animator.GetBool(SetProperty.SET_ANIM_BOOL_ATTACK))
+            if (animator.GetBool(SetProperty.SET_ANIM_BOOL_ATTACK) || animator.GetBool(SetProperty.SET_ANIM_BOOL_FAINTING))
                 return;
 
             RotateToPlayer();
@@ -81,6 +93,21 @@ namespace BS.Enemy.Set
                 targetRotation,
                 Time.deltaTime * rotationSpeed
             );
+        }
+
+        private void HandleDeath()
+        {
+            if (isDead) return;
+
+            isDead = true;
+            Debug.Log("Death Controller");
+            SetState(new SetDeathState(property));
+        }
+
+        public void FaintingState()
+        {
+            Debug.Log("Fainting Controller");
+            SetState(new SetFaintingState(property));
         }
     }
 }

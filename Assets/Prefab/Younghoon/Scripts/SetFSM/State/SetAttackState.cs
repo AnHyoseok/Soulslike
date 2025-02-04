@@ -39,8 +39,8 @@ namespace BS.Enemy.Set
                 //SelectAndPerformAttack(distance);
                 //PerformMidRangeAttack();
                 //PerformLongRangeAttack();
-                //PerformCloseRangeAttack();
-                PerformSpecialAttack();
+                PerformCloseRangeAttack();
+                //PerformSpecialAttack();
             }
 
             // 현재 애니메이션 상태 업데이트

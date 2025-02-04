@@ -1,5 +1,6 @@
 using BS.Player;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace BS.Enemy.Set
 {
@@ -7,6 +8,7 @@ namespace BS.Enemy.Set
     {
         private bool hitCheck;
         [SerializeField] float damage = 10;
+        public UnityAction OnBlocked;
 
         private void OnEnable()
         {
@@ -29,10 +31,10 @@ namespace BS.Enemy.Set
                 {
                     bool isAttackFailed = playerHealth.TakeDamage(damage);
                     //TODO : 블락당하면 취할 모션 및 대기시간 + 데미지 증폭여부 연결
-                    //if (isAttackFailed)
-                    //{
-
-                    //}
+                    if (isAttackFailed)
+                    {
+                        OnBlocked?.Invoke();
+                    }
                 }
                 else
                 {

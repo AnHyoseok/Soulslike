@@ -26,6 +26,8 @@ namespace BS.Enemy.Set
         public const string SET_ANIM_TRIGGER_PULLATTACK = "PullAttack";
         public const string SET_ANIM_TRIGGER_ROAR = "Roar";
         public const string SET_ANIM_TRIGGER_LIGHTNINGMAGIC = "LightningMagic";
+        public const string SET_ANIM_BOOL_DEAD = "IsDead";
+        public const string SET_ANIM_BOOL_FAINTING = "IsFainting";
         public const string SET_ANIM_BOOL_ATTACK = "IsAttack";
         public const string SET_ANIM_BOOL_IDLE = "IsIdle";
         public const string SET_ANIM_BOOL_CHASE = "IsChase";

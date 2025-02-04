@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Prefab/Hyoseok/Vamprie.unity
     guid: 29f38d585bb30544b9e526546bc39b55
+  - enabled: 1
+    path: Assets/Scenes/Set.unity
+    guid: cf4ffaf3397b2854b89d0a5c3b20e973
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
