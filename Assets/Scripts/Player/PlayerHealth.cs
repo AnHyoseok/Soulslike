@@ -1,8 +1,10 @@
 using BS.PlayerInput;
+using BS.Utility;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using static BS.Utility.AudioUtility;
 
 namespace BS.Player
 {
@@ -14,6 +16,7 @@ namespace BS.Player
         private static readonly string IS_ATTACKING = "IsAttacking";
         private static readonly string DO_BLOCK = "DoBlock";
 
+        public AudioClip blockSound = null;
         // 블록 관련 변수
         public float blockCoolTime = 3f; // 블록 쿨타임 (기본값: 3초)
         public TextMeshProUGUI blockCoolTimeText; // 블록 쿨타임 텍스트 표시
@@ -78,11 +81,13 @@ namespace BS.Player
         private void OnEnable()
         {
             OnDamaged += CalculateDamage; // 데미지 이벤트 구독
+            OnBlocked += PlayBlockSound;
         }
 
         private void OnDisable()
         {
             OnDamaged -= CalculateDamage; // 데미지 이벤트 구독 해제
+            OnBlocked -= PlayBlockSound;
         }
 
         protected override void Start()
@@ -90,6 +95,11 @@ namespace BS.Player
             base.Start();
             maxHealth = 1000f; // 초기 최대 체력 설정
             currentHealth = MaxHealth; // 현재 체력을 최대 체력으로 초기화
+        }
+
+        public void PlayBlockSound()
+        {
+            AudioUtility.CreateSFX(blockSound, transform.position, AudioGroups.Skill);
         }
 
         // 블록 수행 메서드
@@ -147,7 +157,7 @@ namespace BS.Player
         {
             if (isBlockable)
             {
-                if (ps.isBlocking) // 블록 성공
+                if (animator.GetBool("IsBlocking") == true) // 블록 성공
                 {
                     OnBlocked?.Invoke();
                     return true;

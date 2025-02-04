@@ -299,7 +299,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AudioMixers:
   - {fileID: 24100000, guid: 2e580158176b8db488c749ecd5460e07, type: 2}
-  audioSource: {fileID: 0}
   m_AudioMasterSlider: {fileID: 0}
   m_AudioSoundSlider: {fileID: 0}
   m_AudioMusicSlider: {fileID: 0}
@@ -42362,6 +42361,7 @@ MonoBehaviour:
   moveSpeed: 5
   lerpSpeed: 10
   rotationDuration: 0.1
+  blockSound: {fileID: 8300000, guid: 1b34cbe9a0c2f7b44a61f0f988284e7f, type: 3}
   blockCoolTime: 3
   blockCoolTimeText: {fileID: 463820966}
   maxHealth: 0

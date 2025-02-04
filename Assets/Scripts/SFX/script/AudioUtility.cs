@@ -25,7 +25,7 @@ namespace BS.Utility
         }
 
         // 특정 위치에서 사운드 효과(AudioClip)를 생성하고 재생합니다.
-        public static void CreateSFX(AudioClip clip, Vector3 position, AudioGroups audioGroup, float spatialBlend = 0f, float rolloffDistanceMin = 1f, float maxDistance = 15f)
+        public static AudioSource CreateSFX(AudioClip clip, Vector3 position, AudioGroups audioGroup, float spatialBlend = 0f, float rolloffDistanceMin = 1f, float maxDistance = 15f, float pitch = 1.0f)
         {
             // 새 오브젝트 생성: 사운드 효과를 재생할 임시 오브젝트를 만듭니다.
             GameObject impactSfxInstance = new GameObject("SFX_" + clip.name);
@@ -59,12 +59,16 @@ namespace BS.Utility
             // 출력 오디오 믹서 그룹 설정
             source.outputAudioMixerGroup = GetAudioGroup(audioGroup);
 
+            // 사운드 재생 속도
+            source.pitch = pitch;
+
             // 사운드 재생 시작
             source.Play();
             // 일정 시간이 지나면 오브젝트를 자동으로 제거하는 컴포넌트 추가
             TimedSelfDestruct timedSelfDestruct = impactSfxInstance.AddComponent<TimedSelfDestruct>();
             // 클립 길이만큼 유지 후 제거
             timedSelfDestruct.LifeTime = clip.length;
+            return source;
         }
 
         // 오디오 그룹(AudioMixerGroup)을 반환합니다.
