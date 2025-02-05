@@ -198,7 +198,7 @@ namespace BS.vampire
                 GameObject attackObject2 = Instantiate(attackObjectPrefab, attackObjects[1].position, Quaternion.identity);
                
 
-                hitPoint = player.transform;
+                hitPoint = playerBody.transform;
 
                 yield return new WaitForSeconds(0.5f);
 
@@ -451,7 +451,7 @@ namespace BS.vampire
             Waring();
             if (isAttack5BatSummon)
             {
-                NextPatternPlay();
+                
                 yield break;
             }
             transform.LookAt(player.transform);
@@ -650,7 +650,7 @@ namespace BS.vampire
 
 
             // 패턴을 순환 (1~6)
-            nextPattern = (nextPattern % 9) + 1;
+            nextPattern = (nextPattern % 8) + 1;
 
             // 플레이어를 바라보게 설정
             transform.LookAt(player.transform);
@@ -674,14 +674,15 @@ namespace BS.vampire
             switch (pattern)
             {
                 case 1: yield return StartCoroutine(RandomTeleport()); break;
+                case 8: yield return StartCoroutine(Attack7()); break;
                 case 2: yield return StartCoroutine(Attack1()); break;
-                case 3: yield return StartCoroutine(Attack7()); break;
-                case 4: yield return StartCoroutine(Attack2()); break;
-                case 5: yield return StartCoroutine(Attack3()); break;
-                case 6: yield return StartCoroutine(Attack4()); break;
-                case 7: yield return StartCoroutine(Attack5()); break;
-                case 8: yield return StartCoroutine(Attack1()); break;
-                case 9: yield return StartCoroutine(Attack6()); break;
+                case 3: yield return StartCoroutine(Attack2()); break;
+                case 4: yield return StartCoroutine(Attack3()); break;
+                case 5: yield return StartCoroutine(Attack4()); break;
+                case 6: yield return StartCoroutine(Attack5()); break;
+                case 7: yield return StartCoroutine(Attack6()); break;
+                //case 8: yield return StartCoroutine(Attack1()); break;
+                //case 9: yield return StartCoroutine(Attack6()); break;
             }
             NextPatternPlay();
         }
