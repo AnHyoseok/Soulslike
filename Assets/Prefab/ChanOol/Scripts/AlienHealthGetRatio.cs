@@ -15,9 +15,14 @@ namespace BS.UI
         public TextMeshProUGUI bossHealthText; // 보스 체력 텍스트
         public TextMeshProUGUI playerHealthText; // 플레이어 체력 텍스트
         public TextMeshProUGUI potionText;  // 포션 갯수 텍스트
+        public UsePotion usePotion;
         #endregion
 
-
+        private void Start()
+        {
+            PosionCountChecker();
+            usePotion.UsedPotion += PosionCountChecker;
+        }
 
         private void Update()
         {
@@ -38,6 +43,10 @@ namespace BS.UI
                 //potionText.text = playerHealth.potionCount.ToString();
                 playerHealthText.text = $"{playerHealthRatio * 100}%"; // 플레이어 체력 퍼센트
             }
+        }
+        private void PosionCountChecker()
+        {
+            potionText.text = usePotion.PotionCount.ToString();
         }
     }
 }
