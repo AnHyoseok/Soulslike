@@ -13771,19 +13771,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3214552068116166646}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &6426294435347653737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13797,6 +13785,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rawImage: {fileID: 3214552068116166646}
+  sceneButton: {fileID: 3800193879990189209}
+  sceneName: Alien
   animator: {fileID: 2437970457167205578}
 --- !u!1 &2612900846226000523
 GameObject:
@@ -21260,19 +21250,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 487570723597875951}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2223696992464277652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21286,6 +21264,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rawImage: {fileID: 487570723597875951}
+  sceneButton: {fileID: 7777579210816140960}
+  sceneName: Set
   animator: {fileID: 363755267083660840}
 --- !u!1 &4133596766966503356
 GameObject:
@@ -39129,19 +39109,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8846674231955403495}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &6017389234701882813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39155,6 +39123,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rawImage: {fileID: 8846674231955403495}
+  sceneButton: {fileID: 1703128816262204285}
+  sceneName: Vampire
   animator: {fileID: 2103208772542137340}
 --- !u!1 &7265402439820786724
 GameObject:
@@ -49781,19 +49751,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2595487214752052828}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &6987016991185759099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49807,6 +49765,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rawImage: {fileID: 2595487214752052828}
+  sceneButton: {fileID: 2989665872589688158}
+  sceneName: Demon
   animator: {fileID: 3851081949594068373}
 --- !u!1 &9039182497522830505
 GameObject:

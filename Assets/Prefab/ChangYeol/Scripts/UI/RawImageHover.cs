@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class RawImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public RawImage rawImage; // 대상 RawImage
-    private Button sceneButton;
+    public Button sceneButton;
+    public string sceneName;
     public Animator animator; // 연결된 애니메이터
 
     private void Start()
@@ -13,9 +15,7 @@ public class RawImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (rawImage == null)
         {
             rawImage = GetComponent<RawImage>();
-            sceneButton = rawImage.GetComponent<Button>();
-        }
-            
+        }   
         if (animator == null)
             animator = GetComponent<Animator>();
     }
@@ -26,6 +26,7 @@ public class RawImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (animator != null)
         {
             animator.SetBool("IsHover", true); // 애니메이션 시작
+            sceneButton.onClick.AddListener(SelectScene);
         }
     }
 
@@ -35,6 +36,8 @@ public class RawImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (animator != null)
         {
             animator.SetBool("IsHover", false); // 애니메이션 종료
+            sceneButton.onClick.RemoveAllListeners();
         }
     }
+    void SelectScene() => SceneManager.LoadScene(sceneName);
 }
