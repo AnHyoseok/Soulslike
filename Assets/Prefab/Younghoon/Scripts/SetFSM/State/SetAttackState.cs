@@ -36,10 +36,10 @@ namespace BS.Enemy.Set
             if (!isAttacking)
             {
                 // 거리에 따라 공격 패턴 선택
-                //SelectAndPerformAttack(distance);
+                SelectAndPerformAttack(distance);
                 //PerformMidRangeAttack();
                 //PerformLongRangeAttack();
-                PerformCloseRangeAttack();
+                //PerformCloseRangeAttack();
                 //PerformSpecialAttack();
             }
 

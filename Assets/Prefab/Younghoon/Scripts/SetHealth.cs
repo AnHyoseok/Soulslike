@@ -35,7 +35,6 @@ namespace BS.Enemy.Set
                 if (currentHealth <= 0f)
                 {
                     isDeath = true;
-                    //TODO :: 죽음 구현
                     OnDie?.Invoke();
                 }
             }

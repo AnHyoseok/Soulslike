@@ -100,13 +100,11 @@ namespace BS.Enemy.Set
             if (isDead) return;
 
             isDead = true;
-            Debug.Log("Death Controller");
             SetState(new SetDeathState(property));
         }
 
         public void FaintingState()
         {
-            Debug.Log("Fainting Controller");
             SetState(new SetFaintingState(property));
         }
     }
