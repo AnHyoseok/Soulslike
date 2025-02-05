@@ -9,6 +9,7 @@ namespace BS.UI
     public class VampireHealthGetRatio : MonoBehaviour
     {
         #region Variables
+        public UsePotion usePotion;
         public VampireHealth bossHealth;
         public PlayerHealth playerHealth;
         public Image bosshealthBarImage;
@@ -24,7 +25,8 @@ namespace BS.UI
 
         private void Start()
         {
-
+            usePotion.UsedPotion += PosionCountChecker;
+            PosionCountChecker();
             pattonSummon = FindFirstObjectByType<PattonSummon>();
         }
         private void Update()
@@ -51,6 +53,10 @@ namespace BS.UI
             {
                 summonTimerText.text = $" {Mathf.Ceil(pattonSummon.summonTimeRemaining)}s";
             }
+        }
+        private void PosionCountChecker()
+        {
+            potionText.text = usePotion.PotionCount.ToString();
         }
     }
 }
