@@ -55,21 +55,24 @@ namespace BS.Player
                 if (!animator.GetBool(IS_MOVING))
                 {
                     animator.SetBool(IS_MOVING, true);
-                    if (animator.GetBool(IS_WALKING))
-                    {
-                        animator.SetTrigger(DO_WALK);
-                        animator.SetBool(IS_WALKING, true);
-                    }
-                    else if (animator.GetBool(IS_SPRINTING))
-                    {
-                        animator.SetTrigger(DO_SPRINT);
-                        animator.SetBool(IS_SPRINTING, true);
-                    }
-                    else
+                    //if (animator.GetBool(IS_WALKING))
+                    //{
+                    //    animator.SetTrigger(DO_WALK);
+                    //    animator.SetBool(IS_WALKING, true);
+                    //}
+                    //else if (animator.GetBool(IS_SPRINTING))
+                    //{
+                    //    animator.SetTrigger(DO_SPRINT);
+                    //    animator.SetBool(IS_SPRINTING, true);
+                    //}
+                    //else
+                    //{
+                    if (!animator.GetBool(IS_RUNNING))
                     {
                         animator.SetTrigger(DO_RUN);
                         animator.SetBool(IS_RUNNING, true);
                     }
+                    //}
                 }
             }
             SetMoveState();

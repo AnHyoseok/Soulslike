@@ -29,6 +29,8 @@ public class PlayerAttackSMB : StateMachineBehaviour
             ps.comboAttackIndex++;
         }
         animator.ResetTrigger("DoRun");
+        animator.ResetTrigger("DoWalk");
+        animator.ResetTrigger("DoSprint");
         animator.SetBool("IsMoving", false);
     }
 
@@ -71,11 +73,20 @@ public class PlayerAttackSMB : StateMachineBehaviour
         if (m_Input.RightClick)
         {
             if (m_Input.C)
+            {
                 animator.SetTrigger("DoWalk");
+                animator.SetBool("IsWalking", true);
+            }
             else if (m_Input.Shift)
+            {
                 animator.SetTrigger("DoSprint");
+                animator.SetBool("IsSprinting", true);
+            }
             else
+            {
                 animator.SetTrigger("DoRun");
+                animator.SetBool("IsRun", true);
+            }
         }
     }
 }
