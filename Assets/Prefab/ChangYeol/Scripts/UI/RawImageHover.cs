@@ -5,12 +5,17 @@ using UnityEngine.UI;
 public class RawImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public RawImage rawImage; // 대상 RawImage
+    private Button sceneButton;
     public Animator animator; // 연결된 애니메이터
 
     private void Start()
     {
         if (rawImage == null)
+        {
             rawImage = GetComponent<RawImage>();
+            sceneButton = rawImage.GetComponent<Button>();
+        }
+            
         if (animator == null)
             animator = GetComponent<Animator>();
     }

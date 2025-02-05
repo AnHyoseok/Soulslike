@@ -1,6 +1,7 @@
 using BS.Achievement;
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -22,6 +23,7 @@ namespace BS.UI
         public TextMeshProUGUI recordText;
         public TextMeshProUGUI newRecordText;
         public GameObject newRecordUI; // 신기록 UI (활성화/비활성화)
+        public GameObject stageCanvas;
 
         private float elapsedTime = 0f;    // 현재 진행 시간
         private bool isDungeonActive = false; // 던전 활성화 여부
@@ -29,6 +31,7 @@ namespace BS.UI
         #endregion
         private void OnEnable()
         {
+            timerText.gameObject.SetActive(false);
             foreach (var list in AchievementManager.Instance.achievementsGoalCondition)
             {
                 if (list.achievementType == AchievementType.TimeBased && bestTime > list.achievementGoal.currentAmount)
@@ -72,8 +75,10 @@ namespace BS.UI
             bosstext.text = bossName;
             buttonText[0].text = buttonName[0];
             buttonText[1].text = buttonName[1];
+            buttonText[2].text = buttonName[2];
             buttons[0].onClick.AddListener(CompleteContinue);
-            buttons[1].onClick.AddListener(CompleteRetry);
+            buttons[1].onClick.AddListener(StageSelect);
+            buttons[2].onClick.AddListener(CompleteRetry);
 
             newRecordUI.SetActive(true);
             if (elapsedTime < bestTime) // 신기록 달성 여부 확인
@@ -98,11 +103,19 @@ namespace BS.UI
             bosstext.color = Color.red;
             recordText.text = "";
             newRecordText.text = "";
-            buttonText[0].text = buttonName[2];
-            buttonText[1].text = buttonName[3];
+            buttonText[0].text = buttonName[0];
+            buttonText[1].text = buttonName[1];
+            buttonText[2].text = buttonName[2];
             buttons[0].onClick.AddListener(DefeatContinue);
-            buttons[1].onClick.AddListener(DefeatRetry);
+            buttons[1].onClick.AddListener(StageSelect);
+            buttons[2].onClick.AddListener(DefeatRetry);
         }
+        void StageSelect()
+        {
+            stageCanvas.SetActive(true);
+            buttons[3].onClick.AddListener(SelectButton);
+        }
+        void SelectButton() => stageCanvas.SetActive(false);
         //승리시 버튼 클릭 함수
         public void CompleteContinue()
         {
