@@ -14,14 +14,7 @@ namespace BS.Achievement
         public List<AchievementData> realAchievements = new List<AchievementData>();
         public AchievementSaveDatas achievementSaveDatas;
 
-        private DungeonClearTime testClear;
-
         private AchievementSaveDataManager achievementSaveDataManager;  // 데이터 매니저 참조
-
-        #region Test용 변수(추후 삭제 필)
-        public float time = 0.0f;
-        #endregion
-
         #endregion
 
         private void Start()
@@ -53,30 +46,18 @@ namespace BS.Achievement
                 achievementsGoalCondition[i].achievementGoal.nextStep = realAchievements[i].next > 0;
             }
 
-            testClear = FindAnyObjectByType<DungeonClearTime>();
-            testClear.StartDungeon();
         }
 
         private void Update()
         {
-            time += Time.deltaTime;
             if (Input.GetKeyDown(KeyCode.L))
             {
                 UpdateAchievement(AchievementType.KillCount, 1);
-            }
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                UpdateAchievement(AchievementType.TimeBased, time);
             }
 
             if (Input.GetKeyDown(KeyCode.J))
             {
                 SaveAchievementData();
-            }
-
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                testClear.CompleteDungeon();
             }
         }
 

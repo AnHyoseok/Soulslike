@@ -27,10 +27,8 @@ namespace BS.UI
         private bool isDungeonActive = false; // 던전 활성화 여부
         private float bestTime = Mathf.Infinity; // 신기록 시간 (최초엔 무한대)
         #endregion
-
-        private void Start()
+        private void OnEnable()
         {
-            timerText.gameObject.SetActive(false);
             foreach (var list in AchievementManager.Instance.achievementsGoalCondition)
             {
                 if (list.achievementType == AchievementType.TimeBased && bestTime > list.achievementGoal.currentAmount)
@@ -38,6 +36,7 @@ namespace BS.UI
                     bestTime = list.achievementGoal.currentAmount;
                 }
             }
+            StartDungeon();
         }
 
         void Update()
