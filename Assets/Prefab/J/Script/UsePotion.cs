@@ -1,3 +1,4 @@
+using BS.UI;
 using BS.Utility;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,7 +9,7 @@ namespace BS.Player
     {
         private PlayerHealth playerHealth;
         public AudioClip potionSound;
-
+        private DungeonClearTime dungeEndGame;
         private int potionCount = 3;
         public int PotionCount
         {
@@ -20,6 +21,7 @@ namespace BS.Player
 
         private void Start()
         {
+            dungeEndGame = FindFirstObjectByType<DungeonClearTime>();
             playerHealth = GetComponent<PlayerHealth>();
             //Debug.Log(playerHealth.MaxHealth + "맥스힐스 1번");
             healAmount = playerHealth.MaxHealth;
@@ -36,7 +38,7 @@ namespace BS.Player
 
         private void PotionUse()
         {
-            if (potionCount <= 0 || playerHealth.IsDeath)
+            if (potionCount <= 0 || playerHealth.IsDeath )
             {
                 //포션이 없거나 죽었다면 리턴
                 return;

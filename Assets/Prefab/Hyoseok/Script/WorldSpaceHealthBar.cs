@@ -10,7 +10,7 @@ namespace BS.vampire
 
         public Transform healthBarPivot;
 
-        //hp°¡ Ç®ÀÌ¸é healthBar¸¦ ¼û±ä´Ù
+        //hpê°€ í’€ì´ë©´ healthBarë¥¼ ìˆ¨ê¸´ë‹¤
         [SerializeField] private bool hideFullHealthBar = true;
         #endregion
 
@@ -18,10 +18,10 @@ namespace BS.vampire
         {
             healthBarImage.fillAmount = health.GetRatio();
 
-            //UI°¡ ÇÃ·¹ÀÌ¾î¸¦ ¹Ù¶óº¸µµ·Ï ÇÑ´Ù
+            //UIê°€ í”Œë ˆì´ì–´ë¥¼ ë°”ë¼ë³´ë„ë¡ í•œë‹¤
             healthBarPivot.LookAt(Camera.main.transform.position);
 
-            //hp°¡ Ç®ÀÌ¸é healthBar¸¦ ¼û±ä´Ù
+            //hpê°€ í’€ì´ë©´ healthBarë¥¼ ìˆ¨ê¸´ë‹¤
             if (hideFullHealthBar)
             {
                 healthBarPivot.gameObject.SetActive(healthBarImage.fillAmount != 1f);

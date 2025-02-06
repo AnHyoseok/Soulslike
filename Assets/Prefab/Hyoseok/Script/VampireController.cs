@@ -82,6 +82,7 @@ namespace BS.vampire
         [Header("Attack4")]
         //공격4
         //보스 주변에 박쥐들(로테이션들이) 랜덤 1~2 방향으로 산개후 플레이어방향으로 레이져 발사
+
         public GameObject[] summonObject;    //소환위치
         public GameObject attak4Ranges;
         public float moveRadius = 2f; // 이동 반경
@@ -109,6 +110,7 @@ namespace BS.vampire
         [Header("Attack7")]
         //공격 7 돌진기 
         //보스가 플레이어 방향으로 돌진 앞에 콜라이더생성
+        public GameObject head;
         public GameObject attack7Range;
         public GameObject attack7collider;
         public GameObject attack7Effect;
@@ -564,7 +566,7 @@ namespace BS.vampire
             int wallLayerMask = LayerMask.GetMask("Wall");
             // 공격 이펙트 생성
             attack7Effect.SetActive(true);
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
                 Waring();
                 transform.LookAt(player.transform);
@@ -598,6 +600,7 @@ namespace BS.vampire
                 {
               
                     float remainingDistance = Vector3.Distance(transform.position, targetPosition);
+                    Debug.DrawRay(transform.position, dashDirection * remainingDistance, Color.red, 1f);
 
                     // 벽과의 충돌 감지 (레이어 기반)
                     if (Physics.Raycast(transform.position, dashDirection, out RaycastHit hit, remainingDistance, wallLayerMask))
@@ -673,14 +676,14 @@ namespace BS.vampire
             // 패턴 실행
             switch (pattern)
             {
-                case 1: yield return StartCoroutine(RandomTeleport()); break;
-                case 8: yield return StartCoroutine(Attack7()); break;
-                case 2: yield return StartCoroutine(Attack1()); break;
-                case 3: yield return StartCoroutine(Attack2()); break;
-                case 4: yield return StartCoroutine(Attack3()); break;
-                case 5: yield return StartCoroutine(Attack4()); break;
-                case 6: yield return StartCoroutine(Attack5()); break;
-                case 7: yield return StartCoroutine(Attack6()); break;
+                case 2: yield return StartCoroutine(RandomTeleport()); break;
+                case 1: yield return StartCoroutine(Attack7()); break;
+                case 3: yield return StartCoroutine(Attack4()); break;
+                case 4: yield return StartCoroutine(Attack2()); break;
+                case 5: yield return StartCoroutine(Attack3()); break;
+                case 6: yield return StartCoroutine(Attack1()); break;
+                case 7: yield return StartCoroutine(Attack5()); break;
+                case 8: yield return StartCoroutine(Attack6()); break;
                 //case 8: yield return StartCoroutine(Attack1()); break;
                 //case 9: yield return StartCoroutine(Attack6()); break;
             }
