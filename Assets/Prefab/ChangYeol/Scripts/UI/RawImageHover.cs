@@ -26,7 +26,10 @@ public class RawImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (animator != null)
         {
             animator.SetBool("IsHover", true); // 애니메이션 시작
-            sceneButton.onClick.AddListener(SelectScene);
+            if(sceneButton != null)
+            {
+                sceneButton.onClick.AddListener(SelectScene);
+            }
         }
     }
 
@@ -36,7 +39,11 @@ public class RawImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (animator != null)
         {
             animator.SetBool("IsHover", false); // 애니메이션 종료
-            sceneButton.onClick.RemoveAllListeners();
+            if (sceneButton != null)
+            {
+                sceneButton.onClick.RemoveAllListeners();
+            }
+            
         }
     }
     void SelectScene() => SceneManager.LoadScene(sceneName);

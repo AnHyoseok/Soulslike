@@ -57,10 +57,6 @@ namespace BS.Managers
             {
                 keyCanvas.transform.LookAt(keyCanvas.transform.position + m_camera.transform.rotation * Vector3.forward, m_camera.transform.rotation * Vector3.up);
             }
-            if(Input.GetKey(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Escape))
-            {
-                ResetPlayer();
-            }
         }
         //Start버튼
         public void StartScene()
@@ -87,10 +83,10 @@ namespace BS.Managers
             Application.Quit();
         }
         //초기 화면으로 돌아가고 싶을 때 Esc키를 누르면 실행되는 함수
-        void ResetPlayer()
+        public void ResetPlayer()
         {
             Player.GetComponent<PlayerController>().enabled = false;
-            PlayerState state = Player.GetComponent<PlayerState>();
+            PlayerState state = Player.GetComponentInChildren<PlayerState>();
             state.targetPosition = falsePlayer.transform.position;
             Player.transform.localPosition = new Vector3(0.5f, 0, -5f);
             Player.transform.LookAt(this.transform.position);
@@ -117,14 +113,13 @@ namespace BS.Managers
             Player.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
             particle[0].transform.position = new Vector3(-5, 1.3f, -6.3f);
             particle[1].SetActive(false);
-            maincamera.fieldOfView = 90;
             if(enemyStage.isEnemy)
             {
                 Destroy(enemyStage.Enemy);
                 enemyStage.isEnemy = false;
             }
             Arrow.SetActive(false);
-            StartCoroutine(title.ZoomIn());
+            isStart = false;
         }
     }
 }

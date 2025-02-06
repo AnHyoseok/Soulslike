@@ -4937,8 +4937,6 @@ MonoBehaviour:
   blockCoolTimeText: {fileID: 0}
   maxHealth: 999999
   currentHealth: 0
-  potionCount: 3
-  healthHealAmount: 1000
 --- !u!136 &266065525
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5548,6 +5546,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c01fb8e3c87a3419067e7d27f2add2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Manager: {fileID: 354359351}
   gameHUD: {fileID: 282357102}
   pauseCanvas: {fileID: 1742540155}
   soundCanvas: {fileID: 187829571}
@@ -19147,7 +19146,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 740085433}
-  - component: {fileID: 740085432}
   - component: {fileID: 740085431}
   - component: {fileID: 740085430}
   - component: {fileID: 740085429}
@@ -19320,18 +19318,6 @@ MonoBehaviour:
   blockCoolTimeText: {fileID: 0}
   dashCoolTimeImage: {fileID: 0}
   dashCoolTimeText: {fileID: 0}
---- !u!114 &740085432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 740085424}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3d2518cbccf1b54cade8ba3385233b3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &740085433
 Transform:
   m_ObjectHideFlags: 0
@@ -29933,6 +29919,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rawImage: {fileID: 1340407554}
+  sceneButton: {fileID: 0}
+  sceneName: 
   animator: {fileID: 3083241270580683689}
 --- !u!4 &1341349242 stripped
 Transform:
@@ -35597,6 +35585,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rawImage: {fileID: 1695734858}
+  sceneButton: {fileID: 0}
+  sceneName: 
   animator: {fileID: 3445239784526908414}
 --- !u!1001 &1698415030
 PrefabInstance:
@@ -36132,6 +36122,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rawImage: {fileID: 1715428166}
+  sceneButton: {fileID: 0}
+  sceneName: 
   animator: {fileID: 8945704273141943987}
 --- !u!1001 &1716861969
 PrefabInstance:
@@ -36859,7 +36851,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1742540155}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
@@ -36875,7 +36867,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 189.83337, y: -124}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1742540157
@@ -41425,6 +41417,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rawImage: {fileID: 1951034653}
+  sceneButton: {fileID: 0}
+  sceneName: 
   animator: {fileID: 2215716850187777708}
 --- !u!1001 &1958406017
 PrefabInstance:

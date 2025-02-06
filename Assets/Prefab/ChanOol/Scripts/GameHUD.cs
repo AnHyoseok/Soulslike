@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 
 public class GameHUD : MonoBehaviour
 {
-    
+    public BS.Managers.SceneManager Manager;
     public GameObject gameHUD;
     public GameObject pauseCanvas;
     public GameObject soundCanvas;
@@ -150,6 +150,7 @@ public class GameHUD : MonoBehaviour
             toggleRendererFeature.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", false);
         }
         Time.timeScale = 1;
+        Manager.ResetPlayer();
         SceneManager.LoadScene("Shelter");
     }
 
