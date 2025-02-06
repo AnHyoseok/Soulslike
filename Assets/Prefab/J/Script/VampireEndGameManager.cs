@@ -59,6 +59,7 @@ namespace BS.Utility
 
         private void PrepareClear()
         {
+            dungeEndGame.StopTimer();
             gameEnded = true;
             playerInputActions.enabled = false;
             VampireDummy.SetActive(true);
@@ -85,6 +86,7 @@ namespace BS.Utility
 
         private void Clear()
         {
+          
             Destroy(boss);
          
         
