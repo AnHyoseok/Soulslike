@@ -24,9 +24,9 @@ namespace BS.Managers
         #endregion
         private void Start()
         {
+            title = maincamera.GetComponent<TitleCamera>();
             if (!isStart)
             {
-                title = maincamera.GetComponent<TitleCamera>();
                 maincamera.fieldOfView = 90;
                 StartCoroutine(title.ZoomIn());
                 falsePlayer.SetActive(true);

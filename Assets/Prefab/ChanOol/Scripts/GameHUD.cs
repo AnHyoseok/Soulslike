@@ -150,7 +150,7 @@ public class GameHUD : MonoBehaviour
             toggleRendererFeature.SetActiveRendererFeature<ScriptableRendererFeature>("FullScreenOpening", false);
         }
         Time.timeScale = 1;
-        Manager.ResetPlayer();
+        if(Manager) Manager.ResetPlayer();
         SceneManager.LoadScene("Shelter");
     }
 
