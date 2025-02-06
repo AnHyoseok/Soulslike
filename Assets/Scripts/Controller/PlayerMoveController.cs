@@ -11,6 +11,7 @@ namespace BS.Player
         public float dashCoolTime = 3f;                     // 대쉬 쿨타임
         public float dashDistance = 5f;                     // 대쉬 거리
         public float invincibilityDuration = 0.5f;          // 무적 지속 시간
+        PlayerSkillController psk;
 
         private static readonly string IS_MOVING = "IsMoving";
         private static readonly string IS_RUNNING = "IsRun";
@@ -25,9 +26,10 @@ namespace BS.Player
         protected override void Awake()
         {
             base.Awake();
-            if (!PlayerSkillController.skillList.ContainsKey("Space"))
+            psk = FindFirstObjectByType<PlayerSkillController>();
+            if (!psk.skillList.ContainsKey("Space"))
             {
-                PlayerSkillController.skillList.Add("Space", new Skill("Dash", dashCoolTime, DoDash));
+                psk.skillList.Add("Space", new Skill("Dash", dashCoolTime, DoDash));
             }
         }
 

@@ -27,11 +27,11 @@ namespace BS.Player
     public class PlayerSkillController : PlayerController
     {
         #region Variables
-        public static Dictionary<string, Skill> skillList = new Dictionary<string, Skill>();
+        public Dictionary<string, Skill> skillList = new Dictionary<string, Skill>();
 
         // 스킬 쿨타임 UI 요소를 관리할 Dictionary (각 스킬 이름 -> UI 요소)
-        public static Dictionary<string, Image> skillCoolTimeUI = new Dictionary<string, Image>(); // fillAmount를 조정할 UI Image
-        public static Dictionary<string, TextMeshProUGUI> skillCoolTimeTextUI = new Dictionary<string, TextMeshProUGUI>(); // 쿨타임 숫자를 표시할 UI Text
+        public Dictionary<string, Image> skillCoolTimeUI = new Dictionary<string, Image>(); // fillAmount를 조정할 UI Image
+        public Dictionary<string, TextMeshProUGUI> skillCoolTimeTextUI = new Dictionary<string, TextMeshProUGUI>(); // 쿨타임 숫자를 표시할 UI Text
 
         // 쿨타임을 관리할 딕셔너리 (각 스킬에 대해 코루틴을 관리)
         private Dictionary<string, Coroutine> skillCoolTimeCoroutines = new Dictionary<string, Coroutine>();

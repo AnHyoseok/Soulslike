@@ -23,7 +23,7 @@ namespace BS.Player
         // Mouse
         protected Vector2 m_inputVector2;                     // Input Vector2
         [SerializeField] protected Vector3 targetPosition;    // 월드 좌표로 변환된 목표 지점
-
+        
         // Move
         [SerializeField] protected float moveSpeed = 5f;      // 이동 속도, SD 이동 속도
 

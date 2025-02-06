@@ -31,6 +31,7 @@ namespace BS.Player
         public TextMeshProUGUI uppercutCoolTimeText;
         public TextMeshProUGUI backHandSwingCoolTimeText;
         public TextMeshProUGUI chargingPunchCoolTimeText;
+        PlayerSkillController psk;
         Animator animator;
         //public bool isHit = false;
         public Vector3 hitPos;
@@ -39,23 +40,27 @@ namespace BS.Player
             if (mainCamera == null)
                 mainCamera = Camera.main;
 
+            psk = FindFirstObjectByType<PlayerSkillController>();
             m_Input = transform.parent.GetComponent<PlayerInputActions>();
             ps = FindFirstObjectByType<PlayerState>();
-            animator = GetComponent<Animator>();
             // 스킬 구조체에 맞게 스킬을 추가
 
-            if (!PlayerSkillController.skillList.ContainsKey("Q"))
+            if (!psk.skillList.ContainsKey("Q"))
             {
-                PlayerSkillController.skillList.Add("Q", new Skill("Uppercut", uppercutCoolTime, DoUppercut, uppercutDamage));
+                psk.skillList.Add("Q", new Skill("Uppercut", uppercutCoolTime, DoUppercut, uppercutDamage));
             }
-            if (!PlayerSkillController.skillList.ContainsKey("W"))
+            if (!psk.skillList.ContainsKey("W"))
             {
-                PlayerSkillController.skillList.Add("W", new Skill("BackHandSwing", backHandSwingCoolTime, DoBackHandSwing, backHandSwingDamage));
+                psk.skillList.Add("W", new Skill("BackHandSwing", backHandSwingCoolTime, DoBackHandSwing, backHandSwingDamage));
             }
-            if (!PlayerSkillController.skillList.ContainsKey("E"))
+            if (!psk.skillList.ContainsKey("E"))
             {
-                PlayerSkillController.skillList.Add("E", new Skill("ChargingPunch", chargingPunchCoolTime, DoChargingPunch, chargingPunchDamage));
+                psk.skillList.Add("E", new Skill("ChargingPunch", chargingPunchCoolTime, DoChargingPunch, chargingPunchDamage));
             }
+        }
+        private void Start()
+        {
+            animator = GetComponent<Animator>();
         }
 
         // 애니메이션 실행중 호출 Update

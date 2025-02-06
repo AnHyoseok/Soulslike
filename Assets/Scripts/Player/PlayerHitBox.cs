@@ -18,13 +18,14 @@ namespace BS.Player
 
         public AudioClip[] hitSounds;
         CameraManager cm;
-
+        PlayerSkillController pskController;
         private void Start()
         {
             ps = controller.transform.GetChild(0).GetComponent<PlayerState>();
             psk = controller.transform.GetChild(0).GetComponent<PlayerSkills>();
             animator = controller.transform.GetChild(0).GetComponent<Animator>();
             cm = Camera.main.GetComponent<CameraManager>();
+            pskController = FindFirstObjectByType<PlayerSkillController>();
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -141,7 +142,7 @@ namespace BS.Player
         private float GetCurrentSkillDamage()
         {
             // PlayerSkillController의 현재 스킬 확인
-            if (PlayerSkillController.skillList.TryGetValue(ps.currentSkillName, out var skill))
+            if (pskController.skillList.TryGetValue(ps.currentSkillName, out var skill))
             {
                 return skill.damage;
             }

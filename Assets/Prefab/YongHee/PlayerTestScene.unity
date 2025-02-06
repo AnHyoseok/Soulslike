@@ -1559,7 +1559,6 @@ MonoBehaviour:
   maxHealth: 10000
   currentHealth: 0
   productionTime: 5
-  clearUI: {fileID: 0}
 --- !u!4 &198678641 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1554161176115921225, guid: f9e1a0158e9f7a545a16fa7c2aa7be4e, type: 3}
@@ -52102,8 +52101,6 @@ MonoBehaviour:
   blockCoolTimeText: {fileID: 463820966}
   maxHealth: 0
   currentHealth: 0
-  potionCount: 3
-  healthHealAmount: 1000
 --- !u!114 &6375661858704474783
 MonoBehaviour:
   m_ObjectHideFlags: 0

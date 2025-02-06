@@ -70,17 +70,17 @@ namespace BS.Player
         public UnityAction<float> OnHealed;      // 데미지를 받을 때 호출되는 이벤트
         public UnityAction OnBlocked;            // 블록 성공 시 호출되는 이벤트
 
-
+        PlayerSkillController psk;
         #endregion
 
         protected override void Awake()
         {
             m_Input = transform.parent.GetComponent<PlayerInputActions>();
-
+            psk = FindFirstObjectByType<PlayerSkillController>();
             // 스킬 목록에 블록 스킬 추가
-            if (!PlayerSkillController.skillList.ContainsKey("R"))
+            if (!psk.skillList.ContainsKey("R"))
             {
-                PlayerSkillController.skillList.Add("R", new Skill("Block", blockCoolTime, DoBlock));
+                psk.skillList.Add("R", new Skill("Block", blockCoolTime, DoBlock));
             }
         }
 
