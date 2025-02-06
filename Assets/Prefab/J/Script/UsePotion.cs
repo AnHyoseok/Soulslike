@@ -21,7 +21,7 @@ namespace BS.Player
         private void Start()
         {
             playerHealth = GetComponent<PlayerHealth>();
-            Debug.Log(playerHealth.MaxHealth + "맥스힐스 1번");
+            //Debug.Log(playerHealth.MaxHealth + "맥스힐스 1번");
             healAmount = playerHealth.MaxHealth;
         }
 

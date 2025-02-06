@@ -59,7 +59,10 @@ public class VampireHealth : MonoBehaviour,IDamageable
     {
         Debug.Log("Boss defeated!");
         // 보스 사망 로직 추가 (예: 애니메이션, 제거)
+        
+
         Destroy(gameObject); // 보스 오브젝트 제거
+
         
     }
     //IEnumerator SetClearUI()

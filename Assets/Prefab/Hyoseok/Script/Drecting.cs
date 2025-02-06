@@ -14,6 +14,8 @@ namespace BS.vampire
         public GameObject drectingCamera;
         public GameObject boss;
         public GameObject bossCanvas;
+        public GameObject playerCanvas;
+        public GameObject timer;
         public Animator animator;
         public GameObject presentEffect;
         public GameObject player;
@@ -45,12 +47,13 @@ namespace BS.vampire
             yield return new WaitForSeconds(1f);
             ///**/
             //fadeinout.SetActive(false);
-
+            timer.SetActive(false);
+            playerCanvas.SetActive(false);
             PattonSummon pattonSummon = boss.GetComponent<PattonSummon>();
             VampireController vampireController = boss.GetComponent<VampireController>();
             playerInputActions = player.GetComponent<PlayerInputActions>();
             PlayerController playerController = player.GetComponent<PlayerController>();
-            playerInputActions.enabled = false;
+            playerInputActions.UnInputActions();
             playerController.enabled = false;
             boss.transform.position = new Vector3(boss.transform.position.x, 10f, boss.transform.position.z);
 
@@ -78,14 +81,16 @@ namespace BS.vampire
 
             // 패턴 시작 시간
             yield return new WaitForSeconds(5f);
-
+            timer.SetActive(true);
+            playerCanvas.SetActive(true );
+            yield return new WaitForSeconds(0.01f);
             Destroy(drectingCamera);
             Destroy(bossCanvas);
 
             pattonSummon.enabled = true;
             vampireController.enabled = true;
             playerController.enabled = true;
-            playerInputActions.enabled = true;
+            playerInputActions.OnInputActions();
             dungeEndGame.StartDungeon();
             
          yield return null;
