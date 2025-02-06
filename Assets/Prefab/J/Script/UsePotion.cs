@@ -21,7 +21,10 @@ namespace BS.Player
 
         private void Start()
         {
-            dungeEndGame = FindFirstObjectByType<DungeonClearTime>();
+            if(dungeEndGame != null)
+            {
+                dungeEndGame = FindFirstObjectByType<DungeonClearTime>();
+            }
             playerHealth = GetComponent<PlayerHealth>();
             //Debug.Log(playerHealth.MaxHealth + "맥스힐스 1번");
             healAmount = playerHealth.MaxHealth;
@@ -29,7 +32,10 @@ namespace BS.Player
 
         private void Update()
         {
-
+            if(dungeEndGame != null)
+            {
+                if (dungeEndGame.isDungeonActive) return;
+            }
             if (Input.GetKeyDown(KeyCode.T))
             {
                 PotionUse();

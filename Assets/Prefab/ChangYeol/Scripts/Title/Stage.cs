@@ -1,15 +1,11 @@
 
 using BS.Utility;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace BS.Title
 {
     public class Stage : StageTrigger
     {
-        
-        public GameObject EnemyHealthbar;
-
         protected override void TriggerKeyDown()
         {
             stageText.text = stageName;
@@ -20,7 +16,6 @@ namespace BS.Title
                     AudioUtility.CreateSFX(triggerSound, transform.position, AudioUtility.AudioGroups.Sound);
                     Enemy = Instantiate(InstEnemy, InstEnemy.transform.position, Quaternion.identity);
                     isEnemy = true;
-                    EnemyHealthbar.SetActive(isEnemy);
                 }
             }
 

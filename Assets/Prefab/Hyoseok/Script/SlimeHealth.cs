@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace BS.vampire
 {
@@ -7,7 +8,7 @@ namespace BS.vampire
     {
         #region Variables
         [SerializeField] private float maxHealth = 100f;    //최대 Hp
-        public float CurrentHealth { get; private set; }    //현재 Hp
+        [SerializeField]public float CurrentHealth { get; set; }    //현재 Hp
         private bool isDeath = false;                       //죽음 체크
 
         public UnityAction<float> OnDamaged;
@@ -17,7 +18,7 @@ namespace BS.vampire
         //체력 위험 경계율
         [SerializeField] private float criticalHealRatio = 0.3f;
 
-
+        public Image bossHealth;
         #endregion
 
 
@@ -34,7 +35,10 @@ namespace BS.vampire
 
         }
 
-
+        private void Update()
+        {
+            bossHealth.fillAmount = Mathf.Lerp(bossHealth.fillAmount, GetRatio(), Time.deltaTime * 5f);
+        }
 
         //damageSource: 데미지를 주는 주체
         public void TakeDamage(float damage)

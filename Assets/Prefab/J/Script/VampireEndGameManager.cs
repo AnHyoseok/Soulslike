@@ -1,10 +1,9 @@
 using BS.Player;
 using UnityEngine;
 using BS.UI;
-using BS.Audio;
-using UnityEngine.Audio;
 using BS.PlayerInput;
 using BS.vampire;
+using BS.Achievement;
 
 namespace BS.Utility
 {
@@ -14,7 +13,7 @@ namespace BS.Utility
         private PlayerHealth playerHealth;
         private VampireHealth bossHealth;
         private DungeonClearTime dungeEndGame;
-        public GameObject player;
+        [HideInInspector]public GameObject player;
         public GameObject boss;
         public GameObject VampireDummy;
         [SerializeField] private float actorTime=3f;
@@ -60,6 +59,7 @@ namespace BS.Utility
         private void PrepareClear()
         {
             dungeEndGame.StopTimer();
+            AchievementManager.Instance.UpdateAchievement(AchievementType.KillCount, 1);
             gameEnded = true;
             playerInputActions.enabled = false;
             VampireDummy.SetActive(true);

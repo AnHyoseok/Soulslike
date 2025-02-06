@@ -1,6 +1,7 @@
 using BS.Player;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace BS.vampire
@@ -13,17 +14,20 @@ namespace BS.vampire
         #endregion
         void OnTriggerEnter(Collider other)
         {
-
-            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-            if (playerHealth != null && !damagedObjects.Contains(other.gameObject))
+            //Debug.LogWarning(other);
+            PlayerController playerController = other.GetComponent<PlayerController>();
+            if (playerController != null)
             {
-                Debug.Log($"{damageAmount}만큼 데미지 입음");
-                playerHealth.TakeDamage(damageAmount, false);
-                Debug.Log($"hp={playerHealth.CurrentHealth}");
-                damagedObjects.Add(other.gameObject);
-                StartCoroutine(ResetCollision(other.gameObject));
+                PlayerHealth playerHealth = playerController.GetComponentInChildren<PlayerHealth>();
+                if (playerHealth != null && !damagedObjects.Contains(other.gameObject))
+                {
+                    Debug.Log($"{damageAmount}만큼 데미지 입음");
+                    playerHealth.TakeDamage(damageAmount, false);
+                    Debug.Log($"hp={playerHealth.CurrentHealth}");
+                    damagedObjects.Add(other.gameObject);
+                    StartCoroutine(ResetCollision(other.gameObject));
+                }
             }
-
         }
 
         // 일정 시간 후 충돌 정보 리셋

@@ -26,7 +26,7 @@ namespace BS.UI
         public GameObject stageCanvas;
 
         private float elapsedTime = 0f;    // 현재 진행 시간
-        private bool isDungeonActive = false; // 던전 활성화 여부
+        [HideInInspector]public bool isDungeonActive = false; // 던전 활성화 여부
         private float bestTime = Mathf.Infinity; // 신기록 시간 (최초엔 무한대)
         #endregion
         private void Start()

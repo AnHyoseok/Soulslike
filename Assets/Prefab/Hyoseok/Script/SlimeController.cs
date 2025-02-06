@@ -7,7 +7,7 @@ namespace BS.Title
     public class SlimeController : MonoBehaviour
     {
         #region Variables
-        public GameObject player;
+        [HideInInspector]public GameObject player;
         public GameObject attackParticlePrefab; // 파티클 프리팹
         public Transform attackParticleSpawnPoint; // 파티클 생성 위치
         public int damageAmount = 1;
@@ -26,12 +26,16 @@ namespace BS.Title
 
         void OnTriggerEnter(Collider other)
         {
-            PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
-            if (playerHealth != null)
+            PlayerController playerController = other.GetComponent<PlayerController>();
+            if(playerController != null )
             {
-                Debug.Log($"{damageAmount}만큼 데미지 입음");
-                playerHealth.TakeDamage(damageAmount, false);
-                Debug.Log($"hp={playerHealth.CurrentHealth}");
+                PlayerHealth playerHealth = playerController.GetComponentInChildren<PlayerHealth>();
+                if (playerHealth != null)
+                {
+                    Debug.Log($"{damageAmount}만큼 데미지 입음");
+                    playerHealth.TakeDamage(damageAmount, false);
+                    Debug.Log($"hp={playerHealth.CurrentHealth}");
+                }
             }
         }
 
