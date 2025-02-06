@@ -2271,6 +2271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyLayerName: Enemy
+  wallLayerName: Wall
   controller: {fileID: 740085424}
   hitSounds: []
 --- !u!54 &113704398
@@ -4899,7 +4900,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 266065520}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 202c375d58b205849a6a16db2794b044, type: 3}
   m_Name: 
@@ -19300,7 +19301,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 740085424}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a6b50a31808b6541b638a89d21f4324, type: 3}
   m_Name: 
@@ -26844,6 +26845,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyLayerName: Enemy
+  wallLayerName: Wall
   controller: {fileID: 740085424}
   hitSounds: []
 --- !u!65 &1159761876

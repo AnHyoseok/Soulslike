@@ -10,6 +10,7 @@ namespace BS.Player
     {
         [Header("Hitbox Settings")]
         public string enemyLayerName = "Enemy"; // 적의 레이어 이름
+        public string wallLayerName = "Wall"; // 적의 레이어 이름
         public GameObject controller;
         private PlayerState ps;
         private PlayerSkills psk;
@@ -87,7 +88,7 @@ namespace BS.Player
                     float currentSkillDamage = GetCurrentSkillDamage();
                     if (currentSkillDamage > 0)
                     {
-                        if(currentSkillDamage > 60)
+                        if (currentSkillDamage > 60)
                         {
                             cm.ShakeCamera(0.3f, 5f);
                         }
@@ -109,6 +110,17 @@ namespace BS.Player
                         // 쿨다운이 끝나거나 일정 시간이 지난 후 다시 공격 가능하도록 설정
                         Invoke(nameof(ResetDamagedEnemies), 0.5f); // 0.5초 후 초기화
                     }
+                }
+            }
+            if (other.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
+            {
+                Debug.Log("WALL TRIGGER");
+                Vector3 hitPoint = other.ClosestPoint(transform.position);
+                if (animator.GetBool("IsChargingPunch") == true)
+                {
+                    hitPoint.y = 0;
+                    psk.hitPos = hitPoint;
+                    ps.isHit = true;
                 }
             }
         }

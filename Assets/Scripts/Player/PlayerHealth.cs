@@ -77,15 +77,15 @@ namespace BS.Player
         {
             m_Input = transform.parent.GetComponent<PlayerInputActions>();
             psk = FindFirstObjectByType<PlayerSkillController>();
+        }
+
+        private void OnEnable()
+        {
             // 스킬 목록에 블록 스킬 추가
             if (!psk.skillList.ContainsKey("R"))
             {
                 psk.skillList.Add("R", new Skill("Block", blockCoolTime, DoBlock));
             }
-        }
-
-        private void OnEnable()
-        {
             OnDamaged += CalculateDamage; // 데미지 이벤트 구독
             OnDamaged += PlayHitAnim;
             OnBlocked += PlayBlockSound;

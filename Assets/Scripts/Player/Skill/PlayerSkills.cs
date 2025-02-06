@@ -43,8 +43,10 @@ namespace BS.Player
             psk = FindFirstObjectByType<PlayerSkillController>();
             m_Input = transform.parent.GetComponent<PlayerInputActions>();
             ps = FindFirstObjectByType<PlayerState>();
+        }
+        private void OnEnable()
+        {
             // 스킬 구조체에 맞게 스킬을 추가
-
             if (!psk.skillList.ContainsKey("Q"))
             {
                 psk.skillList.Add("Q", new Skill("Uppercut", uppercutCoolTime, DoUppercut, uppercutDamage));

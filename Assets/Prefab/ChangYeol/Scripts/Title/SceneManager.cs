@@ -1,4 +1,5 @@
 using BS.Player;
+using BS.PlayerInput;
 using BS.Title;
 using UnityEngine;
 
@@ -22,11 +23,12 @@ namespace BS.Managers
         //시작시 카메라 이동
         TitleCamera title;
         public static bool isStart;
-
+        PlayerInputActions playerInput;
         #endregion
         private void Start()
         {
             title = maincamera.GetComponent<TitleCamera>();
+            playerInput = Player.GetComponent<PlayerInputActions>();
             if (!isStart)
             {
                 PlayerUI.SetActive(false);
@@ -36,7 +38,8 @@ namespace BS.Managers
                 maincamera.gameObject.SetActive(true);
                 m_camera.gameObject.SetActive(false);
                 canvas.SetActive(true);
-                Player.GetComponent<PlayerController>().enabled = false;
+                //Player.GetComponent<PlayerController>().enabled = false;
+                playerInput.UnInputActions();
                 foreach (Outline outlines in outline)
                 {
                     outlines.enabled = false;
@@ -56,7 +59,7 @@ namespace BS.Managers
         private void Update()
         {
             //player 위에 있는 캔버스 보이는 방향
-            if(keyCanvas)
+            if (keyCanvas)
             {
                 keyCanvas.transform.LookAt(keyCanvas.transform.position + m_camera.transform.rotation * Vector3.forward, m_camera.transform.rotation * Vector3.up);
             }
@@ -69,7 +72,8 @@ namespace BS.Managers
             canvas.SetActive(false);
             Player.SetActive(true);
             Player.transform.localScale = Vector3.one;
-            Player.GetComponent<PlayerController>().enabled = true;
+            //Player.GetComponent<PlayerController>().enabled = true;
+            playerInput.OnInputActions();
             falsePlayer.SetActive(false);
             particle[0].transform.position = new Vector3(-10.4f, 1.3f, -14.4f);
             particle[1].SetActive(true);
@@ -90,7 +94,8 @@ namespace BS.Managers
         public void ResetPlayer()
         {
             PlayerUI.SetActive(false);
-            Player.GetComponent<PlayerController>().enabled = false;
+            //Player.GetComponent<PlayerController>().enabled = false;
+            playerInput.UnInputActions();
             PlayerState state = Player.GetComponentInChildren<PlayerState>();
             state.targetPosition = falsePlayer.transform.position;
             Player.transform.localPosition = new Vector3(0.5f, 0, -5f);
@@ -102,11 +107,11 @@ namespace BS.Managers
             //playerState.ChangeState(playerState.IdleState);
             falsePlayer.SetActive(true);
             Player.SetActive(false);
-            foreach(StageTrigger stages in stage)
+            foreach (StageTrigger stages in stage)
             {
                 stages.keyText.text = "";
                 stages.stageText.text = "";
-                if(stages.canvas)
+                if (stages.canvas)
                 {
                     stages.canvas.SetActive(false);
                 }
@@ -118,7 +123,7 @@ namespace BS.Managers
             Player.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
             particle[0].transform.position = new Vector3(-5, 1.3f, -6.3f);
             particle[1].SetActive(false);
-            if(enemyStage.isEnemy)
+            if (enemyStage.isEnemy)
             {
                 Destroy(enemyStage.Enemy);
                 enemyStage.isEnemy = false;

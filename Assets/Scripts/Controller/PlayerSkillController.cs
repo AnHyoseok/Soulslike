@@ -82,16 +82,15 @@ namespace BS.Player
                 skillCoolTimeUI.Add("ChargingPunch", chargingPunchCoolTimeImage); // chargingPunchCoolTimeImage UI Image 컴포넌트
             if (chargingPunchCoolTimeText != null)
                 skillCoolTimeTextUI.Add("ChargingPunch", chargingPunchCoolTimeText); // chargingPunchCoolTimeText UI Text 컴포넌트
+        }
 
+        protected void OnEnable()
+        {
             // 각 스킬에 대해 초기 쿨타임 설정
             foreach (var skill in skillList)
             {
                 skillCoolTimeCoroutines[skill.Value.Name] = null; // 초기화
             }
-        }
-
-        protected void OnEnable()
-        {
             foreach (var skill in skillList.Keys)
             {
                 var action = m_Input.playerActionMap.FindAction(skill);

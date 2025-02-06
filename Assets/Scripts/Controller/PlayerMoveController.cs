@@ -27,15 +27,18 @@ namespace BS.Player
         {
             base.Awake();
             psk = FindFirstObjectByType<PlayerSkillController>();
-            if (!psk.skillList.ContainsKey("Space"))
-            {
-                psk.skillList.Add("Space", new Skill("Dash", dashCoolTime, DoDash));
-            }
         }
 
         protected override void Start()
         {
             base.Start();
+        }
+        private void OnEnable()
+        {
+            if (!psk.skillList.ContainsKey("Space"))
+            {
+                psk.skillList.Add("Space", new Skill("Dash", dashCoolTime, DoDash));
+            }
         }
 
         protected override void Update()
