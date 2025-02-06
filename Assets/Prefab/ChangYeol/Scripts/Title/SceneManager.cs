@@ -15,18 +15,21 @@ namespace BS.Managers
         public GameObject falsePlayer;
         public GameObject[] particle;
         public GameObject keyCanvas;
+        public GameObject PlayerUI;
         public StageTrigger[] stage;
         public Stage enemyStage;
         public Outline[] outline = new Outline[3];
         //시작시 카메라 이동
         TitleCamera title;
         public static bool isStart;
+
         #endregion
         private void Start()
         {
             title = maincamera.GetComponent<TitleCamera>();
             if (!isStart)
             {
+                PlayerUI.SetActive(false);
                 maincamera.fieldOfView = 90;
                 StartCoroutine(title.ZoomIn());
                 falsePlayer.SetActive(true);
@@ -75,6 +78,7 @@ namespace BS.Managers
                 outlines.enabled = true;
             }
             Arrow.SetActive(true);
+            PlayerUI.SetActive(true);
         }
         //Quit버튼
         public void Quit()
@@ -85,6 +89,7 @@ namespace BS.Managers
         //초기 화면으로 돌아가고 싶을 때 Esc키를 누르면 실행되는 함수
         public void ResetPlayer()
         {
+            PlayerUI.SetActive(false);
             Player.GetComponent<PlayerController>().enabled = false;
             PlayerState state = Player.GetComponentInChildren<PlayerState>();
             state.targetPosition = falsePlayer.transform.position;

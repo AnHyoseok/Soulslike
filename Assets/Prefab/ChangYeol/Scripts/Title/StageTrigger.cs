@@ -12,14 +12,14 @@ namespace BS.Title
         public TextMeshProUGUI keyText;
         public TextMeshProUGUI stageText;
         public GameObject canvas;
-        public GameObject Enemy;
+        [HideInInspector]public GameObject Enemy;
         [SerializeField] protected GameObject InstEnemy;
         [HideInInspector] public bool isEnemy = false;
         public string stageName;
         public KeyCode keyCode = KeyCode.V;
-        public PlayerInputActions inputActions;
-        #endregion
+        public AudioClip triggerSound;
         private bool isPlayerInside = false;
+        #endregion
 
         private void Start()
         {
