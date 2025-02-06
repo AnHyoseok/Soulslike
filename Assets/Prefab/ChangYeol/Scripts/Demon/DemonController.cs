@@ -262,7 +262,7 @@ namespace BS.Demon
             // TODO : UpdateAchievementData(KillCount, 1) 불러오기
             AchievementManager.Instance.UpdateAchievement(AchievementType.KillCount, 1);
             /************************************************************************************/
-
+            clearTime.StopTimer();
             sceneManager.drectingCamera.SetActive(true);
             ChangeBoolState(DEMON.Die, isDie);
             PlayerInputActions inputActions = pattern.player.GetComponent<PlayerInputActions>();

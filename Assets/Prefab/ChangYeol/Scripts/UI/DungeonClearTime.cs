@@ -66,11 +66,10 @@ namespace BS.UI
             timerText.gameObject.SetActive(true);
             newRecordUI.SetActive(false);
         }
-
+        public void StopTimer() => isDungeonActive = false;
         // 던전 클리어
         public void CompleteDungeon()
         {
-            isDungeonActive = false;
             bosstext.text = bossName;
             buttonText[0].text = buttonName[0];
             buttonText[1].text = buttonName[1];
