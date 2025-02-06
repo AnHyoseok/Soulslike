@@ -25,12 +25,6 @@ namespace BS.UI
         private void Start()
         {
             FindAndResetComponents();
-
-
-        }
-        private void Update()
-        {
-
         }
 
         private void FindAndResetComponents()

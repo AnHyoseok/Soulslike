@@ -33,11 +33,12 @@ namespace BS.UI
         {
             foreach (var list in AchievementManager.Instance.achievementsGoalCondition)
             {
-                if (list.achievementType == AchievementType.TimeBased && bestTime > list.achievementGoal.currentAmount)
+                if (list.achievementType == AchievementType.TimeBased && bestTime > list.achievementGoal.currentAmount && list.achievementGoal.currentAmount != 0)
                 {
                     bestTime = list.achievementGoal.currentAmount;
                 }
             }
+            Debug.Log($"start {bestTime}");
             StartDungeon();
         }
 
@@ -49,6 +50,9 @@ namespace BS.UI
                 UpdateTimerUI();
             }
         }
+
+        public void StopTimer() => isDungeonActive = false;
+
         private void UpdateTimerUI()
         {
             // 분, 초, 밀리초 계산

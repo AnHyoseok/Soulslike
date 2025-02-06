@@ -99,6 +99,7 @@ namespace BS.Achievement
                     case AchievementType.HealthBased:
                         // Health 관련 업적 업데이트 로직 (아직 구현되지 않음)
                         // TODO: 체력 관련 업적 로직 추가 필요
+                        achievement.DamageCheck(amount);
                         break;
 
                     case AchievementType.KillCount:

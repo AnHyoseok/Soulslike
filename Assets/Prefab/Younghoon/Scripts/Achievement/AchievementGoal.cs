@@ -58,7 +58,7 @@ namespace BS.Achievement
                     break;
 #endif
             }
-            currentAmount = 0;
+            currentAmount = Mathf.Infinity;
         }
     }
 }

@@ -42,6 +42,7 @@ namespace BS.Player
                 if (currentHealth <= 0)
                 {
                     IsDeath = true;
+                    OnDie?.Invoke();
                 }
             }
         }
@@ -69,6 +70,7 @@ namespace BS.Player
         public UnityAction<float> OnDamaged;      // 데미지를 받을 때 호출되는 이벤트
         public UnityAction<float> OnHealed;      // 데미지를 받을 때 호출되는 이벤트
         public UnityAction OnBlocked;            // 블록 성공 시 호출되는 이벤트
+        public UnityAction OnDie;            // 블록 성공 시 호출되는 이벤트
 
         PlayerSkillController psk;
         #endregion

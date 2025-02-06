@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Cinemachine;
+using BS.Utility;
+using UnityEditor.Recorder;
 
 namespace BS.Enemy.Set
 {
@@ -12,9 +14,12 @@ namespace BS.Enemy.Set
         [SerializeField] GameObject gameHUD;
         [SerializeField] GameObject boss;
         [SerializeField] GameObject AchievementCanvas;
+        [SerializeField] GameObject EndingManager;
         [SerializeField] ParticleSystem chargingParticle;
         [SerializeField] ParticleSystem explosionParticle;
         [SerializeField] CinemachineSequencerCamera cutSceneCamera;
+        public AudioClip explosionSound;
+        AudioSource audioSource;
         Camera cm;
         Animator animator;
 
@@ -23,8 +28,10 @@ namespace BS.Enemy.Set
         private void Awake()
         {
             cm = Camera.main;
+            audioSource = GetComponent<AudioSource>();
             boss.SetActive(false);
             player.SetActive(false);
+            EndingManager.SetActive(false);
             gameHUD.gameObject.SetActive(false);
             chargingParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             explosionParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -42,8 +49,10 @@ namespace BS.Enemy.Set
             yield return new WaitForSeconds(1f);
             animator.SetTrigger(SetProperty.SET_ANIM_TRIGGER_ROAR);
             yield return new WaitForSeconds(1f);
+            audioSource.Play();
             chargingParticle.Play();
             yield return new WaitForSeconds(2.2f);
+            AudioUtility.CreateSFX(explosionSound, transform.position, AudioUtility.AudioGroups.Explosion);
             chargingParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             explosionParticle.Play();
             yield return new WaitForSeconds(4.5f);
@@ -53,7 +62,7 @@ namespace BS.Enemy.Set
             boss.SetActive(true);
             cutSceneCamera.gameObject.SetActive(false);
             AchievementCanvas.SetActive(true);
-
+            EndingManager.SetActive(true);
             Destroy(gameObject);
         }
 

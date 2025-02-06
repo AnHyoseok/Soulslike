@@ -22,6 +22,8 @@ namespace BS.Enemy.Set
 
         public float AttackCooldown => attackCooldown; // Read-only Property
 
+        public AudioClip bossDieSFX;
+
         private Animator animator;
 
         private void Start()

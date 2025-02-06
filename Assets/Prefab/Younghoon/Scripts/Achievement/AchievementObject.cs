@@ -48,11 +48,11 @@ namespace BS.Achievement
             }
         }
 
-        public void DamageCheck(float damage)
+        public void DamageCheck(float ratio)
         {
             if (achievementGoal.achievementType == AchievementType.HealthBased)
             {
-                achievementGoal.currentAmount = damage;
+                achievementGoal.currentAmount += (1 - ratio);
             }
         }
 

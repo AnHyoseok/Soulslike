@@ -28,9 +28,6 @@ namespace BS.Achievement
             }
             CheckAchievement();
             manager.SaveAchievementData();
-            //AchievementCondition(achievementCondition[0], false);
-            //AchievementCondition(achievementCondition[1], false);
-            //AchievementCondition(achievementCondition[2], false);
         }
         void CheckAchievement()
         {
