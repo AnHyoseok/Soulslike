@@ -52,9 +52,8 @@ namespace BS.Achievement
         {
             if (achievementGoal.achievementType == AchievementType.HealthBased)
             {
-                achievementGoal.currentAmount += (1 - ratio);
+                achievementGoal.currentAmount = ratio;
             }
         }
-
     }
 }

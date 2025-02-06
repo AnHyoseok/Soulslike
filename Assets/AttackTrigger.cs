@@ -22,7 +22,6 @@ namespace BS.Enemy.Set
             if (other.gameObject.layer == LayerMask.NameToLayer(SetProperty.PLAYER_LAYER))
             {
                 // 플레이어에게 데미지를 주는 로직 처리
-                Debug.Log("플레이어에게 데미지!");
                 hitCheck = true;
 
                 //TODO : 데미지를 주고 필요시 넉백, 경직 구현
@@ -30,7 +29,7 @@ namespace BS.Enemy.Set
                 if (playerHealth != null)
                 {
                     bool isAttackFailed = playerHealth.TakeDamage(damage);
-                    //TODO : 블락당하면 취할 모션 및 대기시간 + 데미지 증폭여부 연결
+                    //TODO : 블락당하면 데미지 증폭여부 연결
                     if (isAttackFailed)
                     {
                         OnBlocked?.Invoke();

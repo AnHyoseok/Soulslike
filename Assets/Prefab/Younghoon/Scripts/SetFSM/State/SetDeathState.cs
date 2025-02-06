@@ -15,7 +15,6 @@ namespace BS.Enemy.Set
 
         public void Enter()
         {
-            Debug.Log("보스가 사망했습니다.");
             property.Animator.SetBool(SetProperty.SET_ANIM_BOOL_DEAD, true);
 
             //죽을때 내는 SFX

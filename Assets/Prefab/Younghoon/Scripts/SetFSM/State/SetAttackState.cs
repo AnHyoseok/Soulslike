@@ -25,7 +25,6 @@ namespace BS.Enemy.Set
         {
             property.Animator.SetBool(SetProperty.SET_ANIM_BOOL_ATTACK, true);
             property.Agent.isStopped = true;
-            Debug.Log("Boss: Entering Attack State");
         }
 
         public void Update()
@@ -59,7 +58,6 @@ namespace BS.Enemy.Set
         public void Exit()
         {
             ResetAttackState();
-            Debug.Log("Boss: Exiting Attack State");
         }
 
         /// <summary>
@@ -104,25 +102,21 @@ namespace BS.Enemy.Set
         private void PerformCloseRangeAttack()
         {
             TriggerAttackAnimation(SetProperty.SET_ANIM_TRIGGER_SLASHATTACKTHREETIMES);
-            Debug.Log("Boss: Performing Close Range Attack!");
         }
 
         private void PerformMidRangeAttack()
         {
             TriggerAttackAnimation(SetProperty.SET_ANIM_TRIGGER_PULLATTACK);
-            Debug.Log("Boss: Performing Mid Range Attack!");
         }
 
         private void PerformLongRangeAttack()
         {
             TriggerAttackAnimation(SetProperty.SET_ANIM_TRIGGER_LIGHTNINGMAGIC);
-            Debug.Log("Boss: Performing Long Range Attack!");
         }
 
         private void PerformSpecialAttack()
         {
             TriggerAttackAnimation(SetProperty.SET_ANIM_TRIGGER_ROAR);
-            Debug.Log("Boss: Performing Special Attack!");
         }
 
         private void TriggerAttackAnimation(string triggerName)

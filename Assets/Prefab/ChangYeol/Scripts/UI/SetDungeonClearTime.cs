@@ -38,7 +38,6 @@ namespace BS.UI
                     bestTime = list.achievementGoal.currentAmount;
                 }
             }
-            Debug.Log($"start {bestTime}");
             StartDungeon();
         }
 

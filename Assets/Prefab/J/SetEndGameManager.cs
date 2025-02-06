@@ -1,15 +1,10 @@
 using BS.Player;
 using UnityEngine;
 using BS.UI;
-using BS.Audio;
-using UnityEngine.Audio;
-using BS.PlayerInput;
-using BS.Demon;
-using Unity.Cinemachine;
 using BS.Enemy.Set;
 using BS.Managers;
-using System;
 using System.Collections;
+using BS.Achievement;
 
 namespace BS.Utility
 {
@@ -29,10 +24,14 @@ namespace BS.Utility
         private Camera mainCamera;
 
         private bool isEnding;
+        private bool clearOrNot;
+
         [SerializeField] private float endingFieldOfView = 30f;
         [SerializeField] private float zoomSpeed = 2f;
 
         [SerializeField] private float showAchievementUITimer = 5f;
+
+
         #endregion
 
         private void Start()
@@ -64,9 +63,14 @@ namespace BS.Utility
 
         private void EndingProduction()
         {
+            AchievementManager.Instance.UpdateAchievement(AchievementType.HealthBased, playerHealth.TotalDamagePersentage);
             dungeonEndGame.StopTimer();
+            bossHealth.gameObject.GetComponent<SetController>().enabled = false;
             Time.timeScale = 0.3f;
             mainCamera.GetComponent<CameraManager>().enabled = false;
+
+            clearOrNot = playerHealth.GetRatio() > bossHealth.GetRatio() ? true : false;
+
             if (playerHealth.GetRatio() > bossHealth.GetRatio())
             {
                 mainCamera.transform.LookAt(bossHealth.gameObject.transform);
@@ -79,14 +83,22 @@ namespace BS.Utility
             }
             audioSource.Play();
             isEnding = true;
-            StartCoroutine(ShowAchivementManager());
+            StartCoroutine(ShowAchivementManager(clearOrNot));
         }
 
-        private IEnumerator ShowAchivementManager()
+        private IEnumerator ShowAchivementManager(bool clearOrNot)
         {
             yield return new WaitForSecondsRealtime(showAchievementUITimer);
             Time.timeScale = 1f;
-            dungeonEndGame.CompleteDungeon();
+            if (clearOrNot)
+            {
+                dungeonEndGame.CompleteDungeon();
+            }
+            else
+            {
+                dungeonEndGame.DefeatDungeon();
+            }
+
         }
     }
 }

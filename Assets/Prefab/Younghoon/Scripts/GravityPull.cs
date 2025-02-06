@@ -52,15 +52,9 @@ namespace BS.Enemy.Set
                     PlayerHealth playerHealth = collider.GetComponentInChildren<PlayerHealth>();
                     if (playerHealth != null)
                     {
-                        //프레임당 speed의 1/10 데미지
-                        playerHealth.TakeDamage(speed * 0.1f, false);
+                        //프레임당 speed의 데미지
+                        playerHealth.TakeDamage(speed * 1f, false);
                     }
-                    else
-                    {
-                        Debug.Log("GravityPull에서 데미지를 주지 못함");
-                    }
-
-
 
 #if UNITY_EDITOR
                     Debug.Log($"거리: {distance}, 대상: {collider.gameObject.name}");

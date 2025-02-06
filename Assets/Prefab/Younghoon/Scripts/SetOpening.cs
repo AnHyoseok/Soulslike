@@ -1,9 +1,8 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using Unity.Cinemachine;
 using BS.Utility;
-using UnityEditor.Recorder;
+using BS.Managers;
 
 namespace BS.Enemy.Set
 {
@@ -28,6 +27,9 @@ namespace BS.Enemy.Set
         private void Awake()
         {
             cm = Camera.main;
+
+            cm.GetComponent<CameraManager>().enabled = false;
+
             audioSource = GetComponent<AudioSource>();
             boss.SetActive(false);
             player.SetActive(false);
@@ -63,6 +65,7 @@ namespace BS.Enemy.Set
             cutSceneCamera.gameObject.SetActive(false);
             AchievementCanvas.SetActive(true);
             EndingManager.SetActive(true);
+            cm.GetComponent<CameraManager>().enabled = true;
             Destroy(gameObject);
         }
 

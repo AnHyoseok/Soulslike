@@ -42,7 +42,6 @@ namespace BS.Player
                 if (currentHealth <= 0)
                 {
                     IsDeath = true;
-                    OnDie?.Invoke();
                 }
             }
         }
@@ -65,6 +64,9 @@ namespace BS.Player
                 }
             }
         }
+        private float lastRatio = 1f;
+        private float totalDamagePersentage = 100f;
+        public float TotalDamagePersentage => totalDamagePersentage;
 
         // 이벤트 액션
         public UnityAction<float> OnDamaged;      // 데미지를 받을 때 호출되는 이벤트
@@ -104,7 +106,6 @@ namespace BS.Player
         {
             base.Start();
             maxHealth = 1000f; // 초기 최대 체력 설정
-            Debug.Log(MaxHealth + "맥스힐스 2번");
             currentHealth = MaxHealth; // 현재 체력을 최대 체력으로 초기화
         }
 
@@ -166,6 +167,9 @@ namespace BS.Player
         // 데미지 처리 (데미지 값, 블록 가능 여부)
         public bool TakeDamage(float damage, bool isBlockable = true)
         {
+            if (isDeath)
+                return false;
+
             if (isBlockable)
             {
                 if (animator.GetBool("IsBlocking") == true) // 블록 성공
@@ -189,6 +193,7 @@ namespace BS.Player
         public void TakeHeal()
         {
             CurrentHealth = maxHealth;
+            lastRatio = GetRatio();
             OnHealed?.Invoke(maxHealth);
         }
 
@@ -204,9 +209,25 @@ namespace BS.Player
 
             CurrentHealth -= realDamage; // 체력 감소
 
+            // 데미지 비율 변화량을 계산
+            float damagePercentageChange;
+            if (GetRatio() <= 0)
+            {
+                damagePercentageChange = totalDamagePersentage;
+            }
+            else
+            {
+                damagePercentageChange = (lastRatio - GetRatio()) * 100f;
+            }
+
+            // totalDamagePersentage에 누적시키되, 0 이하로 내려가지 않도록 함
+            totalDamagePersentage = Mathf.Max(totalDamagePersentage - damagePercentageChange, 0f);
+            // lastRatio 업데이트 (현재 비율로 갱신)
+            lastRatio = GetRatio();
             if (CurrentHealth <= 0f) // 체력이 0 이하일 경우
             {
                 CurrentHealth = 0;
+                OnDie?.Invoke();
                 //Die(); // 사망 처리 호출 가능
             }
 
