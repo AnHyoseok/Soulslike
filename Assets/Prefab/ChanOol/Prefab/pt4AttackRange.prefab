@@ -99,9 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e2daf291fa1d7642acf2703468f1c3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  degree: 180
+  degree: 250
   intervalDegree: 5
-  beginOffsetDegree: 0
+  beginOffsetDegree: -34.5
   radius: 8
   material: {fileID: 2100000, guid: 348972ca4826f564c9d9cc7bf1416310, type: 2}
   startAlpha: 0.8

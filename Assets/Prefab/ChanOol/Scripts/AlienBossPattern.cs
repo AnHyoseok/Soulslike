@@ -48,6 +48,7 @@ public class AlienBossPattern : MonoBehaviour
     private int previousPattern;           // 같은 패턴 방지용
 
     private AudioSource audioSource;
+    public AlienHealth alienHealth;
 
     //public AlienSound alienSound;
     //public AudioUtility audioUtility;     // 오디오
@@ -57,6 +58,7 @@ public class AlienBossPattern : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        alienHealth = GetComponent<AlienHealth>();
         audioSource = GetComponent<AudioSource>();
         randomNumber = Random.Range(1, 5);  // 1 ~ 4중 랜덤한 숫자
         previousPattern = 0;
@@ -66,6 +68,11 @@ public class AlienBossPattern : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (alienHealth.isDie) 
+        {
+            StopAllCoroutines();
+            return;
+        }
         // 플레이어와 거리재기
         distance = Vector3.Distance(alien.transform.position, player.transform.position);
 

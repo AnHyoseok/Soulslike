@@ -12,6 +12,7 @@ public class AlienController : MonoBehaviour
     public Camera mainCamera;
     public GameObject OpeningSequencerCamera;
     public DungeonClearTime dungeonClearTime;
+    //public GameObject skipCanvas;
 
     #endregion
 
@@ -26,6 +27,7 @@ public class AlienController : MonoBehaviour
         PlayerInputActions playerInputActions = player.GetComponent<PlayerInputActions>();
         //CinemachineSequencerCamera cinemachineCamera = sequencerCamera.GetComponent<CinemachineSequencerCamera>();
 
+        //skipCanvas.SetActive(true);             // 스킵 캔버스 활성화
         alienBossPattern.enabled = false;       // 보스 패턴 끄기
         playerInputActions.UnInputActions();    // 플레이어 입력 끄기
         dungeonClearTime.enabled = false;       // 클리어 타임 끄기
@@ -40,6 +42,7 @@ public class AlienController : MonoBehaviour
 
         yield return new WaitForSeconds(8.0f);
 
+        //skipCanvas.SetActive(false);             // 스킵 캔버스 비활성화
         alienBossPattern.enabled = true;         // 보스 패턴 켜기
         playerInputActions.OnInputActions();     // 플레이어 입력 켜기
         dungeonClearTime.enabled = true;         // 클리어 타임 켜기

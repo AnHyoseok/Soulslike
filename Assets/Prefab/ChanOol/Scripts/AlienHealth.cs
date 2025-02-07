@@ -1,16 +1,19 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using BS.UI;
+using BS.Achievement;
 
 public class AlienHealth : MonoBehaviour, IDamageable
 {
-    public float maxHealth = 1000; // 보스 최대 체력
+    public float maxHealth = 500; // 보스 최대 체력
     public float currentHealth;
     private Animator animator;
     private bool isInvincible = false; //무적여부
     //public GameObject EndingSequencerCamera; //엔딩연출카메라
     //public GameObject fadeInOut;
-
+    private DungeonClearTime dungeonClearTime;
+    public bool isDie = false;
 
     public void SetInvincible(bool invincible)
     {
@@ -19,13 +22,14 @@ public class AlienHealth : MonoBehaviour, IDamageable
 
 
     // 체력 변경 이벤트 (UI와 연동)
-    public event Action<float, float> OnHealthChanged;
+    public event Action<float> OnHealthChanged;
 
     private void Start()
     {
         currentHealth = maxHealth;
         animator = GetComponent<Animator>();
         NotifyHealthChanged();
+        dungeonClearTime = GetComponent<DungeonClearTime>();
 
         //fadeInOut.SetActive(false);
     }
@@ -34,16 +38,23 @@ public class AlienHealth : MonoBehaviour, IDamageable
     {
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            currentHealth -= 100.0f;
+            currentHealth -= 50.0f;
             if (currentHealth <= 0)
             {
+                isDie = true;
                 animator.SetInteger("Pattern", 6);
+                AchievementManager.Instance.UpdateAchievement(AchievementType.KillCount, 1);
+                dungeonClearTime.StopTimer();
+                
             }
         }
         if (Input.GetKeyDown(KeyCode.X))
         {
+            isDie = true;
             currentHealth = 0.0f;
+            AchievementManager.Instance.UpdateAchievement(AchievementType.KillCount, 1);
             animator.SetInteger("Pattern", 6);
+            dungeonClearTime.StopTimer();
         }
     }
 
@@ -68,29 +79,28 @@ public class AlienHealth : MonoBehaviour, IDamageable
     // 체력 변경 알림
     private void NotifyHealthChanged()
     {
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        OnHealthChanged?.Invoke(currentHealth);
     }
 
     // 보스 사망 처리
     private void Die()
     {
+        isDie = true;
         //Debug.Log("Boss defeated!");
         // EndingSequencerCamera 켜기
         //EndingSequencerCamera.SetActive(false);
-
+        AchievementManager.Instance.UpdateAchievement(AchievementType.KillCount, 1);
         animator.SetInteger("Pattern",6);
         //페이드인아웃 활성화
         //fadeInOut.SetActive(true);
 
         //2초뒤 페이드인아웃 비활성화
         //yield return new WaitForSeconds(2.0f);
-
+        dungeonClearTime.StopTimer();
+        
         //페이드인아웃 비활성화
         //fadeInOut.SetActive(false);
         // 보스 사망 로직 추가 (예: 애니메이션, 제거)
         Destroy(gameObject,5f); // 보스 오브젝트 제거
-
     }
- 
-
 }

@@ -14449,7 +14449,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyLayerName: Enemy
-  wallLayerName: Wall
   controller: {fileID: 520268659}
   hitSounds:
   - {fileID: 8300000, guid: 1bb6aeb7c2f53964285c9144cc9379b4, type: 3}
@@ -17593,7 +17592,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyLayerName: Enemy
-  wallLayerName: Wall
   controller: {fileID: 520268659}
   hitSounds:
   - {fileID: 8300000, guid: 1bb6aeb7c2f53964285c9144cc9379b4, type: 3}
@@ -31773,7 +31771,7 @@ MonoBehaviour:
   pt5spawnCount: 36
   alien: {fileID: 5998695934361493826}
   player: {fileID: 520268659}
-  alienHealth: {fileID: 0}
+  alienHealth: {fileID: 7881019165355029545}
 --- !u!33 &4501659843106152887
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -36501,11 +36499,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4458926706542147190, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4458926706542147190, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 41.666664
       objectReference: {fileID: 0}
     - target: {fileID: 4458926706542147190, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -36605,11 +36603,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5132426963093467475, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5132426963093467475, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -41.66667
       objectReference: {fileID: 0}
     - target: {fileID: 5132426963093467475, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -36633,7 +36631,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8074960882192571937, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8074960882192571937, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -39158,7 +39156,6 @@ MonoBehaviour:
   mainCamera: {fileID: 1332223526}
   OpeningSequencerCamera: {fileID: 2076680608}
   dungeonClearTime: {fileID: 1902239947}
-  skipCanvas: {fileID: 0}
 --- !u!82 &7679006607096963380
 AudioSource:
   m_ObjectHideFlags: 0
