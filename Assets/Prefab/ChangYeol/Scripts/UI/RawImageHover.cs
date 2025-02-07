@@ -9,7 +9,8 @@ public class RawImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public Button sceneButton;
     public string sceneName;
     public Animator animator; // 연결된 애니메이터
-
+    public GameObject hoverlight;
+    public GameObject effect;
     private void Start()
     {
         if (rawImage == null)
@@ -26,7 +27,9 @@ public class RawImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (animator != null)
         {
             animator.SetBool("IsHover", true); // 애니메이션 시작
-            if(sceneButton != null)
+            hoverlight.SetActive(true);
+            effect.SetActive(true);
+            if (sceneButton != null)
             {
                 sceneButton.onClick.AddListener(SelectScene);
             }
@@ -39,6 +42,8 @@ public class RawImageHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (animator != null)
         {
             animator.SetBool("IsHover", false); // 애니메이션 종료
+            hoverlight.SetActive(false);
+            effect.SetActive(false);
             if (sceneButton != null)
             {
                 sceneButton.onClick.RemoveAllListeners();
