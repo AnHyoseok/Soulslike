@@ -32,9 +32,9 @@ namespace BS.vampire
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.O))
+            if (Input.GetKeyDown(KeyCode.X))
             {
-                boss.currentHealth -= 200f;
+                boss.currentHealth =0;
             }
             
             CheckShieldStatus();
