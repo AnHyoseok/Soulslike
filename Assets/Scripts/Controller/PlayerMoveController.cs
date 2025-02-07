@@ -12,7 +12,7 @@ namespace BS.Player
         public float invincibilityDuration = 0.5f;
 
         [Header("Collision Settings")]
-        public float stopDistance = 0.1f; // 벽과 최소 거리 유지
+        public float stopDistance = 1f; // 벽과 최소 거리 유지
 
         private PlayerSkillController psk;
 
@@ -93,12 +93,10 @@ namespace BS.Player
                 // 벽 충돌 감지
                 if (Physics.Raycast(rayOrigin, moveDirection, out RaycastHit hit, moveSpeed + stopDistance, LayerMask.GetMask("Wall")))
                 {
-                    Debug.Log("WALL DETECT");
-                    Debug.DrawRay(rayOrigin, moveDirection * hit.distance, Color.red);
+                    Debug.DrawRay(rayOrigin, moveDirection * stopDistance, Color.red);
 
                     if (hit.distance <= stopDistance)
                     {
-                        Debug.Log("WALL ARR");
                         StopMovement();
                         return;
                     }
@@ -107,12 +105,12 @@ namespace BS.Player
                 }
                 else
                 {
-                    Debug.DrawRay(rayOrigin, moveDirection * moveSpeed, Color.green);
+                    Debug.DrawRay(rayOrigin, moveDirection * stopDistance, Color.green);
                 }
 
                 transform.position += moveDirection * moveSpeed;
 
-                if (Vector3.Distance(transform.position, ps.targetPosition) < 0.01f)
+                if (Vector3.Distance(transform.position, ps.targetPosition) < 0.05f)
                 {
                     StopMovement();
                 }

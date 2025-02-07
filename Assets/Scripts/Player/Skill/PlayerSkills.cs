@@ -33,8 +33,10 @@ namespace BS.Player
         public TextMeshProUGUI chargingPunchCoolTimeText;
         PlayerSkillController psk;
         Animator animator;
+        public float stopDistance = 1f; // 벽과 최소 거리 유지
         //public bool isHit = false;
         public Vector3 hitPos;
+        //private Vector3 predictedVelocity;
         void Awake()
         {
             if (mainCamera == null)
@@ -72,22 +74,45 @@ namespace BS.Player
             if (animator)
             //&& characterTransform)
             {
-                if (ps.isHit)
-                {
-                    // 루트 모션을 무시하고 충돌 지점에서 고정
-                    animator.applyRootMotion = false; // 루트 모션 비활성화
-                    Vector3 temp = (hitPos - ps.prevTransform.position).normalized;
-                    transform.parent.position = hitPos - temp;
-                }
-                else
-                {
+                //if (ps.isHit)
+                //{
+                //    // 루트 모션을 무시하고 충돌 지점에서 고정
+                //    animator.applyRootMotion = false; // 루트 모션 비활성화
+                //    Vector3 temp = (hitPos - ps.prevTransform.position).normalized * 1.2f;
+                //    transform.parent.position = hitPos - temp;
+                //}
+                //else
+                //{
                     // 일반 루트 모션 업데이트
-                    animator.applyRootMotion = true; // 루트 모션 활성화
+                    //animator.applyRootMotion = true; // 루트 모션 활성화
+                    //predictedVelocity = animator.deltaPosition / Time.deltaTime;
                     transform.parent.transform.position = animator.rootPosition; // 캐릭터의 Root Motion 위치
-                }
+                //}
             }
         }
+        private void Update()
+        {
+            if (animator.GetBool("IsChargingPunch"))
+            {
+                Vector3 rayOrigin = transform.position + Vector3.up;
+                Vector3 moveDirection = (ps.targetPosition - transform.position).normalized;
+                RaycastHit[] hits = Physics.RaycastAll(rayOrigin, moveDirection, 5f);
 
+                foreach (RaycastHit hit in hits)
+                {
+                    // 충돌한 물체 처리
+                    if (hit.distance <= stopDistance)
+                    {
+                        animator.applyRootMotion = false; // 루트 모션 비활성화
+                        Vector3 hitPoint = new Vector3(hit.point.x, 0f, hit.point.z);
+                        Vector3 temp = (hitPoint - ps.prevTransform.position).normalized * 1.2f;
+                        transform.parent.position = hitPoint - temp;
+                        return;
+                    }
+                }
+            }
+            if(!animator.applyRootMotion) animator.applyRootMotion = true; // 루트 모션 활성화
+        }
         Vector3 GetMousePosition()
         {
             m_inputVector2 = m_Input.MousePosition;
@@ -173,7 +198,7 @@ namespace BS.Player
             transform.parent.transform.DORotateQuaternion(targetRotation, rotationDuration)
                         .SetAutoKill(true)
                         .SetEase(Ease.InOutSine)
-                        .OnComplete(() =>{});
+                        .OnComplete(() => { });
         }
 
         // 다른행동이 불가능 하도록 설정

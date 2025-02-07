@@ -96,12 +96,6 @@ namespace BS.Player
                             cm.ShakeCamera(0.3f, 5f);
                         }
                         Vector3 hitPoint = other.ClosestPoint(transform.position);
-                        if (animator.GetBool("IsChargingPunch") == true)
-                        {
-                            hitPoint.y = 0;
-                            psk.hitPos = hitPoint;
-                            ps.isHit = true;
-                        }
                         // SFX
                         PlayHitSound(hitPoint);
                         // 적에게 대미지 입힘
@@ -113,17 +107,6 @@ namespace BS.Player
                         // 쿨다운이 끝나거나 일정 시간이 지난 후 다시 공격 가능하도록 설정
                         Invoke(nameof(ResetDamagedEnemies), 0.5f); // 0.5초 후 초기화
                     }
-                }
-            }
-            if (other.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
-            {
-                Debug.Log("WALL TRIGGER");
-                Vector3 hitPoint = other.ClosestPoint(transform.position);
-                if (animator.GetBool("IsChargingPunch") == true)
-                {
-                    hitPoint.y = 0;
-                    psk.hitPos = hitPoint;
-                    ps.isHit = true;
                 }
             }
         }

@@ -132,23 +132,22 @@ namespace BS.Player
         {
             if (skillList.TryGetValue(key, out var skill))
             {
+                // 스킬 사용 가능 여부 체크
+                if (!CanUseSkill(skill.Name)) return;
+
                 // 쿨타임이 끝났는지 확인
                 if (skillCoolTimeCoroutines[skill.Name] == null) // 아직 쿨타임이 돌고 있지 않으면
                 {
                     skill.Action?.Invoke(); // 스킬 실행
                     ps.currentSkillName = key;
                     ps.prevTransform = this.transform;
-                    skillCoolTimeCoroutines[skill.Name] = StartCoroutine(CoolTimeCoroutine(skill.Name, skill.coolTime)); // 쿨타임 코루틴 시작
-                }
-                else
-                {
-                    //Debug.Log($"{skill.Name} is on cooldown.");
+                    skillCoolTimeCoroutines[skill.Name] = StartCoroutine(CoolTimeCoroutine(skill.Name, skill.coolTime, key)); // 쿨타임 코루틴 시작
                 }
             }
         }
 
         // 쿨타임을 처리하는 코루틴
-        private IEnumerator CoolTimeCoroutine(string skillName, float cooldownDuration)
+        private IEnumerator CoolTimeCoroutine(string skillName, float cooldownDuration, string skillKey)
         {
             float cooldownTimeLeft = cooldownDuration;
 
@@ -183,10 +182,24 @@ namespace BS.Player
 
             if (skillCoolTimeTextUI.ContainsKey(skillName))
             {
-                skillCoolTimeTextUI[skillName].text = "0"; // 쿨타임 끝나면 "Ready"로 표시
+                if (skillKey == "Space") skillKey = "Sp";
+                skillCoolTimeTextUI[skillName].text = skillKey; // 쿨타임 끝나면 "Ready"로 표시
             }
 
             //Debug.Log($"{skillName} is ready to use.");
+        }
+        // 스킬 사용 가능 여부를 검사하는 함수
+        private bool CanUseSkill(string skillName)
+        {
+            switch (skillName)
+            {
+                case "Dash":
+                    return animator.GetBool("IsDashing") == false
+                        && animator.GetBool("IsBlocking") == false
+                        && ps.isDashable;
+                default:
+                    return true; // 기본적으로 다른 스킬은 실행 가능
+            }
         }
     }
 }
