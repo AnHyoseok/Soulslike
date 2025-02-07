@@ -17,6 +17,7 @@ namespace BS.Enemy.Set
         [SerializeField] ParticleSystem chargingParticle;
         [SerializeField] ParticleSystem explosionParticle;
         [SerializeField] CinemachineSequencerCamera cutSceneCamera;
+        [SerializeField] GameObject fade;
         public AudioClip explosionSound;
         AudioSource audioSource;
         Camera cm;
@@ -48,7 +49,9 @@ namespace BS.Enemy.Set
 
         IEnumerator Opening()
         {
-            yield return new WaitForSeconds(1f);
+            GameObject go = Instantiate(fade);
+            Destroy(go, 1f);
+            yield return new WaitForSeconds(2f);
             animator.SetTrigger(SetProperty.SET_ANIM_TRIGGER_ROAR);
             yield return new WaitForSeconds(1f);
             audioSource.Play();
