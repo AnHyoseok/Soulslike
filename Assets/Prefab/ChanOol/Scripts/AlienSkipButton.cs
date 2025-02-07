@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEditor.Timeline.Actions;
 
 public class AlienSkipButton : MonoBehaviour
 {
@@ -20,7 +19,7 @@ public class AlienSkipButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void OnPointerEnter()
