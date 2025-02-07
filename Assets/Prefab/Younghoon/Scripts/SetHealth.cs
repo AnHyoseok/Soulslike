@@ -65,7 +65,7 @@ namespace BS.Enemy.Set
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                TakeDamage(10);
+                TakeDamage(maxHealth / 10);
             }
 
 
