@@ -25,6 +25,11 @@ namespace BS.Demon
             if (DemonController.isDie) return;
             // 자식 객체에서 PlayerHealth 컴포넌트를 찾음
             PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if(playerHealth != null )
+            {
+                PlayerState state = playerHealth.GetComponent<PlayerState>();
+                if (state.isBlockable) return;
+            }
             if (playerHealth != null && !damagedObjects.Contains(other.gameObject))
             {
                 Debug.Log($"{damageAmount}만큼 데미지 입음");

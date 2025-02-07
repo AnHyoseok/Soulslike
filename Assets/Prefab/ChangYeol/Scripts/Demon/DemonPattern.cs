@@ -109,7 +109,7 @@ namespace BS.Demon
             GameObject effgo = Instantiate(effect[1], attackball.transform.position, Quaternion.identity);
             yield return new WaitForSeconds(0.5f);
 
-            AudioUtility.CreateSFX(audioManager.sounds[0].audioClip, transform.position, audioManager.sounds[1].group);
+            AudioUtility.CreateSFX(audioManager.SetAudioClip(0), transform.position, audioManager.SetGroups(0));
             if (effgo != null && attackball != null)
             {
                 Destroy(attackball, 1f);
@@ -146,7 +146,7 @@ namespace BS.Demon
                     transform.LookAt(player.position);
                     // 텔레포트 효과 생성
                     GameObject effectgo = Instantiate(effect[2], transform.position, Quaternion.identity);
-                    AudioUtility.CreateSFX(audioManager.sounds[1].audioClip, transform.position, audioManager.sounds[0].group);
+                    AudioUtility.CreateSFX(audioManager.SetAudioClip(1), transform.position, audioManager.SetGroups(0));
                     Destroy(effectgo, 1f);
                 }
             }
@@ -157,7 +157,7 @@ namespace BS.Demon
         }
         IEnumerator SoundShoot()
         {
-            AudioUtility.CreateSFX(audioManager.sounds[2].audioClip, transform.position, audioManager.sounds[2].group);
+            AudioUtility.CreateSFX(audioManager.SetAudioClip(2), transform.position, audioManager.SetGroups(2));
             yield return new WaitForSeconds(2.5f);
             demon.lastAttackTime[2] = Time.time;
         }
@@ -174,7 +174,7 @@ namespace BS.Demon
         IEnumerator WarningWindow()
         {
             Warningeffect.SetActive(true);
-            AudioUtility.CreateSFX(audioManager.sounds[5].audioClip, transform.position, audioManager.sounds[5].group);
+            AudioUtility.CreateSFX(audioManager.SetAudioClip(5), transform.position, audioManager.SetGroups(5));
             yield return new WaitForSeconds(1);
             Warningeffect.SetActive(false);
         }

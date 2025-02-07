@@ -1,12 +1,13 @@
-using BS.Audio;
 using BS.Utility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Unity.Burst.Intrinsics.Arm;
 
 namespace BS.Demon
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [System.Serializable]
     public class PatternPoins
     {
@@ -69,7 +70,7 @@ namespace BS.Demon
             Destroy(effgo, 1f);
             Vector3 Explosionpos = new Vector3(effgo.transform.position.x, attackball.transform.position.y + -1.9f, effgo.transform.position.z);
             GameObject Explosion = Instantiate(effect[2], Explosionpos, Quaternion.identity);
-            AudioUtility.CreateSFX(pattern.audioManager.sounds[3].audioClip, Explosionpos, pattern.audioManager.sounds[3].group);
+            AudioUtility.CreateSFX(pattern.audioManager.SetAudioClip(3), Explosionpos, pattern.audioManager.SetGroups(3));
             GameObject dot = Instantiate(effectdot, Explosionpos, effectdot.transform.rotation);
             Destroy(Explosion, 1f);
             StartCoroutine(EffectDot(dot));
@@ -122,7 +123,7 @@ namespace BS.Demon
                     transform.LookAt(pattern.player.position);
                     // 텔레포트 효과 생성
                     GameObject effectgo = Instantiate(effect[3], transform.position, Quaternion.identity);
-                    AudioUtility.CreateSFX(pattern.audioManager.sounds[1].audioClip, transform.position, pattern.audioManager.sounds[1].group);
+                    AudioUtility.CreateSFX(pattern.audioManager.SetAudioClip(1), transform.position, pattern.audioManager.SetGroups(1));
                     //GameObject trigger = Instantiate(effect[4], transform.position, Quaternion.identity);
                     Destroy(effectgo, 1f);
                     pattern.demon.lastPesosTime[2] = Time.time;

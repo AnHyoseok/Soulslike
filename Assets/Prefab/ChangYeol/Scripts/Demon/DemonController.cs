@@ -1,4 +1,5 @@
 using BS.Achievement;
+using BS.Player;
 using BS.PlayerInput;
 using BS.UI;
 using System.Collections;
@@ -257,7 +258,8 @@ namespace BS.Demon
         void PrepareClear()
         {
             isDie = true;
-
+            PlayerHealth health = pattern.player.GetComponentInChildren<PlayerHealth>();
+            AchievementManager.Instance.UpdateAchievement(AchievementType.HealthBased, health.TotalDamagePersentage);
             /************************************************************************************/
             // TODO : UpdateAchievementData(KillCount, 1) 불러오기
             AchievementManager.Instance.UpdateAchievement(AchievementType.KillCount, 1);
@@ -267,13 +269,13 @@ namespace BS.Demon
             ChangeBoolState(DEMON.Die, isDie);
             PlayerInputActions inputActions = pattern.player.GetComponent<PlayerInputActions>();
             inputActions.UnInputActions();
-            source.PlayOneShot(pattern.audioManager.sounds[7].audioClip);
+            source.PlayOneShot(pattern.audioManager.SetAudioClip(7));
             Invoke("Clear",5f);
         }
         void Clear()
         {
             Destroy(this.gameObject);
-            source.clip = pattern.audioManager.sounds[7].audioClip;
+            source.clip = pattern.audioManager.SetAudioClip(7);
             source.Play();
             clearTime.CompleteDungeon();
         }

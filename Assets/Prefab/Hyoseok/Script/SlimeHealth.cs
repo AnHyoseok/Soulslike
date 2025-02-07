@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -19,6 +20,7 @@ namespace BS.vampire
         [SerializeField] private float criticalHealRatio = 0.3f;
 
         public Image bossHealth;
+        public TextMeshProUGUI healthText;
         #endregion
 
 
@@ -32,18 +34,18 @@ namespace BS.vampire
         {
             //초기화
             CurrentHealth = maxHealth;
-
         }
 
         private void Update()
         {
             bossHealth.fillAmount = Mathf.Lerp(bossHealth.fillAmount, GetRatio(), Time.deltaTime * 5f);
+            float healthPercent = (CurrentHealth / maxHealth) * 100f;
+            healthText.text = $"{healthPercent:F1}%";
         }
 
         //damageSource: 데미지를 주는 주체
         public void TakeDamage(float damage)
         {
-
             float beforeHealth = CurrentHealth;
             CurrentHealth -= damage;
             CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, maxHealth);
@@ -64,7 +66,6 @@ namespace BS.vampire
         //죽음 처리 관리
         void HandleDeath()
         {
-          
             if (CurrentHealth <= 0f)
             {
                 CurrentHealth = maxHealth;

@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace BS.Demon
 {
+    /// <summary>
+    /// 볼을 소환하면 자동으로 볼이 Y축으로 올라가는 클래스
+    /// </summary>
     public class BallRise : DemonBall
     {
         #region Variables
@@ -29,7 +32,7 @@ namespace BS.Demon
             {
                 GameObject effcetgo = Instantiate(phasePattern, transform.position, Quaternion.identity);
                 yield return new WaitForSeconds(0.5f);
-                AudioUtility.CreateSFX(audioManager.sounds[4].audioClip, transform.position,audioManager.sounds[4].group);
+                AudioUtility.CreateSFX(audioManager.SetAudioClip(4), transform.position, audioManager.SetGroups(4));
                 Destroy(effcetgo, 3.5f);
                 yield return new WaitForSeconds(3.5f);
                 // 폭발 효과 (선택 사항)
@@ -38,7 +41,7 @@ namespace BS.Demon
                 if(!effcetgo)
                 {
                     Destroy(effectInstance, 0.7f);
-                    AudioUtility.CreateSFX(audioManager.sounds[3].audioClip, transform.position, audioManager.sounds[3].group);
+                    AudioUtility.CreateSFX(audioManager.SetAudioClip(3), transform.position, audioManager.SetGroups(3));
                     Destroy(target);
                 }
             }
@@ -49,7 +52,7 @@ namespace BS.Demon
             {
                 GameObject effcetgo = Instantiate(effgo, transform.position, Quaternion.identity);
                 yield return new WaitForSeconds(0.2f);
-                AudioUtility.CreateSFX(audioManager.sounds[0].audioClip, target.transform.position, audioManager.sounds[0].group);
+                AudioUtility.CreateSFX(audioManager.SetAudioClip(0), target.transform.position, audioManager.SetGroups(0));
                 Destroy(effcetgo, 1.5f);
                 Destroy(target);
             }

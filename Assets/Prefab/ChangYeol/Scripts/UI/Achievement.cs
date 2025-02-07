@@ -52,6 +52,11 @@ namespace BS.Achievement
                         achievement.achievementCondition.gameObject.SetActive(true);
                         achievement.achievementCondition.text = $"({manager.achievementsGoalCondition[i].achievementGoal.currentAmount} / " + $"{manager.achievementsGoalCondition[i].achievementGoal.goalAmount} )";
                     }
+                    else if(manager.achievementsGoalCondition[i].achievementType == AchievementType.HealthBased)
+                    {
+                        achievement.achievementCondition.gameObject.SetActive(true);
+                        achievement.achievementCondition.text = $"({manager.achievementsGoalCondition[i].achievementGoal.currentAmount.ToString("F0")}% / " + $"{manager.achievementsGoalCondition[i].achievementGoal.goalAmount}% )";
+                    }
                     else
                     {
                         achievement.achievementCondition.gameObject.SetActive(false);
@@ -59,7 +64,7 @@ namespace BS.Achievement
                     }
 
                     achievement.achievementText.text = manager.realAchievements[i].description;
-                    achievement.achievementCondition.color = gameachievement.isUnlock ? gameachievement.isClear ? selectColor : Color.white : Color.white;
+                    achievement.achievementCondition.color = gameachievement.isUnlock ? gameachievement.isClear ? selectColor : Color.red : Color.gray;
                     achievement.achievementText.color = gameachievement.isUnlock ? gameachievement.isClear ? selectColor : Color.red : Color.gray;
                     achievement.achievementText.fontStyle = gameachievement.isUnlock ? gameachievement.isClear ? FontStyles.Normal : FontStyles.Strikethrough : FontStyles.Normal;
                     achievement.achievementImage.color = gameachievement.isUnlock ? gameachievement.isClear ? selectColor : Color.red : Color.gray;

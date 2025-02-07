@@ -2,7 +2,6 @@ using BS.Audio;
 using BS.Demon;
 using BS.Player;
 using BS.Utility;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,7 +33,7 @@ namespace BS.Particle
                 PlayerHealth playerHealth = other.GetComponentInChildren<PlayerHealth>();
                 if (playerHealth != null)
                 {
-                    AudioUtility.CreateSFX(audioManager.sounds[6].audioClip, playerHealth.transform.position, audioManager.sounds[6].group);
+                    AudioUtility.CreateSFX(audioManager.SetAudioClip(6), playerHealth.transform.position, audioManager.SetGroups(6));
                     int damage = Random.Range(minDamage, maxDamage);
                     Debug.Log($"{damage}만큼 데미지 입음");
                     playerHealth.TakeDamage(damage, false);

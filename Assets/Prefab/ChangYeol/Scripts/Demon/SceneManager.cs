@@ -25,9 +25,7 @@ namespace BS.Demon
         [SerializeField] private GameObject angryEffect;
 
         private bool isheal;
-        public LayerMask Playermask;
-        public LayerMask mask;
-        private bool ischting = true;
+        [SerializeField] private bool ischting;
         public GameObject FadeOut;
         #endregion
 
@@ -112,7 +110,6 @@ namespace BS.Demon
         IEnumerator PhaseDemon()
         {
             drectingCamera.SetActive(true);
-            main.cullingMask = Playermask;
             yield return new WaitForSeconds(0.5f);
             pattern.demon.enabled = false;
             player.enabled = false;
@@ -138,7 +135,6 @@ namespace BS.Demon
             pattern.demon.enabled = true;
             pattern.demon.ChangeState(DEMON.Idle);
             player.enabled = true;
-            main.cullingMask = mask;
             actions.OnInputActions();
             yield return new WaitForSeconds(0.5f);
             pattern.demon.animator.SetBool("IsPhase", isPhase);

@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace BS.Managers
 {
+    /// <summary>
+    /// Title 씬에서 사용하는 SceneManager
+    /// </summary>
     public class SceneManager : MonoBehaviour
     {
         #region Variables
