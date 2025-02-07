@@ -60,6 +60,7 @@ namespace BS.Utility
         {
             dungeEndGame.StopTimer();
             AchievementManager.Instance.UpdateAchievement(AchievementType.KillCount, 1);
+            AchievementManager.Instance.UpdateAchievement(AchievementType.HealthBased, playerHealth.TotalDamagePersentage);
             gameEnded = true;
             playerInputActions.enabled = false;
             VampireDummy.SetActive(true);
@@ -73,6 +74,7 @@ namespace BS.Utility
 
         private void PrepareDefeat()
         {
+            AchievementManager.Instance.UpdateAchievement(AchievementType.HealthBased, playerHealth.TotalDamagePersentage);
             gameEnded = true;
             playerInputActions.enabled = false;
             VampireDummy.SetActive(true);

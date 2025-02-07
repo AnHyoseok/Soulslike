@@ -9,7 +9,7 @@ namespace BS.vampire
         #region Variables
         [SerializeField] private float maxHealth = 100f;    //최대 Hp
         [SerializeField]public float CurrentHealth { get; set; }    //현재 Hp
-        private bool isDeath = false;                       //죽음 체크
+        //private bool isDeath = false;                       //죽음 체크
 
         public UnityAction<float> OnDamaged;
         public UnityAction OnDie;
@@ -64,16 +64,10 @@ namespace BS.vampire
         //죽음 처리 관리
         void HandleDeath()
         {
-            //죽음 체크
-            if (isDeath)
-                return;
-
+          
             if (CurrentHealth <= 0f)
             {
-                isDeath = true;
-                Destroy(gameObject);
-                //죽음 구현
-                OnDie?.Invoke();
+                CurrentHealth = maxHealth;
             }
         }
     }
