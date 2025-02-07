@@ -14,27 +14,27 @@
         },
         {
             "number": 2,
-            "currentAmount": 9.0,
+            "currentAmount": 10.0,
             "isUnlock": true,
-            "isClear": false
+            "isClear": true
         },
         {
             "number": 3,
-            "currentAmount": 0.0,
+            "currentAmount": 100.0,
             "isUnlock": true,
-            "isClear": false
+            "isClear": true
         },
         {
             "number": 4,
-            "currentAmount": 0.0,
-            "isUnlock": false,
-            "isClear": false
+            "currentAmount": 100.0,
+            "isUnlock": true,
+            "isClear": true
         },
         {
             "number": 5,
-            "currentAmount": 0.0,
-            "isUnlock": false,
-            "isClear": false
+            "currentAmount": 100.0,
+            "isUnlock": true,
+            "isClear": true
         },
         {
             "number": 6,

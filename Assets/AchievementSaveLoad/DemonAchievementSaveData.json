@@ -20,21 +20,21 @@
         },
         {
             "number": 30,
-            "currentAmount": 0.0,
+            "currentAmount": 100.0,
             "isUnlock": true,
-            "isClear": false
+            "isClear": true
         },
         {
             "number": 31,
-            "currentAmount": 0.0,
-            "isUnlock": false,
-            "isClear": false
+            "currentAmount": 100.0,
+            "isUnlock": true,
+            "isClear": true
         },
         {
             "number": 32,
-            "currentAmount": 0.0,
-            "isUnlock": false,
-            "isClear": false
+            "currentAmount": 100.0,
+            "isUnlock": true,
+            "isClear": true
         },
         {
             "number": 33,
