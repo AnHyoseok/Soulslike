@@ -40361,6 +40361,7 @@ GameObject:
   - component: {fileID: 7509466205952487756}
   - component: {fileID: 8992850414525812292}
   - component: {fileID: 272375885998059916}
+  - component: {fileID: 8992850414525812293}
   m_Layer: 0
   m_Name: Android_SkeletalMesh
   m_TagString: Untagged
@@ -48956,7 +48957,7 @@ MonoBehaviour:
   bossHealthText: {fileID: 5489038}
   playerHealthText: {fileID: 1419219734437326308}
   potionText: {fileID: 7081304537755558768}
-  usePotion: {fileID: 0}
+  usePotion: {fileID: 8992850414525812293}
 --- !u!4 &8122206685873433340
 Transform:
   m_ObjectHideFlags: 0
@@ -55419,6 +55420,19 @@ MonoBehaviour:
   chargingPunchCoolTimeText: {fileID: 0}
   stopDistance: 1
   hitPos: {x: 0, y: 0, z: 0}
+--- !u!114 &8992850414525812293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6618140845088295036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed6d77f678ceee3488a84ed5acb8d2f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  potionSound: {fileID: 8300000, guid: 38ebba0814c520d41b308129d3ca480d, type: 3}
 --- !u!224 &8998710572457979241
 RectTransform:
   m_ObjectHideFlags: 0
