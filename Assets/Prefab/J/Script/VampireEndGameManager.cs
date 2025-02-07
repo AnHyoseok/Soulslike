@@ -69,6 +69,8 @@ namespace BS.Utility
             boss.GetComponent<PattonSummon>().enabled = false;
             audioSource.clip = clearSound;
             audioSource.Play();
+            Destroy(boss);
+            Debug.Log("패배");
             Invoke("Clear", actorTime); 
         }
 
@@ -83,13 +85,14 @@ namespace BS.Utility
             animator.SetTrigger("Defeat");
             audioSource.clip = defeatSound;
             audioSource.Play();
+            Destroy(boss);
             Invoke("Defeat", actorTime); 
         }
 
         private void Clear()
         {
           
-            Destroy(boss);
+           
          
         
             dungeEndGame.CompleteDungeon();
@@ -97,8 +100,7 @@ namespace BS.Utility
 
         private void Defeat()
         {
-            Destroy(boss); 
-            Debug.Log("패배");
+          
         
             dungeEndGame.DefeatDungeon();
         }
