@@ -17,7 +17,6 @@ namespace BS.Achievement
         private GameObject achievementobject;
         private AchievementManager manager;
 
-        public DungeonClearTime dungeon;
         public PlayerHealth health;
         private float healthPercentage;
         #endregion

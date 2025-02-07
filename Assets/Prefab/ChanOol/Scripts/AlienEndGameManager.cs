@@ -4,6 +4,7 @@ using BS.UI;
 using BS.Audio;
 using UnityEngine.Audio;
 using BS.PlayerInput;
+using BS.Achievement;
 
 namespace BS.Utility
 {
@@ -55,6 +56,7 @@ namespace BS.Utility
 
         private void PrepareClear()
         {
+            AchievementManager.Instance.UpdateAchievement(AchievementType.HealthBased, playerHealth.TotalDamagePersentage);
             dungeEndGame.StopTimer();
             gameEnded = true;
             playerInputActions.enabled = false;

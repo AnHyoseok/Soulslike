@@ -31053,6 +31053,7 @@ MonoBehaviour:
   pt5spawnCount: 36
   alien: {fileID: 5998695934361493826}
   player: {fileID: 520268659}
+  alienHealth: {fileID: 0}
 --- !u!33 &4501659843106152887
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -35779,11 +35780,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4458926706542147190, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4458926706542147190, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 41.666664
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4458926706542147190, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -35883,11 +35884,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5132426963093467475, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5132426963093467475, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -41.66667
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5132426963093467475, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -35911,7 +35912,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8074960882192571937, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 50
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8074960882192571937, guid: 5c7d1a0da442b2148847d9abce9f5e47, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -36435,7 +36436,7 @@ Transform:
   m_GameObject: {fileID: 7679006607096963377}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -39070,6 +39071,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 1000
   currentHealth: 10
+  isDie: 0
 --- !u!65 &7881019165355029546
 BoxCollider:
   m_ObjectHideFlags: 0

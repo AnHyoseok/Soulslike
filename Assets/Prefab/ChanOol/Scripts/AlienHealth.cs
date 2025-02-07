@@ -29,7 +29,7 @@ public class AlienHealth : MonoBehaviour, IDamageable
         currentHealth = maxHealth;
         animator = GetComponent<Animator>();
         NotifyHealthChanged();
-        dungeonClearTime = GetComponent<DungeonClearTime>();
+        dungeonClearTime = FindAnyObjectByType<DungeonClearTime>();
 
         //fadeInOut.SetActive(false);
     }
@@ -45,7 +45,7 @@ public class AlienHealth : MonoBehaviour, IDamageable
                 animator.SetInteger("Pattern", 6);
                 AchievementManager.Instance.UpdateAchievement(AchievementType.KillCount, 1);
                 dungeonClearTime.StopTimer();
-                
+
             }
         }
         if (Input.GetKeyDown(KeyCode.X))
@@ -90,17 +90,17 @@ public class AlienHealth : MonoBehaviour, IDamageable
         // EndingSequencerCamera 켜기
         //EndingSequencerCamera.SetActive(false);
         AchievementManager.Instance.UpdateAchievement(AchievementType.KillCount, 1);
-        animator.SetInteger("Pattern",6);
+        animator.SetInteger("Pattern", 6);
         //페이드인아웃 활성화
         //fadeInOut.SetActive(true);
 
         //2초뒤 페이드인아웃 비활성화
         //yield return new WaitForSeconds(2.0f);
         dungeonClearTime.StopTimer();
-        
+
         //페이드인아웃 비활성화
         //fadeInOut.SetActive(false);
         // 보스 사망 로직 추가 (예: 애니메이션, 제거)
-        Destroy(gameObject,5f); // 보스 오브젝트 제거
+        Destroy(gameObject, 5f); // 보스 오브젝트 제거
     }
 }
