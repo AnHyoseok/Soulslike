@@ -159,6 +159,7 @@ namespace BS.Managers
             }
 
             shakeOffset = Vector3.zero; // 흔들림 종료 후 초기화
+            yield return new WaitForSeconds(1f);
             isShaking = false;
         }
     }
