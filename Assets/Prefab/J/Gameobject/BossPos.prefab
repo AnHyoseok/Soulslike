@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1878413858057444}
   - component: {fileID: 2597317224581418296}
   - component: {fileID: 1836695937558637054}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: BossPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,7 +84,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &1836695937558637054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +113,7 @@ GameObject:
   - component: {fileID: 6004133844058078698}
   - component: {fileID: 4977033059314847199}
   - component: {fileID: 7781967688494886617}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,7 +187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2257966039821596715}
   - component: {fileID: 4313896420285009953}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,4 +227,4 @@ MonoBehaviour:
   directionimage: {fileID: 7781967688494886617}
   directionSprite: {fileID: 21300000, guid: 97d61e1464074c74f826bbf7f7b73a25, type: 3}
   ChangeSprite: {fileID: 21300000, guid: d86859dc313749d4cbdf70f3b74281f4, type: 3}
-  bossRange: 4
+  bossRange: 10

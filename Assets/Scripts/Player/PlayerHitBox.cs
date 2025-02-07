@@ -24,7 +24,7 @@ namespace BS.Player
         {
             ps = controller.transform.GetChild(0).GetComponent<PlayerState>();
             psk = controller.transform.GetChild(0).GetComponent<PlayerSkills>();
-            animator = controller.transform.GetChild(0).GetComponent<Animator>();
+            animator = controller.GetComponentInChildren<Animator>();
             cm = Camera.main.GetComponent<CameraManager>();
             pskController = FindFirstObjectByType<PlayerSkillController>();
         }
@@ -67,12 +67,15 @@ namespace BS.Player
 
         private void OnTriggerEnter(Collider other)
         {
-            if (animator.GetBool("IsAttacking") == false
+            if(animator != null)
+            {
+                if (animator.GetBool("IsAttacking") == false
                 && animator.GetBool("IsBackHandSwing") == false
                 && animator.GetBool("IsUppercuting") == false
                 && animator.GetBool("IsChargingPunch") == false)
-            {
-                return;
+                {
+                    return;
+                }
             }
             // 적 레이어인지 확인
             if (other.gameObject.layer == LayerMask.NameToLayer(enemyLayerName))

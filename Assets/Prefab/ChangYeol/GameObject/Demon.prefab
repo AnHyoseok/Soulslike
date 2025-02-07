@@ -10175,12 +10175,14 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  maxHealth: 100
+  maxHealth: 500
   hasRecovered: 0
   healthBarFill: {fileID: 0}
   healthText: {fileID: 0}
   clearTime: {fileID: 0}
   sceneManager: {fileID: 0}
+  gameManager: {fileID: 0}
+  source: {fileID: 0}
   lastPesosTime:
   - 0
   - 0
@@ -10340,11 +10342,11 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.5
+  m_Radius: 1.9
   m_Height: 5.82
   m_Direction: 1
   m_Center: {x: 0, y: 3, z: 0.5}
@@ -105011,7 +105013,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &236917458403117667
 Transform:
   m_ObjectHideFlags: 0
