@@ -114,29 +114,25 @@ namespace BS.Player
         private void PlayHitSound(Vector3 hitPoint)
         {
             AudioClip hitSound = null;
-            if (hitSound != null)
+            if (ps.currentSkillName == "E")
             {
-                if (ps.currentSkillName == "E")
-                {
-                    hitSound = hitSounds[5];
-                }
-                else if (ps.currentSkillName == "W")
-                {
-                    hitSound = hitSounds[4];
-                }
-                else if (ps.currentSkillName == "Q")
-                {
-                    hitSound = hitSounds[6];
-                }
-                else
-                {
-                    int randomNumber = Mathf.FloorToInt(Random.value * 4);
-                    hitSound = hitSounds[randomNumber];
-                }
-
-                AudioUtility.CreateSFX(hitSound, hitPoint, AudioGroups.Skill);
+                hitSound = hitSounds[5];
             }
-            
+            else if (ps.currentSkillName == "W")
+            {
+                hitSound = hitSounds[4];
+            }
+            else if (ps.currentSkillName == "Q")
+            {
+                hitSound = hitSounds[6];
+            }
+            else
+            {
+                int randomNumber = Mathf.FloorToInt(Random.value * 4);
+                hitSound = hitSounds[randomNumber];
+            }
+
+            AudioUtility.CreateSFX(hitSound, hitPoint, AudioGroups.Skill);
         }
 
 
