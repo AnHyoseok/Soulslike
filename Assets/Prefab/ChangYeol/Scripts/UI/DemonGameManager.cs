@@ -42,13 +42,12 @@ namespace BS.Demon
             bossHealth.demon.sceneManager.drectingCamera.SetActive(true);
             bossHealth.demon.animator.SetBool("IsDefeat", true);
             playerInputActions.UnInputActions();
-            bossHealth.demon.source.PlayOneShot(bossHealth.audioManager.SetAudioClip(8));
+            bossHealth.demon.source.clip = bossHealth.audioManager.SetAudioClip(8);
+            bossHealth.demon.source.Play();
             Invoke("Defeat", actorTime);
         }
         private void Defeat()
         {
-            bossHealth.demon.source.clip = bossHealth.audioManager.SetAudioClip(8);
-            bossHealth.demon.source.Play();
             dungeEndGame.DefeatDungeon();
             Destroy(bossHealth.gameObject);
         }

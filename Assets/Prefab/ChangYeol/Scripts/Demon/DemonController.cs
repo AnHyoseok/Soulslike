@@ -269,14 +269,13 @@ namespace BS.Demon
             ChangeBoolState(DEMON.Die, isDie);
             PlayerInputActions inputActions = pattern.player.GetComponent<PlayerInputActions>();
             inputActions.UnInputActions();
-            source.PlayOneShot(pattern.audioManager.SetAudioClip(7));
+            source.clip = pattern.audioManager.SetAudioClip(7);
+            source.Play();
             Invoke("Clear",5f);
         }
         void Clear()
         {
             Destroy(this.gameObject);
-            source.clip = pattern.audioManager.SetAudioClip(7);
-            source.Play();
             clearTime.CompleteDungeon();
         }
     }
