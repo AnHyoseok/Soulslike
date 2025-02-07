@@ -13,7 +13,7 @@ namespace BS.Utility
         private PlayerHealth playerHealth;
         private VampireHealth bossHealth;
         private DungeonClearTime dungeEndGame;
-        [HideInInspector]public GameObject player;
+        public GameObject player;
         public GameObject boss;
         public GameObject VampireDummy;
         [SerializeField] private float actorTime=3f;
