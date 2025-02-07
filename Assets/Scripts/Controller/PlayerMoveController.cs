@@ -5,13 +5,16 @@ namespace BS.Player
 {
     public class PlayerMoveController : PlayerController
     {
-        // Dash 관련 변수
         [Header("Dash Settings")]
-        public float dashDuration = 0.5f;                   // 대쉬 지속 시간
-        public float dashCoolTime = 3f;                     // 대쉬 쿨타임
-        public float dashDistance = 5f;                     // 대쉬 거리
-        public float invincibilityDuration = 0.5f;          // 무적 지속 시간
-        PlayerSkillController psk;
+        public float dashDuration = 0.5f;
+        public float dashCoolTime = 3f;
+        public float dashDistance = 5f;
+        public float invincibilityDuration = 0.5f;
+
+        [Header("Collision Settings")]
+        public float stopDistance = 0.1f; // 벽과 최소 거리 유지
+
+        private PlayerSkillController psk;
 
         private static readonly string IS_MOVING = "IsMoving";
         private static readonly string IS_RUNNING = "IsRun";
@@ -33,6 +36,7 @@ namespace BS.Player
         {
             base.Start();
         }
+
         private void OnEnable()
         {
             if (!psk.skillList.ContainsKey("Space"))
@@ -60,30 +64,17 @@ namespace BS.Player
                 if (!animator.GetBool(IS_MOVING))
                 {
                     animator.SetBool(IS_MOVING, true);
-                    //if (animator.GetBool(IS_WALKING))
-                    //{
-                    //    animator.SetTrigger(DO_WALK);
-                    //    animator.SetBool(IS_WALKING, true);
-                    //}
-                    //else if (animator.GetBool(IS_SPRINTING))
-                    //{
-                    //    animator.SetTrigger(DO_SPRINT);
-                    //    animator.SetBool(IS_SPRINTING, true);
-                    //}
-                    //else
-                    //{
                     if (!animator.GetBool(IS_RUNNING))
                     {
                         animator.SetTrigger(DO_RUN);
                         animator.SetBool(IS_RUNNING, true);
                     }
-                    //}
                 }
             }
             SetMoveState();
         }
 
-        // Player 이동
+        // Player 이동 (벽 충돌 감지 추가)
         private void MoveToTargetPos()
         {
             if (animator.GetBool(IS_MOVING)
@@ -93,7 +84,33 @@ namespace BS.Player
                 && animator.GetBool(IS_DASH) == false
                 && animator.GetBool("IsBlocking") == false)
             {
-                transform.position = Vector3.MoveTowards(transform.position, ps.targetPosition, ps.inGameMoveSpeed * Time.deltaTime);
+                Vector3 moveDirection = (ps.targetPosition - transform.position).normalized;
+                float moveSpeed = ps.inGameMoveSpeed * Time.deltaTime;
+
+                // Ray 발사 위치 (캐릭터 중심이 아니라 1 유닛 위)
+                Vector3 rayOrigin = transform.position + Vector3.up;
+
+                // 벽 충돌 감지
+                if (Physics.Raycast(rayOrigin, moveDirection, out RaycastHit hit, moveSpeed + stopDistance, LayerMask.GetMask("Wall")))
+                {
+                    Debug.Log("WALL DETECT");
+                    Debug.DrawRay(rayOrigin, moveDirection * hit.distance, Color.red);
+
+                    if (hit.distance <= stopDistance)
+                    {
+                        Debug.Log("WALL ARR");
+                        StopMovement();
+                        return;
+                    }
+
+                    moveSpeed = hit.distance - stopDistance;
+                }
+                else
+                {
+                    Debug.DrawRay(rayOrigin, moveDirection * moveSpeed, Color.green);
+                }
+
+                transform.position += moveDirection * moveSpeed;
 
                 if (Vector3.Distance(transform.position, ps.targetPosition) < 0.01f)
                 {
@@ -113,7 +130,7 @@ namespace BS.Player
             animator.SetBool(IS_SPRINTING, false);
         }
 
-        // Player 상태 변경
+        // Player 상태 변경 (걷기/뛰기/달리기)
         private void SetMoveState()
         {
             if (m_Input.C && !animator.GetBool(IS_WALKING) && animator.GetBool(IS_MOVING))
@@ -169,7 +186,6 @@ namespace BS.Player
         }
 
         #region Dash
-        // 대쉬
         private void DoDash()
         {
             if (animator.GetBool(IS_DASH) == false
@@ -180,16 +196,6 @@ namespace BS.Player
             }
         }
 
-        //public enum MovingState
-        //{
-        //    None,
-        //    Run,
-        //    Sprint,
-        //    Walk,
-        //}
-        //MovingState currMovingState;
-        //MovingState prevMovingState;
-
         private void StartDash(Vector3 targetPoint)
         {
             animator.SetBool(IS_DASH, true);
@@ -197,31 +203,18 @@ namespace BS.Player
 
             Vector3 dashDirection = (targetPoint - transform.position).normalized;
             Vector3 dashTarget = transform.position + dashDirection * dashDistance;
-            ps.targetPosition = dashTarget;
-            RotatePlayer();
+            Vector3 rayOrigin = transform.position + Vector3.up;
 
-            // TODO :: Sprint 모션으로 대쉬를 하고싶은데
-            //StopMovement();
-            //psm.prevState = psm.GetCurrentState();
-            //animator.SetTrigger(DO_DASH);
-            //psm.ChangeState(psm.SprintState);
-            //ResetActionFlags();
-            //if (animator.GetBool(IS_RUNNING) == true)
-            //{
-            //    animator.SetBool(IS_RUNNING, true);
-            //}
-            //else if (animator.GetBool(IS_SPRINTING) == true)
-            //{
-            //    animator.SetBool(IS_SPRINTING, true);
-            //}
-            //else if (animator.GetBool(IS_WALKING) == true)
-            //{
-            //    animator.SetBool(IS_WALKING, true);
-            //}
-            //else
-            //{
-            //
-            //}
+            // 벽 감지
+            if (Physics.Raycast(rayOrigin, dashDirection, out RaycastHit hit, dashDistance, LayerMask.GetMask("Wall")))
+            {
+                Debug.DrawRay(rayOrigin, dashDirection * hit.distance, Color.red);
+                dashTarget = transform.position + dashDirection * (hit.distance - stopDistance);
+            }
+            else
+            {
+                Debug.DrawRay(rayOrigin, dashDirection * dashDistance, Color.green);
+            }
 
             transform.DOMove(dashTarget, dashDuration)
             .SetEase(Ease.OutQuad)
@@ -229,13 +222,6 @@ namespace BS.Player
             .SetLink(gameObject);
 
             Invoke(nameof(DisableInvincibility), invincibilityDuration);
-        }
-
-        private void ResetActionFlags()
-        {
-            ps.isUppercuting = false;
-            ps.isBackHandSwinging = false;
-            ps.isChargingPunching = false;
         }
 
         private void EndDash()
