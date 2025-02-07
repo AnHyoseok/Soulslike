@@ -46,13 +46,6 @@ namespace BS.Demon
                 WarningCanvas.transform.LookAt(WarningCanvas.transform.position + main.transform.rotation * Vector3.forward, main.transform.rotation * Vector3.up);
 
             }
-            if (Input.GetKeyDown(KeyCode.V) && ischting)
-            {
-                if(pattern.demon.currentHealth > 0)
-                {
-                    pattern.demon.TakeDamage(20);
-                }
-            }
             if (Input.GetKeyDown(KeyCode.X) && ischting)
             {
                 if (pattern.demon.currentHealth > 0)
