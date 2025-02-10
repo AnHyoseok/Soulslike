@@ -36,6 +36,7 @@ namespace BS.Player
         public float stopDistance = 1f; // 벽과 최소 거리 유지
         //public bool isHit = false;
         public Vector3 hitPos;
+        Vector3 rayOrigin;
         //private Vector3 predictedVelocity;
         void Awake()
         {
@@ -65,6 +66,7 @@ namespace BS.Player
         private void Start()
         {
             animator = GetComponent<Animator>();
+            rayOrigin = transform.position + Vector3.up;
         }
 
         // 애니메이션 실행중 호출 Update
@@ -94,7 +96,7 @@ namespace BS.Player
         {
             if (animator.GetBool("IsChargingPunch"))
             {
-                Vector3 rayOrigin = transform.position + Vector3.up;
+                rayOrigin = transform.position + Vector3.up;
                 Vector3 moveDirection = (ps.targetPosition - transform.position).normalized;
                 RaycastHit[] hits = Physics.RaycastAll(rayOrigin, moveDirection, 5f);
 
@@ -105,7 +107,10 @@ namespace BS.Player
                     {
                         animator.applyRootMotion = false; // 루트 모션 비활성화
                         Vector3 hitPoint = new Vector3(hit.point.x, 0f, hit.point.z);
+                        Debug.Log("hitPoint = " + hitPoint);
                         Vector3 temp = (hitPoint - ps.prevTransform.position).normalized * 1.2f;
+                        Debug.Log("temp = " + temp);
+                        temp.y = 0f;
                         transform.parent.position = hitPoint - temp;
                         return;
                     }
