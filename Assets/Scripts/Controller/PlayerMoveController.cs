@@ -204,7 +204,8 @@ namespace BS.Player
             Vector3 rayOrigin = transform.position + Vector3.up;
 
             // 벽 감지
-            if (Physics.Raycast(rayOrigin, dashDirection, out RaycastHit hit, dashDistance, LayerMask.GetMask("Wall")))
+            if (Physics.Raycast(rayOrigin, dashDirection, out RaycastHit hit, dashDistance, LayerMask.GetMask("Wall", "Enemy")))
+
             {
                 Debug.DrawRay(rayOrigin, dashDirection * hit.distance, Color.red);
                 dashTarget = transform.position + dashDirection * (hit.distance - stopDistance);

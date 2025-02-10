@@ -102,6 +102,14 @@ namespace BS.Player
 
                 foreach (RaycastHit hit in hits)
                 {
+                    // 충돌한 오브젝트의 레이어 가져오기
+                    int hitLayer = hit.collider.gameObject.layer;
+
+                    // Wall 또는 Enemy 레이어가 아닌 경우 continue
+                    if ((hitLayer != LayerMask.NameToLayer("Wall")) && (hitLayer != LayerMask.NameToLayer("Enemy")))
+                    {
+                        continue;
+                    }
                     // 충돌한 물체 처리
                     if (hit.distance <= stopDistance)
                     {
