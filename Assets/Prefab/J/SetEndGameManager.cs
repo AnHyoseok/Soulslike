@@ -41,6 +41,14 @@ namespace BS.Utility
             mainCamera = Camera.main;
 
             dungeonEndGame = FindFirstObjectByType<SetDungeonClearTime>();
+            if (dungeonEndGame != null)
+            {
+                Debug.Log("dungeonEndGame 값있음");
+            }
+            else
+            {
+                Debug.Log("dungeonEndGame 값없음");
+            }
             bossHealth = FindFirstObjectByType<SetHealth>();
             playerHealth = FindFirstObjectByType<PlayerHealth>();
 

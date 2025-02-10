@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -31,7 +32,15 @@ namespace BS.Enemy.Set
             // 지속 시간이 끝나면 원래 상태로 복귀
             if (elapsedTime >= fearDuration)
             {
-                property.Controller.SetState(new SetChaseState(property));
+                float distance = Vector3.Distance(property.Player.position, property.Controller.transform.position);
+                if (distance > property.Agent.stoppingDistance)
+                {
+                    property.Controller.SetState(new SetChaseState(property));
+                }
+                else
+                {
+                    property.Controller.SetState(new SetIdleState(property));
+                }
                 return;
             }
 
@@ -44,6 +53,9 @@ namespace BS.Enemy.Set
 
         public void Exit()
         {
+            //기절상태에서 나갈때 공격시간을 초기화
+            property.LastAttackTime = Time.time;
+
             property.Animator.SetBool(SetProperty.SET_ANIM_BOOL_FAINTING, false);
         }
 

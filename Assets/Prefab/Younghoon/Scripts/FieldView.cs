@@ -2,6 +2,7 @@ using BS.Player;
 using BS.Utility;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace BS.Enemy.Set
@@ -200,12 +201,12 @@ namespace BS.Enemy.Set
 
             foreach (var target in targetsInView)
             {
-                Vector3 directionToTarget = (target.transform.position - (transform.position + offset)).normalized;
+                Vector3 directionToTarget = (target.transform.position + offset - (transform.position + offset)).normalized;
 
                 // 각도 제한 확인
                 if (Vector3.Angle(transform.forward, directionToTarget) <= viewAngle / 2)
                 {
-                    float distanceToTarget = Vector3.Distance(transform.position + offset, target.transform.position);
+                    float distanceToTarget = Vector3.Distance(transform.position + offset, target.transform.position + offset);
 
                     // 장애물이 있는지 확인
                     if (!Physics.Raycast(transform.position + offset, directionToTarget, distanceToTarget, obstacleMask))
@@ -220,15 +221,44 @@ namespace BS.Enemy.Set
                 }
             }
         }
-
-        private void DealDamage(GameObject target)
+        // 기즈모로 범위 확인하기
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
         {
-            // 타겟에 데미지를 주는 로직
-            var health = target.GetComponent<PlayerHealth>(); // 예: Health 컴포넌트
-            if (health != null)
+            Gizmos.color = Color.green;
+
+            // OverlapSphere 범위
+            Gizmos.DrawWireSphere(transform.position + offset, maxViewRange);
+
+            // RayCast 시각화
+            Collider[] targetsInView = Physics.OverlapSphere(transform.position + offset, maxViewRange, targetMask);
+            foreach (var target in targetsInView)
             {
-                health.TakeDamage(10); // 예: 10 데미지
+                Vector3 directionToTarget = (target.transform.position + offset - (transform.position + offset)).normalized;
+                float distanceToTarget = Vector3.Distance(transform.position + offset, target.transform.position + offset);
+
+                // RayCast를 기즈모로 그려줌
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(transform.position + offset, transform.position + offset + directionToTarget * distanceToTarget);
+
+                // 각도 확인
+                if (Vector3.Angle(transform.forward, directionToTarget) <= viewAngle / 2)
+                {
+                    RaycastHit hit;
+                    if (Physics.Raycast(transform.position + offset, directionToTarget, out hit, distanceToTarget, obstacleMask))
+                    {
+                        Gizmos.color = Color.red;
+
+                    }
+                    else
+                    {
+                        Gizmos.color = Color.green;  // 장애물이 없으면 초록색
+                    }
+                    //Gizmos.color = Color.yellow;
+                    Gizmos.DrawLine(transform.position + offset, transform.position + offset + directionToTarget * maxViewRange);
+                }
             }
         }
+#endif
     }
 }

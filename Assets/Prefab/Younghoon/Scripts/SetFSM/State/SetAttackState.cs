@@ -45,14 +45,26 @@ namespace BS.Enemy.Set
             // 현재 애니메이션 상태 업데이트
             currentState = property.Animator.GetCurrentAnimatorStateInfo(0);
 
-            if (AttackStateChecker())
+            // 애니메이션 타임을 체크하여 공격이 끝났다면 상태 전환
+            if (AttackStateChecker() && currentState.normalizedTime >= 0.9f)
             {
-                // 애니메이션 타임을 체크하여 공격이 끝났다면 상태 전환
-                if (currentState.normalizedTime >= 0.9f)
+                if (distance > property.Agent.stoppingDistance)
                 {
                     property.Controller.SetState(new SetChaseState(property));
                 }
+                else
+                {
+                    property.Controller.SetState(new SetIdleState(property));
+                }
             }
+            //if (AttackStateChecker())
+            //{
+            //    // 애니메이션 타임을 체크하여 공격이 끝났다면 상태 전환
+            //    if (currentState.normalizedTime >= 0.9f)
+            //    {
+            //        property.Controller.SetState(new SetChaseState(property));
+            //    }
+            //}
         }
 
         public void Exit()

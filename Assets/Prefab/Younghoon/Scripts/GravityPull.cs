@@ -12,6 +12,7 @@ namespace BS.Enemy.Set
 
         private SphereCollider sphereCollider;
         private LayerMask playerLayer;  //플레이어 레이어 마스크를 할당할 변수
+        [SerializeField] private float damageCoefficient = 1f;
         #endregion
 
         private void Start()
@@ -53,7 +54,7 @@ namespace BS.Enemy.Set
                     if (playerHealth != null)
                     {
                         //프레임당 speed의 데미지
-                        playerHealth.TakeDamage(speed * 1f, false);
+                        playerHealth.TakeDamage(speed * damageCoefficient, false);
                     }
 
 #if UNITY_EDITOR
