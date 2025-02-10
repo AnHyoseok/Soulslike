@@ -107,9 +107,7 @@ namespace BS.Player
                     {
                         animator.applyRootMotion = false; // 루트 모션 비활성화
                         Vector3 hitPoint = new Vector3(hit.point.x, 0f, hit.point.z);
-                        Debug.Log("hitPoint = " + hitPoint);
                         Vector3 temp = (hitPoint - ps.prevTransform.position).normalized * 1.2f;
-                        Debug.Log("temp = " + temp);
                         temp.y = 0f;
                         transform.parent.position = hitPoint - temp;
                         return;
